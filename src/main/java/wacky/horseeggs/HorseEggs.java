@@ -110,9 +110,7 @@ public class HorseEggs extends JavaPlugin implements Listener{
 			return false;
 		} else if(block.getState() instanceof Sign){
 			// 看板は編集可・不可の状態が変化するので、動的に取得する
-			// TODO 1.20.1では看板のワックスがけ状態を判別するフィールドがないため、決め打ち。20.2以降に実装を変更する
-//			return ((Sign)block.getState()).isWaxed();
-			return true;
+			return !((Sign)block.getState()).isWaxed();
 		} else if(
 			// それ以外
 			// ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
