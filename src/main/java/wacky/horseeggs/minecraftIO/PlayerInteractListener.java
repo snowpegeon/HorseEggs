@@ -98,6 +98,9 @@ public class PlayerInteractListener implements Listener{
 				case LLAMA:
 					horseegg = new ItemStack(Material.LLAMA_SPAWN_EGG, 1);//ラマ卵
 					break;
+				case TRADER_LLAMA:
+					horseegg = new ItemStack(Material.TRADER_LLAMA_SPAWN_EGG, 1);
+					break;
 				default:
 					return;
 				}
@@ -151,7 +154,7 @@ public class PlayerInteractListener implements Listener{
 				// TODO getVariantが非推奨型のため、取得方式を検討する。
 				horseData.putString("Variant", horse.getVariant().toString());
 
-				if(horse.getType() == EntityType.LLAMA){
+				if(horse.getType() == EntityType.LLAMA || horse.getType() == EntityType.TRADER_LLAMA){
 					horseData.putInt("Strength", ((Llama) horse).getStrength());
 					list.add("Strength: " + ((Llama) horse).getStrength());
 
@@ -184,7 +187,7 @@ public class PlayerInteractListener implements Listener{
 					if(type == EntityType.HORSE && ((HorseInventory) hInv).getArmor() != null){
 						horseData.putString("Armor", ((HorseInventory) hInv).getArmor().getType().toString());
 						str2 = "[" + ((HorseInventory) hInv).getArmor().getType().toString() + "]";
-					}else if(type == EntityType.LLAMA && ((LlamaInventory) hInv).getDecor() != null){
+					}else if((type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA) && ((LlamaInventory) hInv).getDecor() != null){
 						horseData.putString("Armor", ((LlamaInventory) hInv).getDecor().getType().toString());
 						str2 = "[" + ((LlamaInventory) hInv).getDecor().getType().toString() + "]";
 					}
