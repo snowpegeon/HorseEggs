@@ -3,7 +3,7 @@ package wacky.horseeggs;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.twitter.teruteru128.logger.Logger;
+import com.github.teruteru128.logger.Logger;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.block.Barrel;
@@ -46,10 +46,11 @@ public class HorseEggs extends JavaPlugin implements Listener{
 		config.options().header("HorseEggs Configuration");
 		this.saveConfig();
 		var logLevel = config.getString("log-level");
-        this.logger = new Logger(this.getLogger(), logLevel != null ? logLevel : "INFO");
+        this.logger = Logger.getInstance(this);
 		if (logLevel == null) {
 			logger.warn("log-level is not set!");
 		}
+		logger.debug("onEnable:Start");
 
 		ShapedRecipe storageSignRecipe = new ShapedRecipe(emptyHorseEgg(1));
 		storageSignRecipe.shape(" P ","PEP"," P ");
@@ -59,9 +60,10 @@ public class HorseEggs extends JavaPlugin implements Listener{
 
 		getServer().getPluginManager().registerEvents(this, this);
 
-		new PlayerInteractListener(this);
+		new PlayerInteractListener(this, logger);
 
 		//new ItemDespawnListener(this);.
+		logger.debug("onEnable:End");
 	}
 
 	@Override
@@ -69,8 +71,13 @@ public class HorseEggs extends JavaPlugin implements Listener{
 
 	@EventHandler
 	public void onBlockDispense(BlockDispenseEvent event){
-		if(event.isCancelled() || event.getBlock().getType() == Material.DROPPER) return;
+		logger.debug("onBlockDispense:Start");
+		if(event.isCancelled() || event.getBlock().getType() == Material.DROPPER) {
+			logger.trace("event is cancelled or block is dropper.");
+			return;
+		}
 		if(isHorseEgg(event.getItem()) || isEmptyHorseEgg(event.getItem())){
+			logger.debug("is (Empty) HorseEgg");
 			event.setCancelled(true);//仕様変更用にキャンセルだけ.凍結中
 			/*
 			Dispenser dispenserM = (Dispenser) event.getBlock().getState().getData();
@@ -81,10 +88,12 @@ public class HorseEggs extends JavaPlugin implements Listener{
 			dispenserS.getInventory().remove(event.getItem());
 			*/
 		}
+		logger.debug("onBlockDispense:End");
 	}
 
 	//定義があるのは空だけ
 	public ItemStack emptyHorseEgg(int i){
+		logger.debug("emptyHorseEgg:Start");
 		ItemStack egg = new ItemStack(Material.GHAST_SPAWN_EGG, i);
 		ItemMeta meta = egg.getItemMeta();
 		meta.setDisplayName("HorseEgg");
@@ -92,32 +101,49 @@ public class HorseEggs extends JavaPlugin implements Listener{
 		lore.add("Empty");
 		meta.setLore(lore);
 		egg.setItemMeta(meta);
+		logger.debug("emptyHorseEgg:End");
 		return egg;
 	}
 
 	public boolean isEmptyHorseEgg(ItemStack item){//1.13では白い馬卵が無い
+		logger.debug("emptyHorseEgg:Start");
 		if(item.getType() == Material.GHAST_SPAWN_EGG || item.getType() == Material.PIG_SPAWN_EGG && item.getItemMeta().hasLore()){
-			if(item.getItemMeta().getLore().get(0).equals("Empty")) return true;
+			if(item.getItemMeta().getLore().get(0).equals("Empty")) {
+				logger.debug("isEmptyHorseEgg:End, lore[0] is \"Empry\"");
+				return true;
+			}
+			logger.debug("isEmptyHorseEgg:End, lore[0] is not \"Empry\"");
 		}
+		logger.debug("emptyHorseEgg:End");
 		return false;
 	}
 
 	public boolean isHorseEgg(ItemStack item){//1.8まではダメージ値100、1.9ではメタ内にエンティティ記載あり
+		logger.debug("isHorseEgg:Start");
 		if(item.getType() == Material.HORSE_SPAWN_EGG || item.getType() == Material.ZOMBIE_HORSE_SPAWN_EGG || item.getType() == Material.SKELETON_HORSE_SPAWN_EGG || item.getType() == Material.DONKEY_SPAWN_EGG ||item.getType() == Material.MULE_SPAWN_EGG || item.getType() == Material.LLAMA_SPAWN_EGG || item.getType() == Material.TRADER_LLAMA_SPAWN_EGG){
-			if(item.getItemMeta().hasLore() && item.getItemMeta().getLore().size() >= 3) return true;
+			if(item.getItemMeta().hasLore() && item.getItemMeta().getLore().size() >= 3) {
+				logger.debug("has lore and lore size is 3 or more");
+				return true;
+			}
+			logger.debug("has not lore or lore size is less than 3");
 		}
+		logger.debug("emptyHorseEgg:End");
 		return false;
 	}
 
 	public boolean isClickable(Block block) {//名前変わりすぎ
-
+		logger.debug("isClickable:Start");
+		logger.trace("block state:" + block.getState() + ", block data:" +block.getBlockData()+", material:" + block.getBlockData().getMaterial());
 		if( block.getType().equals(Material.IRON_DOOR) ||
 				block.getType().equals(Material.IRON_TRAPDOOR)){
+			logger.debug("isClickable:End, block is iron series");
 			// 鉄シリーズは問答無用でfalse
 			return false;
 		} else if(block.getState() instanceof Sign){
+			logger.debug("isClickable:End, block is sign");
 			// 看板は編集可・不可の状態が変化するので、動的に取得する
-			return !((Sign)block.getState()).isWaxed();
+			logger.trace("!((Sign) block.getState()).isWaxed():" + !((Sign) block.getState()).isWaxed());
+			return !((Sign) block.getState()).isWaxed();
 		} else if(
 			// それ以外
 			// ベルは触った場所が本体以外だとうまく動作しないが、場所を知る手立てがないため入れてない
@@ -182,8 +208,10 @@ public class HorseEggs extends JavaPlugin implements Listener{
 				block.getBlockData().getMaterial().equals(Material.BLACK_SHULKER_BOX) ||
 				block.getBlockData().getMaterial().equals(Material.ANVIL)
 		) {
+			logger.debug("isClickable:End, others");
 			return true;
 		}
+		logger.debug("isClickable:End, last false");
 		return false;
 	}
 

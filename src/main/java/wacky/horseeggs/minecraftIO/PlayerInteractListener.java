@@ -1,5 +1,6 @@
 package wacky.horseeggs.minecraftIO;
 
+import com.github.teruteru128.logger.Logger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.bukkit.Location;
@@ -26,10 +27,14 @@ import java.util.List;
 public class PlayerInteractListener implements Listener{
 
 	private HorseEggs plugin;
+	private Logger _logger;
 
-	public PlayerInteractListener(HorseEggs plugin){
+	public PlayerInteractListener(HorseEggs plugin, Logger logger){
+		logger.debug("new PlayerInteractListener():Start");
     	this.plugin = plugin;
+		this._logger = logger;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);//a
+		logger.debug("new PlayerInteractListener():End");
 	}
 
 	@EventHandler
@@ -46,7 +51,7 @@ public class PlayerInteractListener implements Listener{
 			if(event.getHand() == EquipmentSlot.OFF_HAND) return;//オフハンド用の判定は拒否、収納→即放出と増殖がある
 			if(!player.hasPermission("horseeggs.release")) return;
 			Location loc = event.getRightClicked().getLocation();
-			new ReleaseHorse(itemInHand, loc);
+			new ReleaseHorse(itemInHand, loc, _logger);
 			int amount = itemInHand.getAmount();
 			if(plugin.config.getBoolean("single-use")){
 				if(amount == 1) inv.setItemInMainHand(null);
@@ -264,7 +269,7 @@ public class PlayerInteractListener implements Listener{
 			}
 			if(canSpawnCenter){
 				loc.add(0.5, 0, 0.5);
-				new ReleaseHorse(item, loc);
+				new ReleaseHorse(item, loc, _logger);
 			}
 			else search:{//どっかにブロック有り。
 				for(int i = 0; i < 3; i++){
@@ -272,7 +277,7 @@ public class PlayerInteractListener implements Listener{
 						Boolean canSpawn = !blocks[i][j] && !blocks[i][j+1] && !blocks[i][j+2] && !blocks[i+1][j] && !blocks[i+1][j+1] && !blocks[i+1][j+2] && !blocks[i+2][j] && !blocks[i+2][j+1] && !blocks[i+2][j+2];
 						if(canSpawn){
 							loc.add(i*0.5, 0, j*0.5);
-							new ReleaseHorse(item, loc);
+							new ReleaseHorse(item, loc, _logger);
 							break search;
 						}
 					}
