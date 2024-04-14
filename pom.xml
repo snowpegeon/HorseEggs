@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>wacky.horseeggs</groupId>
     <artifactId>HorseEggs</artifactId>
-    <version>1.1.9</version>
+    <version>1.1.9.1</version>
     <build>
         <plugins>
             <plugin>
@@ -84,6 +84,11 @@
             <version>1.20.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
             <classifier>remapped-mojang</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.twitter.teruteru128</groupId>
+            <artifactId>logger</artifactId>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
 </project>

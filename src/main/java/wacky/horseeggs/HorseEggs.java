@@ -3,6 +3,7 @@ package wacky.horseeggs;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.twitter.teruteru128.logger.Logger;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.block.Barrel;
@@ -35,6 +36,7 @@ import wacky.horseeggs.minecraftIO.PlayerInteractListener;
 public class HorseEggs extends JavaPlugin implements Listener{
 
 	public FileConfiguration config;
+	private Logger logger;
 
 	@Override
 	public void onEnable() {
@@ -43,6 +45,11 @@ public class HorseEggs extends JavaPlugin implements Listener{
 		config.options().copyDefaults(true);
 		config.options().header("HorseEggs Configuration");
 		this.saveConfig();
+		var logLevel = config.getString("log-level");
+        this.logger = new Logger(this.getLogger(), logLevel != null ? logLevel : "INFO");
+		if (logLevel == null) {
+			logger.warn("log-level is not set!");
+		}
 
 		ShapedRecipe storageSignRecipe = new ShapedRecipe(emptyHorseEgg(1));
 		storageSignRecipe.shape(" P ","PEP"," P ");
@@ -96,7 +103,7 @@ public class HorseEggs extends JavaPlugin implements Listener{
 	}
 
 	public boolean isHorseEgg(ItemStack item){//1.8まではダメージ値100、1.9ではメタ内にエンティティ記載あり
-		if(item.getType() == Material.HORSE_SPAWN_EGG || item.getType() == Material.ZOMBIE_HORSE_SPAWN_EGG || item.getType() == Material.SKELETON_HORSE_SPAWN_EGG || item.getType() == Material.DONKEY_SPAWN_EGG ||item.getType() == Material.MULE_SPAWN_EGG || item.getType() == Material.LLAMA_SPAWN_EGG){
+		if(item.getType() == Material.HORSE_SPAWN_EGG || item.getType() == Material.ZOMBIE_HORSE_SPAWN_EGG || item.getType() == Material.SKELETON_HORSE_SPAWN_EGG || item.getType() == Material.DONKEY_SPAWN_EGG ||item.getType() == Material.MULE_SPAWN_EGG || item.getType() == Material.LLAMA_SPAWN_EGG || item.getType() == Material.TRADER_LLAMA_SPAWN_EGG){
 			if(item.getItemMeta().hasLore() && item.getItemMeta().getLore().size() >= 3) return true;
 		}
 		return false;

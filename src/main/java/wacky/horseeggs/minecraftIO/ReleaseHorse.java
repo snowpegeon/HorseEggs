@@ -90,7 +90,7 @@ public class ReleaseHorse {
 			if(type == EntityType.HORSE){
 				color = Color.valueOf(horseData.getString("Color"));
 				style = Style.valueOf(horseData.getString("Style"));
-			}else if(type == EntityType.LLAMA){
+			}else if(type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA){
 				Lcolor = Llama.Color.valueOf(horseData.getString("Color"));
 				strength = horseData.getInt("Strength");
 			}
@@ -173,7 +173,7 @@ public class ReleaseHorse {
 			((Horse) horse).getInventory().setArmor(armor);
 		}else if(horse.getType() == EntityType.SKELETON_HORSE){//骨馬は常時乗れるように
 			horse.setTamed(true);
-		}else if(horse.getType() == EntityType.LLAMA){//凝ってるなぁorz
+		}else if(horse.getType() == EntityType.LLAMA || horse.getType() == EntityType.TRADER_LLAMA){//凝ってるなぁorz
 			((Llama) horse).setColor(Lcolor);
 			((Llama) horse).setStrength(strength);
 			((Llama) horse).getInventory().setDecor(armor);
