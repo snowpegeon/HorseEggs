@@ -1,5 +1,6 @@
 package wacky.horseeggs;
 
+import com.github.teruteru128.logger.Logger;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,9 +14,11 @@ import wacky.horseeggs.minecraftIO.ReleaseHorse;
 public class ItemDespawnListener implements Listener{
 
 	private HorseEggs plugin;
+	private Logger _logger;
 
-	public ItemDespawnListener(HorseEggs plugin){
+	public ItemDespawnListener(HorseEggs plugin, Logger logger){
     	this.plugin = plugin;
+		this._logger = logger;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
@@ -24,7 +27,7 @@ public class ItemDespawnListener implements Listener{
 		ItemStack item = event.getEntity().getItemStack();
 		if(plugin.isHorseEgg(item)){
 			Location loc = event.getLocation();
-			new ReleaseHorse(item, loc);
+			new ReleaseHorse(item, loc, _logger);
 		}
 	}
 }

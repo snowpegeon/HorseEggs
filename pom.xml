@@ -86,9 +86,9 @@
             <classifier>remapped-mojang</classifier>
         </dependency>
         <dependency>
-            <groupId>com.twitter.teruteru128</groupId>
+            <groupId>com.github.teruteru128</groupId>
             <artifactId>logger</artifactId>
-            <version>1.0.1</version>
+            <version>1.1.1</version>
         </dependency>
     </dependencies>
 </project>
