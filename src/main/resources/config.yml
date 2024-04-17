@@ -1,3 +1,4 @@
 #HorseEggs Configuration
 
+log-level: INFO
 single-use: false

@@ -46,10 +46,8 @@ public class HorseEggs extends JavaPlugin implements Listener{
 		config.options().header("HorseEggs Configuration");
 		this.saveConfig();
 		var logLevel = config.getString("log-level");
-        this.logger = Logger.getInstance(this);
-		if (logLevel == null) {
-			logger.warn("log-level is not set!");
-		}
+		Logger.register(this, logLevel);
+		this.logger = Logger.getInstance(this);
 		logger.debug("onEnable:Start");
 
 		ShapedRecipe storageSignRecipe = new ShapedRecipe(emptyHorseEgg(1));
