@@ -107,10 +107,10 @@ public class HorseEggs extends JavaPlugin implements Listener{
 		logger.debug("emptyHorseEgg:Start");
 		if(item.getType() == Material.GHAST_SPAWN_EGG || item.getType() == Material.PIG_SPAWN_EGG && item.getItemMeta().hasLore()){
 			if(item.getItemMeta().getLore().get(0).equals("Empty")) {
-				logger.debug("isEmptyHorseEgg:End, lore[0] is \"Empry\"");
+				logger.debug("isEmptyHorseEgg:End, lore[0] is \"Empty\"");
 				return true;
 			}
-			logger.debug("isEmptyHorseEgg:End, lore[0] is not \"Empry\"");
+			logger.debug("isEmptyHorseEgg:End, lore[0] is not \"Empty\"");
 		}
 		logger.debug("emptyHorseEgg:End");
 		return false;
