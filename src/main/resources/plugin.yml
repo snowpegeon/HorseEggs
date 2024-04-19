@@ -3,6 +3,7 @@ main: wacky.horseeggs.HorseEggs
 version: ${version}
 author: wackyls6
 api-version: 1.19
+depend: [Logger]
 permissions:
     horseeggs.*:
         description:
