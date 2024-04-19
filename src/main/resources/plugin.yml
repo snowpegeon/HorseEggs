@@ -2,7 +2,7 @@ name: HorseEggs
 main: wacky.horseeggs.HorseEggs
 version: ${version}
 author: wackyls6
-api-version: 1.19
+api-version: 1.20
 depend: [Logger]
 permissions:
     horseeggs.*:
