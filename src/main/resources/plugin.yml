@@ -1,18 +1,27 @@
+api: [spigot-plugin, paper-plugin, bukkit-plugin]
 name: HorseEggs
-main: wacky.horseeggs.HorseEggs
 version: ${version}
-author: wackyls6
 api-version: 1.20
-depend: [Logger]
+description: Horses can be captured and released. Display the captured horse's jumping power and speed information.
+load: STARTUP
+author: wackyls6
+website: https://github.com/wackyls6/HorseEggs
+main: wacky.horseeggs.HorseEggs
+database: false
+depend: [Logger, Rtag]
+#prefix: 
+softdepend: [WorldGuard]
+#loadbefore: 
+#commands: 
 permissions:
     horseeggs.*:
-        description:
-            children:
-                horseeggs.capture: true
-                horseeggs.release: true
-    horseeggs.capture:
-        description: capture a horse into an egg
-        default: true
-    horseeggs.release:
-        description: release the horse to horseeggs
-        default: true
+        description: Gives access to all HorseEggs use.
+        children:
+#            horseeggs.capture: true
+#            horseeggs.release: true
+            horseeggs.capture:
+                description: Capture a horse into an egg.
+                default: true
+            horseeggs.release:
+                description: Release the horse to horseeggs.
+                default: true
