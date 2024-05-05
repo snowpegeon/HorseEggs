@@ -37,7 +37,9 @@ import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import wacky.horseeggs.EventHandler.BlockDispenseEventHandler;
 import wacky.horseeggs.minecraftIO.PlayerInteractListener;
 
 /**
@@ -106,13 +108,17 @@ public class HorseEggs extends JavaPlugin implements Listener {
 
     // リスナーの登録
     // TODO ちゃんと個別にリスナーを登録したほうがいい
-    getServer().getPluginManager().registerEvents(this, this);
+    // TODO 後でHorseEgg系の判定を別のクラスに移植して渡すなりしたい・・・
+    PluginManager manager = getServer().getPluginManager();
+    manager.registerEvents(new BlockDispenseEventHandler(this, this), this);
     this.log.trace(PREF_LOG_TRACE + "getServer().getPluginManager().registerEvents(this, this)");
 
     // リスナーの開始
+    // TODO 後でListner登録をこっちに置きたい
     new PlayerInteractListener(this, log);
     this.log.trace(PREF_LOG_TRACE + "new PlayerInteractListener(this, logger)");
 
+    // TODO 後でListner登録をこっちに置きたい
     // new ItemDespawnListener(this);
     this.log.info("HorseEggs plugin enable done.");
     this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END + "HorseEggs.void:onEnable()");
@@ -127,44 +133,6 @@ public class HorseEggs extends JavaPlugin implements Listener {
     // Nothing to do.
     this.log.info("HorseEggs plugin diable done.");
     this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END + "HorseEggs.void:onDisable()");
-  }
-
-  /**
-   * HorseEggがブロックから放出されたときのイベント処理.
-   *
-   * @param event ブロック放出イベント {@link org.bukkit.event.block.BlockDispenseEvent}
-   */
-  @EventHandler
-  public void onBlockDispense(BlockDispenseEvent event) {
-    this.log.debug(
-        PREF_LOG_DEBUG + PREF_LOG_START + "HorseEggs.void:onBlockDispense(BlockDispenseEvent)");
-    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]event=" + event.toString());
-
-    this.log.trace(PREF_LOG_TRACE + "event.isCancelled() ? " + event.isCancelled());
-    this.log.trace(PREF_LOG_TRACE + "event.getBlock().getType() == Material.DROPPER ? "
-        + (event.getBlock().getType() == Material.DROPPER));
-    if (event.isCancelled() || event.getBlock().getType() == Material.DROPPER) {
-      this.log.debug(
-          PREF_LOG_DEBUG + PREF_LOG_END + "HorseEggs.void:onBlockDispense(BlockDispenseEvent)");
-      return;
-    }
-
-    this.log.trace(PREF_LOG_TRACE + "isHorseEgg(event.getItem()) ? " + isHorseEgg(event.getItem()));
-    this.log.trace(
-        PREF_LOG_TRACE + "isEmptyHorseEgg(event.getItem()) ? " + isEmptyHorseEgg(event.getItem()));
-    if (isHorseEgg(event.getItem()) || isEmptyHorseEgg(event.getItem())) {
-      this.log.debug(PREF_LOG_DEBUG + "event.getItem() is HorseEgg and Empty");
-      event.setCancelled(true); // 仕様変更用にキャンセルだけ.凍結中
-      /*
-       * Dispenser dispenserM = (Dispenser) event.getBlock().getState().getData(); Location loc =
-       * event.getBlock().getRelative(dispenserM.getFacing()).getLocation(); loc.add(0.5, 0.2, 0.5);
-       * releaseHorse(event.getItem(),loc); org.bukkit.block.Dispenser dispenserS =
-       * (org.bukkit.block.Dispenser)event.getBlock().getState();
-       * dispenserS.getInventory().remove(event.getItem());
-       */
-    }
-    this.log.debug(
-        PREF_LOG_DEBUG + PREF_LOG_END + "HorseEggs.void:onBlockDispense(BlockDispenseEvent)");
   }
 
   /**
