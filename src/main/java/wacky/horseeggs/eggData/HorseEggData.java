@@ -1,5 +1,5 @@
 /**
- * 
+ * @author sho_5414
  */
 package wacky.horseeggs.eggData;
 
@@ -7,34 +7,30 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 
 /**
- * 
+ * Egg data for Horse.
  */
 public class HorseEggData extends EggDataBase {
 
   /**
-   * 
+   * Constructor.
    */
   public HorseEggData() {
     super();
-    // TODO 自動生成されたコンストラクター・スタブ
   }
 
   @Override
   public EntityType getEntityType() {
-    // TODO 自動生成されたメソッド・スタブ
     return EntityType.HORSE;
   }
 
   @Override
   public Material getFilledEggMaterial() {
-    // TODO 自動生成されたメソッド・スタブ
     return Material.HORSE_SPAWN_EGG;
   }
 
   @Override
   public EntityType getFilledEggEntityType() {
-    // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return EntityType.HORSE;
   }
 
 }
