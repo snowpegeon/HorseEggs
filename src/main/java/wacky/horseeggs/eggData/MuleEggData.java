@@ -22,13 +22,13 @@ public class MuleEggData extends EggDataBase {
   @Override
   public EntityType getEntityType() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return EntityType.MULE;
   }
 
   @Override
   public Material getFilledEggMaterial() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return Material.MULE_SPAWN_EGG;
   }
 
   @Override

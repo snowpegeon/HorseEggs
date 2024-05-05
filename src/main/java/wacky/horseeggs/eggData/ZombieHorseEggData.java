@@ -22,13 +22,13 @@ public class ZombieHorseEggData extends EggDataBase {
   @Override
   public EntityType getEntityType() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return EntityType.ZOMBIE_HORSE;
   }
 
   @Override
   public Material getFilledEggMaterial() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return Material.ZOMBIE_HORSE_SPAWN_EGG;
   }
 
   @Override

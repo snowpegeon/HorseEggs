@@ -22,13 +22,13 @@ public class LlamaEggData extends EggDataBase {
   @Override
   public EntityType getEntityType() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return EntityType.LLAMA;
   }
 
   @Override
   public Material getFilledEggMaterial() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return Material.LLAMA_SPAWN_EGG;
   }
 
   @Override

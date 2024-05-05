@@ -22,13 +22,13 @@ public class SkeletonHorseEggData extends EggDataBase {
   @Override
   public EntityType getEntityType() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return EntityType.SKELETON_HORSE;
   }
 
   @Override
   public Material getFilledEggMaterial() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return Material.SKELETON_HORSE_SPAWN_EGG;
   }
 
   @Override

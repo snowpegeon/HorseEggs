@@ -22,13 +22,13 @@ public class TraderLlamaEggData extends EggDataBase {
   @Override
   public EntityType getEntityType() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return EntityType.TRADER_LLAMA;
   }
 
   @Override
   public Material getFilledEggMaterial() {
     // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return Material.TRADER_LLAMA_SPAWN_EGG;
   }
 
   @Override
