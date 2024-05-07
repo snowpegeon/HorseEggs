@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.Data;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.AbstractHorse;
@@ -44,7 +45,7 @@ public abstract class EggDataBase {
 
   private final String dataKeyEntityTag = "EntityTag";
   private final String dataKeyId = "id";
-  private final String dataKeyMinecraft = "minecraft:";
+  private final String dataKeyMinecraft = NamespacedKey.MINECRAFT + ":"; 
 
   private final String dataKeyChest = "Chest";
   private final String dataKeySpeed = "Speed";
@@ -54,6 +55,7 @@ public abstract class EggDataBase {
   private final String dataKeyColor = "Color";
   private final String dataKeyJump = "Jump";
   private final String dataKeyMaxHealth = "MaxHealth";
+  private final String dataKeyName = "Name";
   private final String dataKeyType = "Type";
   private final String dataKeyVariant = "Variant";
   private final String dataKeyArmor = "Armor";
@@ -70,6 +72,7 @@ public abstract class EggDataBase {
   private String color;
   private double jump;
   private double maxHealth;
+  private String name;
   private boolean isSaddled;
   private String variant;
   private String type;
@@ -92,6 +95,7 @@ public abstract class EggDataBase {
     this.color = "";
     this.jump = 0d;
     this.maxHealth = 0d;
+    this.name = null;
     this.isSaddled = false;
     this.variant = "";
     this.type = "";
@@ -118,6 +122,7 @@ public abstract class EggDataBase {
       this.color = getColor(absHorse);
       this.jump = getJump(absHorse);
       this.maxHealth = getMaxHealth(absHorse);
+      this.name = getName(absHorse);
       this.isSaddled = isSaddled(absHorse);
       this.variant = getVariant(absHorse);
       this.type = getType(absHorse);
@@ -134,6 +139,7 @@ public abstract class EggDataBase {
           Map.entry(dataKeyColor, color),
           Map.entry(dataKeyJump, jump),
           Map.entry(dataKeyMaxHealth, maxHealth),
+          Map.entry(dataKeyName, name),
           Map.entry(dataKeySaddle, isSaddled),
           Map.entry(dataKeyVariant, variant),
           Map.entry(dataKeyType, type),
@@ -227,6 +233,10 @@ public abstract class EggDataBase {
     return attribute.getValue();
   }
 
+  private String getName(AbstractHorse absHorse) {
+    return absHorse.getCustomName();
+  }
+  
   private boolean isSaddled(AbstractHorse absHorse) {
     boolean hasSaddle = false;
     if (absHorse instanceof AbstractHorseInventory absHorseInv) {
