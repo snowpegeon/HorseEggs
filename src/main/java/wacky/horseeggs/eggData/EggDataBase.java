@@ -125,40 +125,24 @@ public abstract class EggDataBase {
       this.style = getStyle(absHorse);
       this.strength = getStrength(absHorse);
 
-      this.tagDataMap = new HashMap<>() {
-        {
-          put(dataKeyChest, isCarryingChest);
-          put(dataKeySpeed, speed);
-          put(dataKeyHealth, currentHealth);
-          put(dataKeyUuidLeast, uuidLeast);
-          put(dataKeyColor, color);
-          put(dataKeyJump, jump);
-          put(dataKeyMaxHealth, maxHealth);
-          put(dataKeySaddle, isSaddled);
-          put(dataKeyVariant, variant);
-          put(dataKeyType, type);
-          put(dataKeyUuidMost, uuidMost);
-          put(dataKeyArmor, armor);
-          put(dataKeyStyle, style);
-          put(dataKeyStrength, strength);
-        }
-      };
-      this.horseEggTagDataMap = new HashMap<>() {
-        {
-          put(EGG_NAME, tagDataMap);
-        }
-      };
-
-      this.idNamespaceMap = new HashMap<>() {
-        {
-          put(dataKeyId, dataKeyMinecraft);
-        }
-      };
-      this.entityTagMap = new HashMap<>() {
-        {
-          put(dataKeyEntityTag, idNamespaceMap);
-        }
-      };
+      this.tagDataMap = Map.ofEntries(
+          Map.entry(dataKeyChest, isCarryingChest),
+          Map.entry(dataKeySpeed, speed),
+          Map.entry(dataKeyHealth, currentHealth),
+          Map.entry(dataKeyUuidLeast, uuidLeast),
+          Map.entry(dataKeyColor, color),
+          Map.entry(dataKeyJump, jump),
+          Map.entry(dataKeyMaxHealth, maxHealth),
+          Map.entry(dataKeySaddle, isSaddled),
+          Map.entry(dataKeyVariant, variant),
+          Map.entry(dataKeyType, type),
+          Map.entry(dataKeyUuidMost, uuidMost),
+          Map.entry(dataKeyArmor, armor),
+          Map.entry(dataKeyStyle, style),
+          Map.entry(dataKeyStrength, strength));
+      this.horseEggTagDataMap = Map.of(EGG_NAME, tagDataMap);
+      this.idNamespaceMap = Map.of(dataKeyId, dataKeyMinecraft);
+      this.entityTagMap = Map.of(dataKeyEntityTag, idNamespaceMap);
     });
   }
 
