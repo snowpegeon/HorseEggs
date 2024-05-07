@@ -12,6 +12,7 @@ import java.util.Optional;
 import lombok.Data;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.ChestedHorse;
@@ -125,40 +126,24 @@ public abstract class EggDataBase {
       this.style = getStyle(absHorse);
       this.strength = getStrength(absHorse);
 
-      this.tagDataMap = new HashMap<>() {
-        {
-          put(dataKeyChest, isCarryingChest);
-          put(dataKeySpeed, speed);
-          put(dataKeyHealth, currentHealth);
-          put(dataKeyUuidLeast, uuidLeast);
-          put(dataKeyColor, color);
-          put(dataKeyJump, jump);
-          put(dataKeyMaxHealth, maxHealth);
-          put(dataKeySaddle, isSaddled);
-          put(dataKeyVariant, variant);
-          put(dataKeyType, type);
-          put(dataKeyUuidMost, uuidMost);
-          put(dataKeyArmor, armor);
-          put(dataKeyStyle, style);
-          put(dataKeyStrength, strength);
-        }
-      };
-      this.horseEggTagDataMap = new HashMap<>() {
-        {
-          put(EGG_NAME, tagDataMap);
-        }
-      };
-
-      this.idNamespaceMap = new HashMap<>() {
-        {
-          put(dataKeyId, dataKeyMinecraft);
-        }
-      };
-      this.entityTagMap = new HashMap<>() {
-        {
-          put(dataKeyEntityTag, idNamespaceMap);
-        }
-      };
+      this.tagDataMap = Map.ofEntries(
+          Map.entry(dataKeyChest, isCarryingChest),
+          Map.entry(dataKeySpeed, speed),
+          Map.entry(dataKeyHealth, currentHealth),
+          Map.entry(dataKeyUuidLeast, uuidLeast),
+          Map.entry(dataKeyColor, color),
+          Map.entry(dataKeyJump, jump),
+          Map.entry(dataKeyMaxHealth, maxHealth),
+          Map.entry(dataKeySaddle, isSaddled),
+          Map.entry(dataKeyVariant, variant),
+          Map.entry(dataKeyType, type),
+          Map.entry(dataKeyUuidMost, uuidMost),
+          Map.entry(dataKeyArmor, armor),
+          Map.entry(dataKeyStyle, style),
+          Map.entry(dataKeyStrength, strength));
+      this.horseEggTagDataMap = Map.of(EGG_NAME, tagDataMap);
+      this.idNamespaceMap = Map.of(dataKeyId, dataKeyMinecraft);
+      this.entityTagMap = Map.of(dataKeyEntityTag, idNamespaceMap);
     });
   }
 
@@ -201,7 +186,11 @@ public abstract class EggDataBase {
   }
 
   private double getSpeed(AbstractHorse absHorse) {
-    return absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+    AttributeInstance attribute;
+    if ((attribute = absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)) == null) {
+      return 0d;
+    }
+    return attribute.getBaseValue();
   }
 
   private double getCurrentHealth(AbstractHorse absHorse) {
@@ -231,7 +220,11 @@ public abstract class EggDataBase {
   }
 
   private double getMaxHealth(AbstractHorse absHorse) {
-    return absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    AttributeInstance attribute;
+    if ((attribute = absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH)) == null) {
+      return 0d;
+    }
+    return attribute.getValue();
   }
 
   private boolean isSaddled(AbstractHorse absHorse) {
