@@ -12,6 +12,7 @@ import java.util.Optional;
 import lombok.Data;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.ChestedHorse;
@@ -185,7 +186,11 @@ public abstract class EggDataBase {
   }
 
   private double getSpeed(AbstractHorse absHorse) {
-    return absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+    AttributeInstance attribute;
+    if ((attribute = absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)) == null) {
+      return 0d;
+    }
+    return attribute.getBaseValue();
   }
 
   private double getCurrentHealth(AbstractHorse absHorse) {
@@ -215,7 +220,11 @@ public abstract class EggDataBase {
   }
 
   private double getMaxHealth(AbstractHorse absHorse) {
-    return absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+    AttributeInstance attribute;
+    if ((attribute = absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH)) == null) {
+      return 0d;
+    }
+    return attribute.getValue();
   }
 
   private boolean isSaddled(AbstractHorse absHorse) {
