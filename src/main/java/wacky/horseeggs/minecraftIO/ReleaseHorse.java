@@ -83,8 +83,8 @@ public class ReleaseHorse {
     int strength = 0;
 
     net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(item);
-    // CompoundTag horseData = stack.getTag().getCompound("HorseEgg");
-    CompoundTag horseData = new CompoundTag();
+    CompoundTag horseData = stack.getTag().getCompound("HorseEgg");
+//    CompoundTag horseData = new CompoundTag();
 
     if (!horseData.isEmpty()) { // NBTから読むだけ簡単
       log.debug("horseData is not Empty");
