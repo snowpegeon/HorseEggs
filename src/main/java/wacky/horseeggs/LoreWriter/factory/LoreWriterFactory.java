@@ -1,6 +1,7 @@
 /**
- * 
+ * Factory for LoreWriter.
  */
+
 package wacky.horseeggs.LoreWriter.factory;
 
 import org.bukkit.entity.EntityType;
@@ -17,6 +18,11 @@ import wacky.horseeggs.LoreWriter.ZombieHorseLoreWriter;
  * Factory class of LoreWriter.
  */
 public class LoreWriterFactory {
+  /**
+   * Factory method for LoreWriter.
+   *
+   * @param entityType {@link EntityType}
+   */
   public LoreWriter newLoreWriter(EntityType entityType) {
     switch (entityType) {
       case LLAMA:

@@ -315,6 +315,7 @@ public class PlayerInteractListener implements Listener {
         // 保存タグ情報の構築
         CompoundTag id = new CompoundTag();
         this.log.trace(PREF_LOG_TRACE + "CompoundTag id <- new CompoundTag()");
+        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg);
         id.putString("id", "minecraft:" + type.toString().toLowerCase());
         this.log.trace(PREF_LOG_TRACE + "Put to id:id=" + id.toString());
 
@@ -535,10 +536,10 @@ public class PlayerInteractListener implements Listener {
         tag.put("HorseEgg", horseData);
         this.log.trace(PREF_LOG_TRACE + "Put to tag:tag=" + tag.toString());
 
-        // stack.setTag(tag);
+        stack.setTag(tag);
         this.log.trace(PREF_LOG_TRACE + "stack.setTag(tag)");
 
-        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg);
+//        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg);
         this.log.trace(PREF_LOG_TRACE
             + "net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg)");
         horseegg = CraftItemStack.asBukkitCopy(stack);

@@ -1,6 +1,8 @@
 /**
+
  * 
  */
+
 package wacky.horseeggs.LoreWriter;
 
 import java.util.List;
@@ -14,13 +16,12 @@ public abstract class LoreWriter {
   public abstract List<String> generateLore(Entity entity);
 
   protected String getHealthMeter(double currentHealth, double maxHealth) {
-    double rate = currentHealth * 20 / maxHealth;
-
-    int i = 0;
     StringBuilder healthMeterSb = new StringBuilder();
     healthMeterSb.append("Health:[");
     healthMeterSb.append(ChatColor.GREEN);
     healthMeterSb.append("");
+    int i = 0;
+    double rate = currentHealth * 20 / maxHealth;
     for (; i < rate; i++) {
       healthMeterSb.append(":");
     }
