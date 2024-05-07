@@ -4,7 +4,9 @@
 package wacky.horseeggs.eggData;
 
 import org.bukkit.Material;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -12,29 +14,42 @@ import org.bukkit.entity.EntityType;
 public class SkeletonHorseEggData extends EggDataBase {
 
   /**
-   * 
+   * コンストラクタ
    */
   public SkeletonHorseEggData() {
     super();
     // TODO 自動生成されたコンストラクター・スタブ
   }
 
+  /**
+   * コンストラクタ（AbstractHorse）
+   * @param absHorse スポーン中の馬情報.
+   */
+  public SkeletonHorseEggData(AbstractHorse absHorse){
+    super(absHorse);
+  }
+
+  /**
+   * コンストラクタ（ItemStack）
+   * @param item HorseEggsのアイテム
+   */
+  public SkeletonHorseEggData(ItemStack item){
+    super(item);
+  }
+
   @Override
   public EntityType getEntityType() {
-    // TODO 自動生成されたメソッド・スタブ
     return EntityType.SKELETON_HORSE;
   }
 
   @Override
   public Material getFilledEggMaterial() {
-    // TODO 自動生成されたメソッド・スタブ
     return Material.SKELETON_HORSE_SPAWN_EGG;
   }
 
   @Override
   public EntityType getFilledEggEntityType() {
-    // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return EntityType.SKELETON_HORSE;
   }
 
 }

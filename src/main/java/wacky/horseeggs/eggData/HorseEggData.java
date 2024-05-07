@@ -4,7 +4,9 @@
 package wacky.horseeggs.eggData;
 
 import org.bukkit.Material;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Egg data for Horse.
@@ -12,10 +14,26 @@ import org.bukkit.entity.EntityType;
 public class HorseEggData extends EggDataBase {
 
   /**
-   * Constructor.
+   * コンストラクタ.
    */
   public HorseEggData() {
     super();
+  }
+
+  /**
+   * コンストラクタ（AbstractHorse）
+   * @param absHorse スポーン中の馬情報.
+   */
+  public HorseEggData(AbstractHorse absHorse){
+    super(absHorse);
+  }
+
+  /**
+   * コンストラクタ（ItemStack）
+   * @param item HorseEggsのアイテム
+   */
+  public HorseEggData(ItemStack item){
+    super(item);
   }
 
   @Override

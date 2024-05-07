@@ -4,37 +4,51 @@
 package wacky.horseeggs.eggData;
 
 import org.bukkit.Material;
+import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * 
  */
-public class TraderLlamaEggData extends EggDataBase {
+public class TraderLlamaEggData extends LlamaEggData {
 
   /**
-   * 
+   * コンストラクタ
    */
   public TraderLlamaEggData() {
     super();
     // TODO 自動生成されたコンストラクター・スタブ
   }
 
+  /**
+   * コンストラクタ（AbstractHorse）
+   * @param absHorse スポーン中の馬情報.
+   */
+  public TraderLlamaEggData(AbstractHorse absHorse){
+    super(absHorse);
+  }
+
+  /**
+   * コンストラクタ（ItemStack）
+   */
+  public TraderLlamaEggData(ItemStack item){
+    super(item);
+  }
+
   @Override
   public EntityType getEntityType() {
-    // TODO 自動生成されたメソッド・スタブ
     return EntityType.TRADER_LLAMA;
   }
 
   @Override
   public Material getFilledEggMaterial() {
-    // TODO 自動生成されたメソッド・スタブ
     return Material.TRADER_LLAMA_SPAWN_EGG;
   }
 
   @Override
   public EntityType getFilledEggEntityType() {
-    // TODO 自動生成されたメソッド・スタブ
-    return null;
+    return EntityType.TRADER_LLAMA;
   }
 
 }
