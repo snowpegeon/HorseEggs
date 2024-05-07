@@ -2,7 +2,6 @@ package wacky.horseeggs;
 
 import com.github.teruteru128.logger.Logger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -68,7 +67,7 @@ public class HorseEggs extends JavaPlugin implements Listener {
     this.config = this.getConfig();
     this.config.options().copyDefaults(true);
     // this.config.options().header("HorseEggs Configuration");
-    this.config.options().setHeader(Arrays.asList("HorseEggs Configuration"));
+    this.config.options().setHeader(List.of("HorseEggs Configuration"));
     this.saveConfig();
 
     // ロガーの設定
