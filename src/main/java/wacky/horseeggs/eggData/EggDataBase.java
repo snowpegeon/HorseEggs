@@ -284,10 +284,10 @@ public abstract class EggDataBase {
 
   private int getStrength(AbstractHorse absHorse) {
     int strength = 0;
-    if (absHorse instanceof Llama llama) {
-      strength = llama.getStrength();
-    } else if (absHorse instanceof TraderLlama traderLlama) {
+    if (absHorse instanceof TraderLlama traderLlama) {
       strength = traderLlama.getStrength();
+    } else if (absHorse instanceof Llama llama) {
+      strength = llama.getStrength();
     }
     return strength;
   }
