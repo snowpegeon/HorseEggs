@@ -4,7 +4,6 @@
 
 package wacky.horseeggs.eggData;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -80,11 +79,13 @@ public abstract class EggDataBase {
   private String armor;
   private String style;
   private int strength;
-  private Map<String, Object> tagDataMap;
-  private Map<String, Object> horseEggTagDataMap;
+  private Map<?, ?> tagDataMap;
+  private Map<?, ?> horseEggTagDataMap;
 
-  private Map<String, String> idNamespaceMap;
-  private Map<String, Object> entityTagMap;
+  private Map<?, ?> idNamespaceMap;
+  private Map<?, ?> entityTagMap;
+
+  private Map<?, ?> displayMap;
 
   /** Default constructor. */
   public EggDataBase() {
@@ -115,6 +116,7 @@ public abstract class EggDataBase {
 
     Optional<AbstractHorse> opt = Optional.ofNullable(absHorse);
     opt.ifPresent(ah -> {
+      // フィールドへ値をセット
       this.isCarryingChest = isCarryingChest(absHorse);
       this.speed = getSpeed(absHorse);
       this.currentHealth = getCurrentHealth(absHorse);
@@ -131,6 +133,7 @@ public abstract class EggDataBase {
       this.style = getStyle(absHorse);
       this.strength = getStrength(absHorse);
 
+      // HorseEgg タグデータ構築
       this.tagDataMap = Map.ofEntries(
           Map.entry(dataKeyChest, isCarryingChest),
           Map.entry(dataKeySpeed, speed),
@@ -148,8 +151,15 @@ public abstract class EggDataBase {
           Map.entry(dataKeyStyle, style),
           Map.entry(dataKeyStrength, strength));
       this.horseEggTagDataMap = Map.of(EGG_NAME, tagDataMap);
+
+      // EntityTag タグデータ構築
       this.idNamespaceMap = Map.of(dataKeyId, dataKeyMinecraft);
       this.entityTagMap = Map.of(dataKeyEntityTag, idNamespaceMap);
+
+      // display タグデータ構築
+      this.displayMap = Map.ofEntries(
+          Map.entry(dataKeyLore, loreList),
+          Map.entry(dataKeyName, name));
     });
   }
 
@@ -212,6 +222,7 @@ public abstract class EggDataBase {
   }
 
   private String getColor(AbstractHorse absHorse) {
+    // NOTE: 実装をtoStringからnameに変更してる
     String color = "";
     if (absHorse instanceof Horse horse) {
       color = horse.getColor().name();
@@ -236,7 +247,7 @@ public abstract class EggDataBase {
   private String getName(AbstractHorse absHorse) {
     return absHorse.getCustomName();
   }
-  
+
   private boolean isSaddled(AbstractHorse absHorse) {
     boolean hasSaddle = false;
     if (absHorse instanceof AbstractHorseInventory absHorseInv) {
@@ -246,6 +257,7 @@ public abstract class EggDataBase {
   }
 
   private String getVariant(AbstractHorse absHorse) {
+    // NOTE: 実装をtoStringからnameに変更してる
     return absHorse.getVariant().name();
   }
 
