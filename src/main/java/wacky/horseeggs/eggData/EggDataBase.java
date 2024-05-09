@@ -4,11 +4,14 @@
 
 package wacky.horseeggs.eggData;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -28,7 +31,7 @@ import org.bukkit.inventory.LlamaInventory;
 /**
  * Base class for HorseEgg Data.
  */
-@Data
+@Getter
 public abstract class EggDataBase {
   public static final String ENTITYEGG_CONTENT_KEY = "EntityEgg";
   public static final String ENTITYEGG_CONTENT_EMPTY = "Empty";
@@ -62,23 +65,34 @@ public abstract class EggDataBase {
   private final String dataKeySaddle = "Saddle";
   private final String dataKeyStrength = "Strength";
 
+  @Setter
   private List<String> loreList;
 
-  private boolean isCarryingChest;
-  private double speed;
-  private double currentHealth;
-  private long uuidLeast;
+  private Boolean isCarryingChest;
+  /** ブロック上で移動する時の速度. */
+  private Double speed;
+  /** 現在体力. */
+  private Double health;
+  private Long uuidLeast;
+  /** エンティティの色（ウマ、ラマ、行商人のラマ）. */
   private String color;
-  private double jump;
-  private double maxHealth;
+  /** 跳躍力. */
+  private Double jump;
+  /** 最大体力. */
+  private Double maxHealth;
+  /** 名札で付けた名前. */
   private String name;
-  private boolean isSaddled;
+  private Boolean isSaddled;
+  /** Variant. */
   private String variant;
+  /** エンティティタイプ. */
   private String type;
-  private long uuidMost;
+  private Long uuidMost;
   private String armor;
+  /** 模様（ウマ）. */
   private String style;
-  private int strength;
+  /** ？. */
+  private Integer strength;
   private Map<?, ?> tagDataMap;
   private Map<?, ?> horseEggTagDataMap;
 
@@ -86,12 +100,24 @@ public abstract class EggDataBase {
   private Map<?, ?> entityTagMap;
 
   private Map<?, ?> displayMap;
+  
+  private List<?> horseEggTagDataList;
 
-  /** Default constructor. */
+  /**
+   * Default constructor.
+   *
+   * @Deprecated
+   *             <p>
+   *             このコンストラクタは通常使用しないでください。<br>
+   *             使用目的別で、各コンストラクタを呼び出してください。<br>
+   *             キャプチャー：{@link EggDataBase#EggDataBase(AbstractHorse)}<br>
+   *             リリース：{@link EggDataBase#EggDataBase(ItemStack)}
+   *             </p>
+   */
   public EggDataBase() {
     this.isCarryingChest = false;
     this.speed = 0d;
-    this.currentHealth = 0d;
+    this.health = 0d;
     this.uuidLeast = 0L;
     this.color = "";
     this.jump = 0d;
@@ -119,7 +145,7 @@ public abstract class EggDataBase {
       // フィールドへ値をセット
       this.isCarryingChest = isCarryingChest(absHorse);
       this.speed = getSpeed(absHorse);
-      this.currentHealth = getCurrentHealth(absHorse);
+      this.health = getCurrentHealth(absHorse);
       this.uuidLeast = getUuidLeast(absHorse);
       this.color = getColor(absHorse);
       this.jump = getJump(absHorse);
@@ -134,22 +160,23 @@ public abstract class EggDataBase {
       this.strength = getStrength(absHorse);
 
       // HorseEgg タグデータ構築
-      this.tagDataMap = Map.ofEntries(
-          Map.entry(dataKeyChest, isCarryingChest),
-          Map.entry(dataKeySpeed, speed),
-          Map.entry(dataKeyHealth, currentHealth),
-          Map.entry(dataKeyUuidLeast, uuidLeast),
-          Map.entry(dataKeyColor, color),
-          Map.entry(dataKeyJump, jump),
-          Map.entry(dataKeyMaxHealth, maxHealth),
-          Map.entry(dataKeyName, name),
-          Map.entry(dataKeySaddle, isSaddled),
-          Map.entry(dataKeyVariant, variant),
-          Map.entry(dataKeyType, type),
-          Map.entry(dataKeyUuidMost, uuidMost),
-          Map.entry(dataKeyArmor, armor),
-          Map.entry(dataKeyStyle, style),
-          Map.entry(dataKeyStrength, strength));
+//      this.tagDataMap = Map.ofEntries(
+//          Map.entry(dataKeyChest, isCarryingChest),
+//          Map.entry(dataKeySpeed, speed),
+//          Map.entry(dataKeyHealth, health),
+//          Map.entry(dataKeyUuidLeast, uuidLeast),
+//          Map.entry(dataKeyColor, color),
+//          Map.entry(dataKeyJump, jump),
+//          Map.entry(dataKeyMaxHealth, maxHealth),
+//          Map.entry(dataKeyName, name),
+//          Map.entry(dataKeySaddle, isSaddled),
+//          Map.entry(dataKeyVariant, variant),
+//          Map.entry(dataKeyType, type),
+//          Map.entry(dataKeyUuidMost, uuidMost),
+//          Map.entry(dataKeyArmor, armor),
+//          Map.entry(dataKeyStyle, style),
+//          Map.entry(dataKeyStrength, strength));
+      this.tagDataMap = this.buildTagDataMap();
       this.horseEggTagDataMap = Map.of(EGG_NAME, tagDataMap);
 
       // EntityTag タグデータ構築
@@ -160,6 +187,10 @@ public abstract class EggDataBase {
       this.displayMap = Map.ofEntries(
           Map.entry(dataKeyLore, loreList),
           Map.entry(dataKeyName, name));
+
+      // HorseEggs タグデータ構築
+      this.horseEggTagDataList =
+          List.of(this.displayMap, this.entityTagMap, this.horseEggTagDataMap);
     });
   }
 
@@ -193,37 +224,33 @@ public abstract class EggDataBase {
     return Material.EGG;
   }
 
-  private boolean isCarryingChest(AbstractHorse absHorse) {
-    boolean hasChest = false;
+  private Boolean isCarryingChest(AbstractHorse absHorse) {
+    Boolean isCarryingChest = null;
     if (absHorse instanceof ChestedHorse chestedHorse) {
-      hasChest = chestedHorse.isCarryingChest();
+      isCarryingChest = chestedHorse.isCarryingChest();
     }
-    return hasChest;
+    return isCarryingChest;
   }
 
-  private double getSpeed(AbstractHorse absHorse) {
-    AttributeInstance attribute;
-    if ((attribute = absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)) == null) {
-      return 0d;
-    }
-    return attribute.getBaseValue();
+  private Double getSpeed(AbstractHorse absHorse) {
+    return absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
   }
 
-  private double getCurrentHealth(AbstractHorse absHorse) {
+  private Double getCurrentHealth(AbstractHorse absHorse) {
     return absHorse.getHealth();
   }
 
-  private long getUuidLeast(AbstractHorse absHorse) {
-    long uuidLeast = 0L;
-    if (absHorse.getOwner() instanceof AnimalTamer animalTamer) {
-      uuidLeast = animalTamer.getUniqueId().getLeastSignificantBits();
+  private Long getUuidLeast(AbstractHorse absHorse) {
+    Long uuidLeast = null;
+    if (absHorse.isTamed()) {
+      uuidLeast = absHorse.getOwner().getUniqueId().getLeastSignificantBits();
     }
     return uuidLeast;
   }
 
   private String getColor(AbstractHorse absHorse) {
     // NOTE: 実装をtoStringからnameに変更してる
-    String color = "";
+    String color = null;
     if (absHorse instanceof Horse horse) {
       color = horse.getColor().name();
     } else if (absHorse instanceof Llama llama) {
@@ -232,20 +259,18 @@ public abstract class EggDataBase {
     return color;
   }
 
-  private double getJump(AbstractHorse absHorse) {
+  private Double getJump(AbstractHorse absHorse) {
     return absHorse.getJumpStrength();
   }
 
-  private double getMaxHealth(AbstractHorse absHorse) {
-    AttributeInstance attribute;
-    if ((attribute = absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH)) == null) {
-      return 0d;
-    }
-    return attribute.getValue();
+  private Double getMaxHealth(AbstractHorse absHorse) {
+    return absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
   }
 
   private String getName(AbstractHorse absHorse) {
-    return absHorse.getCustomName();
+    String name = null;
+    name = absHorse.getCustomName();
+    return name;
   }
 
   private boolean isSaddled(AbstractHorse absHorse) {
@@ -258,23 +283,31 @@ public abstract class EggDataBase {
 
   private String getVariant(AbstractHorse absHorse) {
     // NOTE: 実装をtoStringからnameに変更してる
-    return absHorse.getVariant().name();
+    String variant = null;
+    if (Objects.nonNull(absHorse.getVariant())) {
+      variant = absHorse.getVariant().name();
+    }
+    return variant;
   }
 
   private String getType(AbstractHorse absHorse) {
-    return absHorse.getType().toString();
+    String type = null;
+    if (Objects.nonNull(absHorse.getType())) {
+      type = absHorse.getType().toString();
+    }
+    return type;
   }
 
   private long getUuidMost(AbstractHorse absHorse) {
-    long uuidMost = 0L;
-    if (absHorse instanceof AnimalTamer animalTamer) {
-      uuidMost = animalTamer.getUniqueId().getMostSignificantBits();
+    Long uuidMost = null;
+    if (absHorse.isTamed()) {
+      uuidMost = absHorse.getOwner().getUniqueId().getMostSignificantBits();
     }
     return uuidMost;
   }
 
   private String getArmor(AbstractHorse absHorse) {
-    String armor = "";
+    String armor = null;
     if (absHorse instanceof AbstractHorseInventory absHorseInv) {
       ItemStack item = null;
       if (absHorseInv instanceof HorseInventory horseInv) {
@@ -282,28 +315,81 @@ public abstract class EggDataBase {
       } else if (absHorse instanceof LlamaInventory llamaInv) {
         item = llamaInv.getDecor();
       }
-      if (Objects.nonNull(item)) {
-        armor = item.getType().name();
-      }
+      item.getType().name();
     }
     return armor;
   }
 
   private String getStyle(AbstractHorse absHorse) {
-    String style = "";
+    String style = null;
     if (absHorse instanceof Horse horse) {
       style = horse.getStyle().name();
     }
     return style;
   }
 
-  private int getStrength(AbstractHorse absHorse) {
-    int strength = 0;
+  private Integer getStrength(AbstractHorse absHorse) {
+    Integer strength = null;
     if (absHorse instanceof TraderLlama traderLlama) {
       strength = traderLlama.getStrength();
     } else if (absHorse instanceof Llama llama) {
       strength = llama.getStrength();
     }
     return strength;
+  }
+
+  private Map<?, ?> buildTagDataMap() {
+    Map<String, Object> horseEggDataMap = new HashMap<>() {
+      {
+        if (Objects.nonNull(name)) {
+          put(dataKeyName, name);
+        }
+        if (Objects.nonNull(health)) {
+          put(dataKeyHealth, health);
+        }
+        if (Objects.nonNull(maxHealth)) {
+          put(dataKeyMaxHealth, maxHealth);
+        }
+        if (Objects.nonNull(speed)) {
+          put(dataKeySpeed, speed);
+        }
+        if (Objects.nonNull(jump)) {
+          put(dataKeyJump, jump);
+        }
+        if (Objects.nonNull(type)) {
+          put(dataKeyType, type);
+        }
+        if (Objects.nonNull(variant)) {
+          put(dataKeyVariant, variant);
+        }
+        if (Objects.nonNull(strength)) {
+          put(dataKeyStrength, strength);
+        }
+        if (Objects.nonNull(color)) {
+          put(dataKeyColor, color);
+        }
+        if (Objects.nonNull(style)) {
+          put(dataKeyStyle, style);
+        }
+        if (Objects.nonNull(uuidMost)) {
+          put(dataKeyUuidMost, uuidMost);
+        }
+        if (Objects.nonNull(uuidLeast)) {
+          put(dataKeyUuidLeast, uuidLeast);
+        }
+        if (Objects.nonNull(isSaddled)) {
+          put(dataKeySaddle, isSaddled);
+        }
+        if (Objects.nonNull(armor)) {
+          put(dataKeyArmor, armor);
+        }
+        if (Objects.nonNull(isCarryingChest)) {
+          put(dataKeyChest, isCarryingChest);
+        }
+      }
+    };
+
+
+    return horseEggDataMap;
   }
 }
