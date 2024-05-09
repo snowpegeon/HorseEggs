@@ -1,17 +1,15 @@
 package wacky.horseeggs.minecraftIO;
 
 import com.github.teruteru128.logger.Logger;
+import com.saicone.rtag.RtagEditor;
+import com.saicone.rtag.RtagItem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftAbstractHorse;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.ChestedHorse;
@@ -34,6 +32,8 @@ import org.bukkit.inventory.LlamaInventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import wacky.horseeggs.HorseEggs;
+import wacky.horseeggs.eggData.EggDataBase;
+import wacky.horseeggs.eggData.factory.EggDataFactory;
 
 
 /**
@@ -271,165 +271,175 @@ public class PlayerInteractListener implements Listener {
 
         // 馬系の何であるかを識別
         EntityType type = horse.getType();
+        EggDataBase eggData = new EggDataFactory().newEggData(type);
         this.log.trace(PREF_LOG_TRACE + "type=" + type.toString());
-        ItemStack horseegg = null;
-        switch (type) {
-          // 見た目を馬卵にする方法
-          case HORSE:
-            // 馬卵
-            horseegg = new ItemStack(Material.HORSE_SPAWN_EGG, 1);
-            break;
-          case SKELETON_HORSE:
-            // 骨馬卵
-            horseegg = new ItemStack(Material.SKELETON_HORSE_SPAWN_EGG, 1);
-            break;
-          case ZOMBIE_HORSE:
-            // 腐馬卵
-            horseegg = new ItemStack(Material.ZOMBIE_HORSE_SPAWN_EGG, 1);
-            break;
-          case DONKEY:
-            // ロバ卵
-            horseegg = new ItemStack(Material.DONKEY_SPAWN_EGG, 1);
-            break;
-          case MULE:
-            // 騾馬卵
-            horseegg = new ItemStack(Material.MULE_SPAWN_EGG, 1);
-            break;
-          case LLAMA:
-            // ラマ卵
-            horseegg = new ItemStack(Material.LLAMA_SPAWN_EGG, 1);
-            break;
-          case TRADER_LLAMA:
-            // 商人のラマ
-            horseegg = new ItemStack(Material.TRADER_LLAMA_SPAWN_EGG, 1);
-            break;
-          default:
-            // 判別できない場合は処理を終了
-            this.log.trace(PREF_LOG_TRACE + "horseegg is not Horse.");
-            this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END
-                + "PlayerInteractListener.void:onPlayerInteractEntity(PlayerInteractEntityEvent)");
-            return;
-        }
+        this.log.trace(PREF_LOG_TRACE + "eggData=" + eggData);
+        ItemStack horseegg = new ItemStack(eggData.getEmptyEggMaterial());
+//        ItemStack horseegg = null;
+//        switch (type) {
+//          // 見た目を馬卵にする方法
+//          case HORSE:
+//            // 馬卵
+//            horseegg = new ItemStack(Material.HORSE_SPAWN_EGG, 1);
+//            break;
+//          case SKELETON_HORSE:
+//            // 骨馬卵
+//            horseegg = new ItemStack(Material.SKELETON_HORSE_SPAWN_EGG, 1);
+//            break;
+//          case ZOMBIE_HORSE:
+//            // 腐馬卵
+//            horseegg = new ItemStack(Material.ZOMBIE_HORSE_SPAWN_EGG, 1);
+//            break;
+//          case DONKEY:
+//            // ロバ卵
+//            horseegg = new ItemStack(Material.DONKEY_SPAWN_EGG, 1);
+//            break;
+//          case MULE:
+//            // 騾馬卵
+//            horseegg = new ItemStack(Material.MULE_SPAWN_EGG, 1);
+//            break;
+//          case LLAMA:
+//            // ラマ卵
+//            horseegg = new ItemStack(Material.LLAMA_SPAWN_EGG, 1);
+//            break;
+//          case TRADER_LLAMA:
+//            // 商人のラマ
+//            horseegg = new ItemStack(Material.TRADER_LLAMA_SPAWN_EGG, 1);
+//            break;
+//          default:
+//            // 判別できない場合は処理を終了
+//            this.log.trace(PREF_LOG_TRACE + "horseegg is not Horse.");
+//            this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END
+//                + "PlayerInteractListener.void:onPlayerInteractEntity(PlayerInteractEntityEvent)");
+//            return;
+//        }
         this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg.toString());
 
         // 保存タグ情報の構築
-        CompoundTag id = new CompoundTag();
-        this.log.trace(PREF_LOG_TRACE + "CompoundTag id <- new CompoundTag()");
-        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg);
-        id.putString("id", "minecraft:" + type.toString().toLowerCase());
-        this.log.trace(PREF_LOG_TRACE + "Put to id:id=" + id.toString());
+        ItemStack stack = horseegg.clone();
+        RtagEditor editor = new RtagItem(stack);
 
-        CompoundTag tag = new CompoundTag();
-        this.log.trace(PREF_LOG_TRACE + "CompoundTag tag <- new CompoundTag()");
-        tag.put("EntityTag", id);
-        this.log.trace(PREF_LOG_TRACE + "Put to tag:tag=" + tag.toString());
-        CompoundTag horseData = new CompoundTag();
-        this.log.trace(PREF_LOG_TRACE + "CompoundTag horseData <- new CompoundTag()");
+        editor.set(eggData.getIdNamespaceMap());
+        this.log.trace(PREF_LOG_TRACE + "IdNamespaceMap: " + eggData.getIdNamespaceMap());
+//        CompoundTag id = new CompoundTag();
+//        this.log.trace(PREF_LOG_TRACE + "CompoundTag id <- new CompoundTag()");
+//        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg);
+//        id.putString("id", "minecraft:" + type.toString().toLowerCase());
+//        this.log.trace(PREF_LOG_TRACE + "Put to id:id=" + id.toString());
 
-        // 名前
-        this.log.trace(
-            PREF_LOG_TRACE + "horse.getCustomName() != null ? " + (horse.getCustomName() != null));
-        if (horse.getCustomName() != null) {
-          horseData.putString("Name", horse.getCustomName());
-          this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-        }
+        editor.set(eggData.getEntityTagMap());
+        this.log.trace(PREF_LOG_TRACE + "EntityTagMap: " + eggData.getEntityTagMap());
+//        CompoundTag tag = new CompoundTag();
+//        this.log.trace(PREF_LOG_TRACE + "CompoundTag tag <- new CompoundTag()");
+//        tag.put("EntityTag", id);
+//        this.log.trace(PREF_LOG_TRACE + "Put to tag:tag=" + tag.toString());
 
-        // 体力
-        horseData.putDouble("Health", horse.getHealth());
-        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-
-        horseData.putDouble("MaxHealth",
-            horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-
-        List<String> loreList = new ArrayList<String>();
-        this.log.trace(PREF_LOG_TRACE + "List<String> loreList <- new ArrayList<String>()");
-
-        loreList.add("HP: " + (int) horse.getHealth() + "/"
-            + (int) horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
-        this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
-
-        // 速度、43倍すると実際の速度に
-        CompoundTag tag2 = new CompoundTag();
-        this.log.trace(PREF_LOG_TRACE + "CompoundTag tag2 <- new CompoundTag()");
-        ((CraftAbstractHorse) horse).getHandle().addAdditionalSaveData(tag2);
-        this.log.trace(PREF_LOG_TRACE
-            + "((CraftAbstractHorse) horse).getHandle().addAdditionalSaveData(tag2)");
-        this.log.trace(PREF_LOG_TRACE + "tag2=" + tag2.toString());
-        ListTag attributes = tag2.getList("Attributes", 10);
-        this.log.trace(PREF_LOG_TRACE + "ListTag attributes <- tag2.getList(\"Attributes\", 10)");
-        this.log.trace(PREF_LOG_TRACE + "attributes=" + attributes.toString());
-
-        this.log.trace(PREF_LOG_TRACE + "[LOOP START]for (int i = 0; i < attributes.size(); i++)");
-        for (int i = 0; i < attributes.size(); i++) {
-          CompoundTag attr = (CompoundTag) attributes.get(i);
-          if (attr.getString("Name").equals("minecraft:generic.movement_speed")) {
-            Double speed = attr.getDouble("Base");
-            horseData.putDouble("Speed", speed);
-            if (Double.toString(speed * 43).length() > 6) {
-              loreList.add("Speed: " + Double.toString(speed * 43).substring(0, 6));
-            } else {
-              loreList.add("Speed: " + Double.toString(speed * 43));
-            }
-          }
-        }
-        this.log.trace(PREF_LOG_TRACE + "horseData=" + horseData.toString());
-        this.log.trace(PREF_LOG_TRACE + "list=" + loreList.toString());
-        this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int i = 0; i < attributes.size(); i++)");
-
-        // 跳躍力、NBTにのみ書かれるべき
-        Double jump = horse.getJumpStrength();
-        horseData.putDouble("Jump", jump);
-        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-
-        // ジャンプ高度算出
-        // from Zyin's HUD、ジャンプ高度
-        double jumpHeight = 0;
-        this.log.trace(PREF_LOG_TRACE + "[LOOP START]while (jump > 0)");
-        while (jump > 0) {
-          jumpHeight += jump;
-          jump -= 0.08;
-          jump *= 0.98;
-        }
-        this.log.trace(PREF_LOG_TRACE + "[LOOP END]while (jump > 0)");
-
-        if (Double.toString(jumpHeight).length() > 5) {
-          loreList.add("Height: " + Double.toString(jumpHeight).substring(0, 5));
-        } else {
-          loreList.add("Height: " + Double.toString(jumpHeight));
-        }
-        this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
-
-        horseData.putString("Type", horse.getType().toString());
-        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-        // TODO getVariantが非推奨型のため、取得方式を検討する。
-        horseData.putString("Variant", horse.getVariant().toString());
-        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-
-        this.log.trace(PREF_LOG_TRACE + "horse.getType() == EntityType.LLAMA ? "
-            + (horse.getType() == EntityType.LLAMA));
-        this.log.trace(PREF_LOG_TRACE + "horse.getType() == EntityType.TRADER_LLAMA ? "
-            + (horse.getType() == EntityType.TRADER_LLAMA));
-        if (horse.getType() == EntityType.LLAMA || horse.getType() == EntityType.TRADER_LLAMA) {
-          horseData.putInt("Strength", ((Llama) horse).getStrength());
-          loreList.add("Strength: " + ((Llama) horse).getStrength());
-
-          horseData.putString("Color", ((Llama) horse).getColor().toString());
-          loreList.add(((Llama) horse).getColor().toString());
-
-          this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-          this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
-
-        } else if (horse.getType() == EntityType.HORSE) {
-          // 馬
-          horseData.putString("Color", ((Horse) horse).getColor().toString());
-          horseData.putString("Style", ((Horse) horse).getStyle().toString());
-          loreList.add(
-              ((Horse) horse).getColor().toString() + "/" + ((Horse) horse).getStyle().toString());
-
-          this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-          this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
-        }
+//        CompoundTag horseData = new CompoundTag();
+//        this.log.trace(PREF_LOG_TRACE + "CompoundTag horseData <- new CompoundTag()");
+//        // 名前
+//        this.log.trace(
+//            PREF_LOG_TRACE + "horse.getCustomName() != null ? " + (horse.getCustomName() != null));
+//        if (horse.getCustomName() != null) {
+//          horseData.putString("Name", horse.getCustomName());
+//          this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//        }
+//
+//        // 体力
+//        horseData.putDouble("Health", horse.getHealth());
+//        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//
+//        horseData.putDouble("MaxHealth",
+//            horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+//        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//
+//        List<String> loreList = new ArrayList<String>();
+//        this.log.trace(PREF_LOG_TRACE + "List<String> loreList <- new ArrayList<String>()");
+//
+//        loreList.add("HP: " + (int) horse.getHealth() + "/"
+//            + (int) horse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+//        this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
+//
+//        // 速度、43倍すると実際の速度に
+//        CompoundTag tag2 = new CompoundTag();
+//        this.log.trace(PREF_LOG_TRACE + "CompoundTag tag2 <- new CompoundTag()");
+//        ((CraftAbstractHorse) horse).getHandle().addAdditionalSaveData(tag2);
+//        this.log.trace(PREF_LOG_TRACE
+//            + "((CraftAbstractHorse) horse).getHandle().addAdditionalSaveData(tag2)");
+//        this.log.trace(PREF_LOG_TRACE + "tag2=" + tag2.toString());
+//        ListTag attributes = tag2.getList("Attributes", 10);
+//        this.log.trace(PREF_LOG_TRACE + "ListTag attributes <- tag2.getList(\"Attributes\", 10)");
+//        this.log.trace(PREF_LOG_TRACE + "attributes=" + attributes.toString());
+//
+//        this.log.trace(PREF_LOG_TRACE + "[LOOP START]for (int i = 0; i < attributes.size(); i++)");
+//        for (int i = 0; i < attributes.size(); i++) {
+//          CompoundTag attr = (CompoundTag) attributes.get(i);
+//          if (attr.getString("Name").equals("minecraft:generic.movement_speed")) {
+//            Double speed = attr.getDouble("Base");
+//            horseData.putDouble("Speed", speed);
+//            if (Double.toString(speed * 43).length() > 6) {
+//              loreList.add("Speed: " + Double.toString(speed * 43).substring(0, 6));
+//            } else {
+//              loreList.add("Speed: " + Double.toString(speed * 43));
+//            }
+//          }
+//        }
+//        this.log.trace(PREF_LOG_TRACE + "horseData=" + horseData.toString());
+//        this.log.trace(PREF_LOG_TRACE + "list=" + loreList.toString());
+//        this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int i = 0; i < attributes.size(); i++)");
+//
+//        // 跳躍力、NBTにのみ書かれるべき
+//        Double jump = horse.getJumpStrength();
+//        horseData.putDouble("Jump", jump);
+//        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//
+//        // ジャンプ高度算出
+//        // from Zyin's HUD、ジャンプ高度
+//        double jumpHeight = 0;
+//        this.log.trace(PREF_LOG_TRACE + "[LOOP START]while (jump > 0)");
+//        while (jump > 0) {
+//          jumpHeight += jump;
+//          jump -= 0.08;
+//          jump *= 0.98;
+//        }
+//        this.log.trace(PREF_LOG_TRACE + "[LOOP END]while (jump > 0)");
+//
+//        if (Double.toString(jumpHeight).length() > 5) {
+//          loreList.add("Height: " + Double.toString(jumpHeight).substring(0, 5));
+//        } else {
+//          loreList.add("Height: " + Double.toString(jumpHeight));
+//        }
+//        this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
+//
+//        horseData.putString("Type", horse.getType().toString());
+//        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//        // TODO getVariantが非推奨型のため、取得方式を検討する。
+//        horseData.putString("Variant", horse.getVariant().toString());
+//        this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//
+//        this.log.trace(PREF_LOG_TRACE + "horse.getType() == EntityType.LLAMA ? "
+//            + (horse.getType() == EntityType.LLAMA));
+//        this.log.trace(PREF_LOG_TRACE + "horse.getType() == EntityType.TRADER_LLAMA ? "
+//            + (horse.getType() == EntityType.TRADER_LLAMA));
+//        if (horse.getType() == EntityType.LLAMA || horse.getType() == EntityType.TRADER_LLAMA) {
+//          horseData.putInt("Strength", ((Llama) horse).getStrength());
+//          loreList.add("Strength: " + ((Llama) horse).getStrength());
+//
+//          horseData.putString("Color", ((Llama) horse).getColor().toString());
+//          loreList.add(((Llama) horse).getColor().toString());
+//
+//          this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//          this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
+//
+//        } else if (horse.getType() == EntityType.HORSE) {
+//          // 馬
+//          horseData.putString("Color", ((Horse) horse).getColor().toString());
+//          horseData.putString("Style", ((Horse) horse).getStyle().toString());
+//          loreList.add(
+//              ((Horse) horse).getColor().toString() + "/" + ((Horse) horse).getStyle().toString());
+//
+//          this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//          this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
+//        }
 
         Location loc = horse.getLocation();
         this.log.trace(PREF_LOG_TRACE + "Location loc <- horse.getLocation()");
@@ -437,122 +447,127 @@ public class PlayerInteractListener implements Listener {
         this.log.trace(PREF_LOG_TRACE + "loc.add(0, 0.5, 0)");
         this.log.trace(PREF_LOG_TRACE + "loc=" + loc.toString());
 
-        this.log.trace(PREF_LOG_TRACE + "horse.isTamed() ? " + horse.isTamed());
-        if (horse.isTamed()) {
-          // 飼いならした人、UUIDを内部的には使用する。
-          this.log
-              .trace(PREF_LOG_TRACE + "horse.getOwner() != null ? " + (horse.getOwner() != null));
-          if (horse.getOwner() != null) {
-            AnimalTamer owner = horse.getOwner();
-            horseData.putLong("UUIDMost", owner.getUniqueId().getMostSignificantBits());
-            horseData.putLong("UUIDLeast", owner.getUniqueId().getLeastSignificantBits());
-            loreList.add("Owner: " + owner.getName());
-
-            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-            this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
-          }
-
-          AbstractHorseInventory horseInv = horse.getInventory();
-          // サドル
-          horseData.putBoolean("Saddle", horseInv.getSaddle() != null);
-          this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-
-          String str1 = horseInv.getSaddle() == null ? "" : "[SADDLE]";
-          this.log.trace(PREF_LOG_TRACE + "str1=" + str1);
-
-          String str2 = "";
-
-          this.log
-              .trace(PREF_LOG_TRACE + "type == EntityType.HORSE ? " + (type == EntityType.HORSE));
-          this.log.trace(PREF_LOG_TRACE + "((HorseInventory) hInv).getArmor() != null ? "
-              + (((HorseInventory) horseInv).getArmor() != null));
-          this.log
-              .trace(PREF_LOG_TRACE + "type == EntityType.LLAMA ? " + (type == EntityType.LLAMA));
-          this.log.trace(PREF_LOG_TRACE + "type == EntityType.TRADER_LLAMA ? "
-              + (type == EntityType.TRADER_LLAMA));
-          if (horseInv instanceof LlamaInventory) {
-            this.log.trace(PREF_LOG_TRACE + "((LlamaInventory) hInv).getDecor() != null ? "
-                + (((LlamaInventory) horseInv).getDecor() != null));
-          }
-          if (type == EntityType.HORSE && ((HorseInventory) horseInv).getArmor() != null) {
-            horseData.putString("Armor",
-                ((HorseInventory) horseInv).getArmor().getType().toString());
-            str2 = "[" + ((HorseInventory) horseInv).getArmor().getType().toString() + "]";
-            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-            this.log.trace(PREF_LOG_TRACE + "str2=" + str2);
-
-          } else if ((type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA)
-              && ((LlamaInventory) horseInv).getDecor() != null) {
-            horseData.putString("Armor",
-                ((LlamaInventory) horseInv).getDecor().getType().toString());
-            str2 = "[" + ((LlamaInventory) horseInv).getDecor().getType().toString() + "]";
-            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-            this.log.trace(PREF_LOG_TRACE + "str2=" + str2);
-          }
-
-          this.log.trace(PREF_LOG_TRACE + "entity instanceof ChestedHorse ? "
-              + (entity instanceof ChestedHorse));
-          if (entity instanceof ChestedHorse) {
-            horseData.putBoolean("Chest", ((ChestedHorse) horse).isCarryingChest());
-            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-            this.log.trace(PREF_LOG_TRACE + "((ChestedHorse) horse).isCarryingChest() ? "
-                + (((ChestedHorse) horse).isCarryingChest()));
-            if (((ChestedHorse) horse).isCarryingChest()) {
-              // ラマがカーペットとチェスト両持ちできる
-              str2 = str2 + "[CHEST]";
-              this.log.trace(PREF_LOG_TRACE + "str2=" + str2);
-            }
-          } else {
-            horseData.putBoolean("Chest", false);
-            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
-
-          }
-
-          this.log.trace(
-              PREF_LOG_TRACE + "(str1 + str2).length() > 0 ? " + ((str1 + str2).length() > 0));
-          if ((str1 + str2).length() > 0) {
-            loreList.add(str1 + str2);
-            this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
-          }
-
-          this.log.trace(PREF_LOG_TRACE + "[LOOP START]for (int i = 2; i < hInv.getSize(); i++)");
-          for (int i = 2; i < horseInv.getSize(); i++) {
-            // チェストと鎧?を除く
-            this.log.trace(PREF_LOG_TRACE + "hInv.getItem(" + i + ") == null ? "
-                + (horseInv.getItem(i) == null));
-            if (horseInv.getItem(i) == null) {
-              continue;
-            }
-            this.log.trace(
-                PREF_LOG_TRACE + "hInv.getItem(" + i + ")=" + horseInv.getItem(i).toString());
-            horse.getWorld().dropItem(loc, horseInv.getItem(i));
-            this.log
-                .trace(PREF_LOG_TRACE + "horse.getWorld().dropItem(loc, hInv.getItem(" + i + "))");
-          }
-          this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int i = 2; i < hInv.getSize(); i++)");
-        }
+//        this.log.trace(PREF_LOG_TRACE + "horse.isTamed() ? " + horse.isTamed());
+//        if (horse.isTamed()) {
+//          // 飼いならした人、UUIDを内部的には使用する。
+//          this.log
+//              .trace(PREF_LOG_TRACE + "horse.getOwner() != null ? " + (horse.getOwner() != null));
+//          if (horse.getOwner() != null) {
+//            AnimalTamer owner = horse.getOwner();
+//            horseData.putLong("UUIDMost", owner.getUniqueId().getMostSignificantBits());
+//            horseData.putLong("UUIDLeast", owner.getUniqueId().getLeastSignificantBits());
+//            loreList.add("Owner: " + owner.getName());
+//
+//            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//            this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
+//          }
+//
+//          AbstractHorseInventory horseInv = horse.getInventory();
+//          // サドル
+//          horseData.putBoolean("Saddle", horseInv.getSaddle() != null);
+//          this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//
+//          String str1 = horseInv.getSaddle() == null ? "" : "[SADDLE]";
+//          this.log.trace(PREF_LOG_TRACE + "str1=" + str1);
+//
+//          String str2 = "";
+//
+//          this.log
+//              .trace(PREF_LOG_TRACE + "type == EntityType.HORSE ? " + (type == EntityType.HORSE));
+//          this.log.trace(PREF_LOG_TRACE + "((HorseInventory) hInv).getArmor() != null ? "
+//              + (((HorseInventory) horseInv).getArmor() != null));
+//          this.log
+//              .trace(PREF_LOG_TRACE + "type == EntityType.LLAMA ? " + (type == EntityType.LLAMA));
+//          this.log.trace(PREF_LOG_TRACE + "type == EntityType.TRADER_LLAMA ? "
+//              + (type == EntityType.TRADER_LLAMA));
+//          if (horseInv instanceof LlamaInventory) {
+//            this.log.trace(PREF_LOG_TRACE + "((LlamaInventory) hInv).getDecor() != null ? "
+//                + (((LlamaInventory) horseInv).getDecor() != null));
+//          }
+//          if (type == EntityType.HORSE && ((HorseInventory) horseInv).getArmor() != null) {
+//            horseData.putString("Armor",
+//                ((HorseInventory) horseInv).getArmor().getType().toString());
+//            str2 = "[" + ((HorseInventory) horseInv).getArmor().getType().toString() + "]";
+//            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//            this.log.trace(PREF_LOG_TRACE + "str2=" + str2);
+//
+//          } else if ((type == EntityType.LLAMA || type == EntityType.TRADER_LLAMA)
+//              && ((LlamaInventory) horseInv).getDecor() != null) {
+//            horseData.putString("Armor",
+//                ((LlamaInventory) horseInv).getDecor().getType().toString());
+//            str2 = "[" + ((LlamaInventory) horseInv).getDecor().getType().toString() + "]";
+//            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//            this.log.trace(PREF_LOG_TRACE + "str2=" + str2);
+//          }
+//
+//          this.log.trace(PREF_LOG_TRACE + "entity instanceof ChestedHorse ? "
+//              + (entity instanceof ChestedHorse));
+//          if (entity instanceof ChestedHorse) {
+//            horseData.putBoolean("Chest", ((ChestedHorse) horse).isCarryingChest());
+//            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//            this.log.trace(PREF_LOG_TRACE + "((ChestedHorse) horse).isCarryingChest() ? "
+//                + (((ChestedHorse) horse).isCarryingChest()));
+//            if (((ChestedHorse) horse).isCarryingChest()) {
+//              // ラマがカーペットとチェスト両持ちできる
+//              str2 = str2 + "[CHEST]";
+//              this.log.trace(PREF_LOG_TRACE + "str2=" + str2);
+//            }
+//          } else {
+//            horseData.putBoolean("Chest", false);
+//            this.log.trace(PREF_LOG_TRACE + "Put to horseData:horseData=" + horseData.toString());
+//
+//          }
+//
+//          this.log.trace(
+//              PREF_LOG_TRACE + "(str1 + str2).length() > 0 ? " + ((str1 + str2).length() > 0));
+//          if ((str1 + str2).length() > 0) {
+//            loreList.add(str1 + str2);
+//            this.log.trace(PREF_LOG_TRACE + "Add to loreList:loreList=" + loreList.toString());
+//          }
+//
+//          this.log.trace(PREF_LOG_TRACE + "[LOOP START]for (int i = 2; i < hInv.getSize(); i++)");
+//          for (int i = 2; i < horseInv.getSize(); i++) {
+//            // チェストと鎧?を除く
+//            this.log.trace(PREF_LOG_TRACE + "hInv.getItem(" + i + ") == null ? "
+//                + (horseInv.getItem(i) == null));
+//            if (horseInv.getItem(i) == null) {
+//              continue;
+//            }
+//            this.log.trace(
+//                PREF_LOG_TRACE + "hInv.getItem(" + i + ")=" + horseInv.getItem(i).toString());
+//            horse.getWorld().dropItem(loc, horseInv.getItem(i));
+//            this.log
+//                .trace(PREF_LOG_TRACE + "horse.getWorld().dropItem(loc, hInv.getItem(" + i + "))");
+//          }
+//          this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int i = 2; i < hInv.getSize(); i++)");
+//        }
 
         // 構築したタグ情報をインベントリ保存する
-        tag.put("HorseEgg", horseData);
-        this.log.trace(PREF_LOG_TRACE + "Put to tag:tag=" + tag.toString());
-
-        stack.setTag(tag);
-        this.log.trace(PREF_LOG_TRACE + "stack.setTag(tag)");
+        editor.set(eggData.getHorseEggTagDataMap());
+        this.log.trace(PREF_LOG_TRACE + "HorseEggTagDataMap: " + eggData.getHorseEggTagDataMap());
+        editor.load();
+        this.log.trace(PREF_LOG_TRACE + "RTagEditor.load().");
+//        tag.put("HorseEgg", horseData);
+//        this.log.trace(PREF_LOG_TRACE + "Put to tag:tag=" + tag.toString());
+//        stack.setTag(tag);
+//        this.log.trace(PREF_LOG_TRACE + "stack.setTag(tag)");
 
 //        net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg);
-        this.log.trace(PREF_LOG_TRACE
-            + "net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg)");
-        horseegg = CraftItemStack.asBukkitCopy(stack);
-
-        this.log.trace(PREF_LOG_TRACE + "horseegg <- CraftItemStack.asBukkitCopy(stack)");
-        this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg.toString());
-
+//        this.log.trace(PREF_LOG_TRACE
+//            + "net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(horseegg)");
+//        horseegg = CraftItemStack.asBukkitCopy(stack);
+//
+//        this.log.trace(PREF_LOG_TRACE + "horseegg <- CraftItemStack.asBukkitCopy(stack)");
+//        this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg.toString());
+//
         ItemMeta meta = horseegg.getItemMeta();
         this.log.trace(PREF_LOG_TRACE + "ItemMeta meta <- horseegg.getItemMeta()");
-        meta.setDisplayName(horse.getCustomName());
-        this.log.trace(PREF_LOG_TRACE + "meta.setDisplayName(horse.getCustomName())");
-        meta.setLore(loreList);
-        this.log.trace(PREF_LOG_TRACE + "meta.setLore(list)");
+        meta.setDisplayName(eggData.getDisplayName());
+//        meta.setDisplayName(horse.getCustomName());
+        this.log.trace(PREF_LOG_TRACE + "meta.setDisplayName(eggData.getDisplayName())");
+        meta.setLore(eggData.getLoreList());
+//        meta.setLore(loreList);
+        this.log.trace(PREF_LOG_TRACE + "meta.setLore(eggData.getLoreList())");
         this.log.trace(PREF_LOG_TRACE + "meta=" + meta.toString());
 
         horseegg.setItemMeta(meta);
