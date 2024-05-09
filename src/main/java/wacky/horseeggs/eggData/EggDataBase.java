@@ -192,10 +192,28 @@ public abstract class EggDataBase {
   }
 
   public EggDataBase(HashMap<String, ?> metaData) {
+    this();
+
     Optional<HashMap<String, ?>> opt = Optional.ofNullable(metaData);
-    opt.ifPresent(ah -> {
+    opt.ifPresent(meta -> {
+      // フィールドへ値をセット
+      this.isCarryingChest = isCarryingChest(meta);
+      this.speed = getSpeed(meta);
+      this.health = getCurrentHealth(meta);
+      this.uuidLeast = getUuidLeast(meta);
+      this.color = getColor(meta);
+      this.jump = getJump(meta);
+      this.maxHealth = getMaxHealth(meta);
+      this.name = getName(meta);
+      this.isSaddled = isSaddled(meta);
+      this.variant = getVariant(meta);
+      this.type = getType(meta);
+      this.uuidMost = getUuidMost(meta);
+      this.armor = getArmor(meta);
+      this.style = getStyle(meta);
+      this.strength = getStrength(meta);
     });
-    }
+  }
 
   public abstract EntityType getEntityType();
 
@@ -231,7 +249,7 @@ public abstract class EggDataBase {
     return isCarryingChest;
   }
 
-  private  Boolean getIsCarryingChest(HashMap<String, ?> metaData) {
+  private  Boolean isCarryingChest(HashMap<String, ?> metaData) {
     Byte hasChest = (Byte) metaData.get(dataKeyChest);
     return hasChest == 1;
   }
@@ -299,8 +317,24 @@ public abstract class EggDataBase {
     return absHorse.getJumpStrength();
   }
 
+  private Double getJump(HashMap<String, ?> metaData){
+    Double jump = null;
+    if(metaData.containsKey(dataKeyJump)){
+      jump = (Double) metaData.get(dataKeyJump);
+    }
+    return jump;
+  }
+
   private Double getMaxHealth(AbstractHorse absHorse) {
     return absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+  }
+
+  private Double getMaxHealth(HashMap<String, ?> metaData){
+    Double mHealth = null;
+    if(metaData.containsKey(dataKeyMaxHealth)){
+      mHealth = (Double) metaData.get(dataKeyMaxHealth);
+    }
+    return mHealth;
   }
 
   private String getName(AbstractHorse absHorse) {
@@ -309,10 +343,26 @@ public abstract class EggDataBase {
     return name;
   }
 
+  private String getName(HashMap<String, ?> metaData){
+    String name = null;
+    if(metaData.containsKey(dataKeyName)){
+      name = (String) metaData.get(dataKeyName);
+    }
+    return name;
+  }
+
   private boolean isSaddled(AbstractHorse absHorse) {
     boolean hasSaddle = false;
     if (absHorse instanceof AbstractHorseInventory absHorseInv) {
       hasSaddle = Objects.nonNull(absHorseInv.getSaddle());
+    }
+    return hasSaddle;
+  }
+
+  private boolean isSaddled(HashMap<String, ?> metaData){
+    boolean hasSaddle = false;
+    if(metaData.containsKey(dataKeySaddle)){
+      hasSaddle = (boolean) metaData.get(dataKeySaddle);
     }
     return hasSaddle;
   }
@@ -326,6 +376,14 @@ public abstract class EggDataBase {
     return variant;
   }
 
+  private String getVariant(HashMap<String, ?> metaData){
+    String variant = null;
+    if(metaData.containsKey(dataKeyVariant)){
+      variant = (String) metaData.get(dataKeyVariant);
+    }
+    return variant;
+  }
+
   private String getType(AbstractHorse absHorse) {
     String type = null;
     if (Objects.nonNull(absHorse.getType())) {
@@ -334,10 +392,26 @@ public abstract class EggDataBase {
     return type;
   }
 
+  private String getType(HashMap<String, ?> metaData){
+    String type = null;
+    if(metaData.containsKey(dataKeyType)){
+      type = (String) metaData.get(dataKeyType);
+    }
+    return type;
+  }
+
   private long getUuidMost(AbstractHorse absHorse) {
     Long uuidMost = null;
     if (absHorse.isTamed()) {
       uuidMost = absHorse.getOwner().getUniqueId().getMostSignificantBits();
+    }
+    return uuidMost;
+  }
+
+  private long getUuidMost(HashMap<String, ?> metaData){
+    Long uuidMost = null;
+    if(metaData.containsKey(dataKeyUuidMost)){
+      uuidMost = (long) metaData.get(dataKeyUuidMost);
     }
     return uuidMost;
   }
@@ -356,10 +430,26 @@ public abstract class EggDataBase {
     return armor;
   }
 
+  private String getArmor(HashMap<String, ?> metaData){
+    String armor = null;
+    if(metaData.containsKey(dataKeyArmor)){
+      armor = (String) metaData.get(dataKeyArmor);
+    }
+    return armor;
+  }
+
   private String getStyle(AbstractHorse absHorse) {
     String style = null;
     if (absHorse instanceof Horse horse) {
       style = horse.getStyle().name();
+    }
+    return style;
+  }
+
+  private String getStyle(HashMap<String, ?> metaData){
+    String style = null;
+    if(metaData.containsKey(dataKeyStyle)){
+      style = (String) metaData.get(dataKeyStyle);
     }
     return style;
   }
@@ -370,6 +460,14 @@ public abstract class EggDataBase {
       strength = traderLlama.getStrength();
     } else if (absHorse instanceof Llama llama) {
       strength = llama.getStrength();
+    }
+    return strength;
+  }
+
+  private Integer getStrength(HashMap<String, ?> metaData){
+    Integer strength = null;
+    if(metaData.containsKey(dataKeyStyle)){
+      strength = (Integer) metaData.get(dataKeyStyle);
     }
     return strength;
   }
