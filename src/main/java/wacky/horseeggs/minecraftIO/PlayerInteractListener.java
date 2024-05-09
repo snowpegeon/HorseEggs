@@ -6,6 +6,7 @@ import com.saicone.rtag.RtagItem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -271,7 +272,13 @@ public class PlayerInteractListener implements Listener {
 
         // 馬系の何であるかを識別
         EntityType type = horse.getType();
-        EggDataBase eggData = new EggDataFactory().newEggData(type);
+        EggDataBase eggData = new EggDataFactory().newEggData(type, horse);
+
+        if(Objects.isNull(eggData)){
+          this.log.error("This EntityType is null.");
+          return;
+        }
+
         this.log.trace(PREF_LOG_TRACE + "type=" + type.toString());
         this.log.trace(PREF_LOG_TRACE + "eggData=" + eggData);
         ItemStack horseegg = new ItemStack(eggData.getEmptyEggMaterial());
@@ -842,7 +849,7 @@ public class PlayerInteractListener implements Listener {
   /**
    * マテリアルが窒息するものか検査します.
    *
-   * @param mat {@link org.bukkit.Bukkit.Material}
+   * @param mat {@link org.bukkit.Material}
    */
   private boolean isSuffocating(Material mat) {
     this.log.debug(

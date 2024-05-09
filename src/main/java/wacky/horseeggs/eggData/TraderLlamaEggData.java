@@ -3,6 +3,7 @@
  */
 package wacky.horseeggs.eggData;
 
+import java.util.HashMap;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
@@ -31,9 +32,10 @@ public class TraderLlamaEggData extends LlamaEggData {
 
   /**
    * コンストラクタ（ItemStack）
+   * @param metaData HorseEggsのmeta情報
    */
-  public TraderLlamaEggData(ItemStack item){
-    super(item);
+  public TraderLlamaEggData(HashMap<String, ?> metaData){
+    super(metaData);
   }
 
   @Override
