@@ -9,15 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.AnimalTamer;
 import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
@@ -93,13 +90,13 @@ public abstract class EggDataBase {
   private String style;
   /** ？. */
   private Integer strength;
-  private Map<?, ?> tagDataMap;
-  private Map<?, ?> horseEggTagDataMap;
+  private Map<String, ?> tagDataMap;
+  private Map<String, ?> horseEggTagDataMap;
 
-  private Map<?, ?> idNamespaceMap;
-  private Map<?, ?> entityTagMap;
+  private Map<String, ?> idNamespaceMap;
+  private Map<String, ?> entityTagMap;
 
-  private Map<?, ?> displayMap;
+  private Map<String, ?> displayMap;
   
   private List<?> horseEggTagDataList;
 
@@ -194,9 +191,11 @@ public abstract class EggDataBase {
     });
   }
 
-  public EggDataBase(ItemStack item) {
-    // TODO: item から変換
-  }
+  public EggDataBase(HashMap<String, ?> metaData) {
+    Optional<HashMap<String, ?>> opt = Optional.ofNullable(metaData);
+    opt.ifPresent(ah -> {
+    });
+    }
 
   public abstract EntityType getEntityType();
 
@@ -232,12 +231,33 @@ public abstract class EggDataBase {
     return isCarryingChest;
   }
 
+  private  Boolean getIsCarryingChest(HashMap<String, ?> metaData) {
+    Byte hasChest = (Byte) metaData.get(dataKeyChest);
+    return hasChest == 1;
+  }
+
   private Double getSpeed(AbstractHorse absHorse) {
     return absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
   }
 
+  private Double getSpeed(HashMap<String, ?> metaData){
+    Double speed = null;
+    if(metaData.containsKey(dataKeySpeed)){
+      speed = (Double) metaData.get(dataKeySpeed);
+    }
+    return speed;
+  }
+
   private Double getCurrentHealth(AbstractHorse absHorse) {
     return absHorse.getHealth();
+  }
+
+  private Double getCurrentHealth(HashMap<String, ?> metaData){
+    Double health = null;
+    if(metaData.containsKey(dataKeyHealth)){
+      health = (Double) metaData.get(dataKeyHealth);
+    }
+    return health;
   }
 
   private Long getUuidLeast(AbstractHorse absHorse) {
@@ -248,6 +268,14 @@ public abstract class EggDataBase {
     return uuidLeast;
   }
 
+  private Long getUuidLeast(HashMap<String, ?> metaData){
+    Long uuid = null;
+    if(metaData.containsKey(dataKeyUuidLeast)){
+      uuid = (Long) metaData.get(dataKeyUuidLeast);
+    }
+    return uuid;
+  }
+
   private String getColor(AbstractHorse absHorse) {
     // NOTE: 実装をtoStringからnameに変更してる
     String color = null;
@@ -255,6 +283,14 @@ public abstract class EggDataBase {
       color = horse.getColor().name();
     } else if (absHorse instanceof Llama llama) {
       color = llama.getColor().name();
+    }
+    return color;
+  }
+
+  private String getColor(HashMap<String, ?> metaData){
+    String color = null;
+    if(metaData.containsKey(dataKeyColor)){
+      color = (String) metaData.get(dataKeyColor);
     }
     return color;
   }
@@ -338,7 +374,7 @@ public abstract class EggDataBase {
     return strength;
   }
 
-  private Map<?, ?> buildTagDataMap() {
+  private Map<String, ?> buildTagDataMap() {
     Map<String, Object> horseEggDataMap = new HashMap<>() {
       {
         if (Objects.nonNull(name)) {
