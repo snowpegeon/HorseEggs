@@ -1,5 +1,6 @@
 package wacky.horseeggs.EntityWriter;
 
+import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Horse;
@@ -29,14 +30,16 @@ public class HorseEntityWriter extends  EntityWriter{
   }
 
   private ItemStack getArmor(String type){
-    ItemStack armor = null;
-      if (type.contains("IRON_HORSE_ARMOR") || type.contains("IRON_BARDING")) {
-        armor = new ItemStack(Material.IRON_HORSE_ARMOR);
-      } else if (type.contains("GOLDEN_HORSE_ARMOR") || type.contains("GOLD_BARDING")) {
-        armor = new ItemStack(Material.GOLDEN_HORSE_ARMOR);
-      } else if (type.contains("DIAMOND_HORSE_ARMOR") || type.contains("DIAMOND_BARDING")) {
-        armor = new ItemStack(Material.DIAMOND_HORSE_ARMOR);
-      }
-      return armor;
+    Material armor = null;
+    armor = Material.matchMaterial(type, true);
+    if(Objects.nonNull(armor)) {
+      return new ItemStack(armor);
+    }
+
+    armor = Material.matchMaterial(type);
+    if(Objects.nonNull(armor)) {
+      return new ItemStack(armor);
+    }
+    return null;
   }
 }
