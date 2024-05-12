@@ -150,8 +150,8 @@ public class PlayerInteractListener implements Listener {
       Location loc = event.getRightClicked().getLocation();
       this.log.trace(PREF_LOG_TRACE + "loc=" + loc.toString());
       // 馬のリリースを行う
-      new ReleaseHorse(itemInHand, loc, log);
-      this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.");
+      ReleaseHorse.releseHorseFromHorseEgg(itemInHand, loc, log);
+      this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.releseHorseFromHorseEgg.");
       // アイテムの現在合計値を取得
       int amount = itemInHand.getAmount();
       this.log.trace(PREF_LOG_TRACE + "amount=" + amount);
@@ -744,8 +744,8 @@ public class PlayerInteractListener implements Listener {
         loc.add(0.5, 0, 0.5);
         this.log.trace(PREF_LOG_TRACE + "loc.add(0.5, 0, 0.5)");
 
-        this.log.trace(PREF_LOG_TRACE + "new ReleaseHorse(item, loc, log)");
-        new ReleaseHorse(item, loc, log);
+        this.log.trace(PREF_LOG_TRACE + "ReleaseHorse.releseHorseFromHorseEgg(item, loc, log)");
+        ReleaseHorse.releseHorseFromHorseEgg(item, loc, log);
 
       } else {
         this.log.trace(PREF_LOG_TRACE + "search:");
@@ -765,8 +765,8 @@ public class PlayerInteractListener implements Listener {
                 loc.add(i * 0.5, 0, j * 0.5);
                 this.log.trace(PREF_LOG_TRACE + "loc.add(i * 0.5, 0, j * 0.5)");
 
-                this.log.trace(PREF_LOG_TRACE + "new ReleaseHorse(item, loc, log)");
-                new ReleaseHorse(item, loc, log);
+                this.log.trace(PREF_LOG_TRACE + "ReleaseHorse.releseHorseFromHorseEgg(item, loc, log)");
+                ReleaseHorse.releseHorseFromHorseEgg(item, loc, log);
 
                 this.log.trace(PREF_LOG_TRACE + "break search");
                 break search;
