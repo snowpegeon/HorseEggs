@@ -8,11 +8,11 @@ package wacky.horseeggs.LoreWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import lombok.Getter;
 import org.apache.commons.lang.BooleanUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import lombok.Getter;
 import wacky.horseeggs.eggData.EggDataBase;
 
 /**
