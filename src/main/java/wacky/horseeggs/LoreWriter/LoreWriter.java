@@ -1,6 +1,6 @@
 /**
-
- *
+ * <p>このクラスは ItemStack の ツールチップで表示する、<br>
+ * Loreの内容を出力する機能を提供します.</p>
  */
 
 package wacky.horseeggs.LoreWriter;
@@ -16,104 +16,147 @@ import lombok.Getter;
 import wacky.horseeggs.eggData.EggDataBase;
 
 /**
- * Base class Writing for HorseEgg ItemStack Lore.
+ * Base class for Write to  Lore on HorseEgg ItemStack.
  */
 @Getter
 public abstract class LoreWriter {
   /** {@link Material.CHEST}. */
-  private final static String ITEM_CHEST = Material.CHEST.name();
+  private static final String ITEM_CHEST = Material.CHEST.name();
   /** {@link Material.SADDLE}. */
-  private final static String ITEM_SADDLE = Material.SADDLE.name();
+  private static final String ITEM_SADDLE = Material.SADDLE.name();
   /**
-   * <p>Health lore label. {@value}</p>
+   * <p>
+   * Health lore label. {@value}
+   * </p>
    */
-  private final static String LABEL_HEALTH = "HP: ";
+  private static final String LABEL_HEALTH = "HP: ";
   /**
-   * <p>Jump height lore label. {@value}</p>
+   * <p>
+   * Jump height lore label. {@value}
+   * </p>
    */
-  private final static String LABEL_HEIGHT = "Height: ";
+  private static final String LABEL_HEIGHT = "Height: ";
   /**
-   * <p>Owner lore label. {@value}</p>
+   * <p>
+   * Owner lore label. {@value}
+   * </p>
    */
-  private final static String LABEL_OWNER = "Owner: ";
+  private static final String LABEL_OWNER = "Owner: ";
   /**
-   * <p>Speed lore label. {@value}</p>
+   * <p>
+   * Speed lore label. {@value}
+   * </p>
    */
-  private final static String LABEL_SPEED = "Speed: ";
+  private static final String LABEL_SPEED = "Speed: ";
   /**
-   * <p>Strength lore label. {@value}</p>
+   * <p>
+   * Strength lore label. {@value}
+   * </p>
    */
-  private final static String LABEL_STRENGTH = "Strength: ";
+  private static final String LABEL_STRENGTH = "Strength: ";
 
   /**
-   * <p>Lore text splitter. {@value}</p>
+   * <p>
+   * Lore text splitter. {@value}
+   * </p>
    */
-  private final static String SPLITTER = "/";
+  private static final String SPLITTER = "/";
   /**
-   * <p>Value prefix. {@value}</p>
+   * <p>
+   * Value prefix. {@value}
+   * </p>
    */
-  private final static String VALUE_PREFIX = "[";
+  private static final String VALUE_PREFIX = "[";
   /**
-   * <p>Value suffix. {@value}</p>
+   * <p>
+   * Value suffix. {@value}
+   * </p>
    */
-  private final static String VALUE_SUFFIX = "]";
+  private static final String VALUE_SUFFIX = "]";
 
-  private String colorLore;
   private String colorStyleLore;
-  private String decorChestLore;
   private String healthLore;
   private String heightLore;
   private String ownerLore;
-  private String saddleArmorLore;
-  private String saddleChestLore;
-  private String saddleLore;
+  private String saddleArmorChestLore;
   private String speedLore;
   private String strengthLore;
 
   protected List<String> generateLore(EggDataBase eggData) {
     List<String> loreList = new ArrayList<>();
 
+    // 1. 体力
     StringBuilder health = this.getHealth(eggData);
     if (BooleanUtils.isFalse(health.isEmpty())) {
-      loreList.add(health.toString());
+      String healthLore = health.toString();
+      this.healthLore = healthLore;
+      loreList.add(healthLore);
     }
 
+    // 2. スピード
     StringBuilder speed = this.getSpeed(eggData);
     if (BooleanUtils.isFalse(speed.isEmpty())) {
-      loreList.add(speed.toString());
+      String speedLore = speed.toString();
+      this.speedLore = speedLore;
+      loreList.add(speedLore);
     }
 
+    // 3. 跳躍力
     StringBuilder height = this.getHeight(eggData);
     if (BooleanUtils.isFalse(height.isEmpty())) {
-      loreList.add(height.toString());
+      String heightLore = height.toString();
+      this.heightLore = heightLore;
+      loreList.add(heightLore);
     }
 
-    StringBuilder colorStyle = this.getColorStyle(eggData);
-    if (BooleanUtils.isFalse(colorStyle.isEmpty())) {
-      loreList.add(colorStyle.toString());
-    }
-
-    StringBuilder owner = this.getOwner(eggData);
-    if (BooleanUtils.isFalse(owner.isEmpty())) {
-      eggData.getOwner();
-    }
-
+    // 4. 運搬力
     StringBuilder strength = this.getStrength(eggData);
     if (BooleanUtils.isFalse(strength.isEmpty())) {
-      loreList.add(strength.toString());
+      String strengthLore = strength.toString();
+      this.strengthLore = strengthLore;
+      loreList.add(strengthLore);
     }
+
+    // 5. カラー、スタイル
+    StringBuilder colorStyle = this.getColorStyle(eggData);
+    if (BooleanUtils.isFalse(colorStyle.isEmpty())) {
+      String colorStyleLore = colorStyle.toString();
+      this.colorStyleLore = colorStyleLore;
+      loreList.add(colorStyleLore);
+    }
+
+    // 6. オーナー
+    StringBuilder owner = this.getOwner(eggData);
+    if (BooleanUtils.isFalse(owner.isEmpty())) {
+      String ownerLore = owner.toString();
+      this.ownerLore = ownerLore;
+      loreList.add(ownerLore);
+    }
+
+    // 7. サドル、アーマー、チェスト
+    StringBuilder saddleArmorChest = new StringBuilder();
+    StringBuilder saddle = this.getSaddle(eggData);
+    if (BooleanUtils.isFalse(saddle.isEmpty())) {
+      saddleArmorChest.append(saddle.toString());
+    }
+    StringBuilder armor = this.getArmor(eggData);
+    if (BooleanUtils.isFalse(armor.isEmpty())) {
+      saddleArmorChest.append(armor.toString());
+    }
+    StringBuilder chest = this.getChest(eggData);
+    if (BooleanUtils.isFalse(chest.isEmpty())) {
+      saddleArmorChest.append(chest.toString());
+    }
+    if (BooleanUtils.isFalse(saddleArmorChest.isEmpty())) {
+      String saddleArmorChestLore = saddleArmorChest.toString();
+      this.saddleArmorChestLore = saddleArmorChestLore;
+      loreList.add(saddleArmorChestLore);
+    }
+
     return loreList;
   }
 
   public abstract List<String> generateLore(Entity entity);
-
-  private StringBuilder getColor(EggDataBase eggData) {
-    StringBuilder colorSb = new StringBuilder();
-    if (Objects.nonNull(eggData.getColor())) {
-      colorSb.append(eggData.getColor());
-    }
-    return colorSb;
-  }
 
   private StringBuilder getColorStyle(EggDataBase eggData) {
     StringBuilder colorStyleSb = new StringBuilder();
@@ -133,21 +176,16 @@ public abstract class LoreWriter {
     return colorStyleSb;
   }
 
-  private StringBuilder getDecorChest(EggDataBase eggData) {
-    StringBuilder decorChestSb = new StringBuilder();
-    if (Objects.nonNull(eggData.getArmor())) {
-      decorChestSb.append(VALUE_PREFIX);
-      decorChestSb.append(eggData.getArmor());
-      decorChestSb.append(VALUE_SUFFIX);
-    }
+  private StringBuilder getChest(EggDataBase eggData) {
+    StringBuilder chestSb = new StringBuilder();
     if (Objects.nonNull(eggData.getIsCarryingChest())) {
       if (eggData.getIsCarryingChest()) {
-        decorChestSb.append(VALUE_PREFIX);
-        decorChestSb.append(ITEM_CHEST);
-        decorChestSb.append(VALUE_SUFFIX);
+        chestSb.append(VALUE_PREFIX);
+        chestSb.append(ITEM_CHEST);
+        chestSb.append(VALUE_SUFFIX);
       }
     }
-    return decorChestSb;
+    return chestSb;
   }
 
   private StringBuilder getHealth(EggDataBase eggData) {
@@ -232,36 +270,14 @@ public abstract class LoreWriter {
     return saddleSb;
   }
 
-  private StringBuilder getSaddleArmor(EggDataBase eggData) {
-    StringBuilder saddleArmorSb = new StringBuilder();
-    if (Objects.nonNull(eggData.getIsSaddled()) && Objects.nonNull(eggData.getArmor())) {
-      if (eggData.getIsSaddled()) {
-        saddleArmorSb.append(VALUE_PREFIX);
-        saddleArmorSb.append(ITEM_SADDLE);
-        saddleArmorSb.append(VALUE_SUFFIX);
-      }
-      saddleArmorSb.append(VALUE_PREFIX);
-      saddleArmorSb.append(eggData.getArmor());
-      saddleArmorSb.append(VALUE_SUFFIX);
+  private StringBuilder getArmor(EggDataBase eggData) {
+    StringBuilder armorSb = new StringBuilder();
+    if (Objects.nonNull(eggData.getArmor())) {
+      armorSb.append(VALUE_PREFIX);
+      armorSb.append(eggData.getArmor());
+      armorSb.append(VALUE_SUFFIX);
     }
-    return saddleArmorSb;
-  }
-
-  private StringBuilder getSaddleChest(EggDataBase eggData) {
-    StringBuilder saddleChestSb = new StringBuilder();
-    if (Objects.nonNull(eggData.getIsSaddled()) && Objects.nonNull(eggData.getIsCarryingChest())) {
-      if (eggData.getIsSaddled()) {
-        saddleChestSb.append(VALUE_PREFIX);
-        saddleChestSb.append(ITEM_SADDLE);
-        saddleChestSb.append(VALUE_SUFFIX);
-      }
-      if (eggData.getIsCarryingChest()) {
-        saddleChestSb.append(VALUE_PREFIX);
-        saddleChestSb.append(ITEM_CHEST);
-        saddleChestSb.append(VALUE_SUFFIX);
-      }
-    }
-    return saddleChestSb;
+    return armorSb;
   }
 
   private StringBuilder getSpeed(EggDataBase eggData) {
