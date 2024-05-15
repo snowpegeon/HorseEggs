@@ -1,6 +1,8 @@
 /**
- * <p>このクラスは ItemStack の ツールチップで表示する、<br>
- * Loreの内容を出力する機能を提供します.</p>
+ * <p>
+ * このクラスは ItemStack のツールチップで表示する、<br>
+ * Loreの内容を出力する文字列を構築する機能を提供します.
+ * </p>
  */
 
 package wacky.horseeggs.LoreWriter;
@@ -9,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import wacky.horseeggs.eggData.EggDataBase;
 
 /**
- * Base class for Write to  Lore on HorseEgg ItemStack.
+ * Base class for Write to Lore on HorseEgg ItemStack.
  */
 @Getter
 public abstract class LoreWriter {
@@ -78,100 +80,88 @@ public abstract class LoreWriter {
   private String healthLore;
   private String heightLore;
   private String ownerLore;
-  private String saddleArmorChestLore;
+  private String equipmentLore;
   private String speedLore;
   private String strengthLore;
 
   protected List<String> generateLore(EggDataBase eggData) {
-    List<String> loreList = new ArrayList<>();
-
-    // 1. 体力
-    StringBuilder health = this.getHealth(eggData);
-    if (BooleanUtils.isFalse(health.isEmpty())) {
-      String healthLore = health.toString();
-      this.healthLore = healthLore;
-      loreList.add(healthLore);
-    }
-
-    // 2. スピード
-    StringBuilder speed = this.getSpeed(eggData);
-    if (BooleanUtils.isFalse(speed.isEmpty())) {
-      String speedLore = speed.toString();
-      this.speedLore = speedLore;
-      loreList.add(speedLore);
-    }
-
-    // 3. 跳躍力
-    StringBuilder height = this.getHeight(eggData);
-    if (BooleanUtils.isFalse(height.isEmpty())) {
-      String heightLore = height.toString();
-      this.heightLore = heightLore;
-      loreList.add(heightLore);
-    }
-
-    // 4. 運搬力
-    StringBuilder strength = this.getStrength(eggData);
-    if (BooleanUtils.isFalse(strength.isEmpty())) {
-      String strengthLore = strength.toString();
-      this.strengthLore = strengthLore;
-      loreList.add(strengthLore);
-    }
-
-    // 5. カラー、スタイル
-    StringBuilder colorStyle = this.getColorStyle(eggData);
-    if (BooleanUtils.isFalse(colorStyle.isEmpty())) {
-      String colorStyleLore = colorStyle.toString();
-      this.colorStyleLore = colorStyleLore;
-      loreList.add(colorStyleLore);
-    }
-
-    // 6. オーナー
-    StringBuilder owner = this.getOwner(eggData);
-    if (BooleanUtils.isFalse(owner.isEmpty())) {
-      String ownerLore = owner.toString();
-      this.ownerLore = ownerLore;
-      loreList.add(ownerLore);
-    }
-
-    // 7. サドル、アーマー、チェスト
-    StringBuilder saddleArmorChest = new StringBuilder();
-    StringBuilder saddle = this.getSaddle(eggData);
-    if (BooleanUtils.isFalse(saddle.isEmpty())) {
-      saddleArmorChest.append(saddle.toString());
-    }
-    StringBuilder armor = this.getArmor(eggData);
-    if (BooleanUtils.isFalse(armor.isEmpty())) {
-      saddleArmorChest.append(armor.toString());
-    }
-    StringBuilder chest = this.getChest(eggData);
-    if (BooleanUtils.isFalse(chest.isEmpty())) {
-      saddleArmorChest.append(chest.toString());
-    }
-    if (BooleanUtils.isFalse(saddleArmorChest.isEmpty())) {
-      String saddleArmorChestLore = saddleArmorChest.toString();
-      this.saddleArmorChestLore = saddleArmorChestLore;
-      loreList.add(saddleArmorChestLore);
-    }
-
-    return loreList;
+    return new ArrayList<>() {
+      {
+        // 1. 体力
+        String health = getHealth(eggData).toString();
+        if (StringUtils.isNotBlank(health)) {
+          healthLore = health;
+          add(healthLore);
+        }
+        // 2. スピード
+        String speed = getSpeed(eggData).toString();
+        if (StringUtils.isNotBlank(speed)) {
+          speedLore = speed;
+          add(speedLore);
+        }
+        // 3. 跳躍力
+        String height = getHeight(eggData).toString();
+        if (StringUtils.isNotBlank(height)) {
+          heightLore = height;
+          add(heightLore);
+        }
+        // 4. 運搬力
+        String strength = getStrength(eggData).toString();
+        if (StringUtils.isNotBlank(strength)) {
+          strengthLore = strength;
+          add(strengthLore);
+        }
+        // 5. カラー、スタイル
+        String colorStyle = getColorStyle(eggData).toString();
+        if (StringUtils.isNotBlank(colorStyle)) {
+          colorStyleLore = colorStyle;
+          add(colorStyleLore);
+        }
+        // 6. オーナー
+        String owner = getOwner(eggData).toString();
+        if (StringUtils.isNotBlank(owner)) {
+          ownerLore = owner;
+          add(ownerLore);
+        }
+        // 7. 装備品（サドル、アーマー、チェスト）
+        String equipment = getEquipment(eggData).toString();
+        if (StringUtils.isNotBlank(equipment)) {
+          equipmentLore = equipment;
+          add(equipmentLore);
+        }
+      }
+    };
   }
 
   public abstract List<String> generateLore(Entity entity);
 
+  private StringBuilder getEquipment(EggDataBase eggData) {
+    StringBuilder equipmentSb = new StringBuilder();
+    String saddle = this.getSaddle(eggData).toString();
+    if (StringUtils.isNotBlank(saddle)) {
+      equipmentSb.append(saddle);
+    }
+    String armor = this.getArmor(eggData).toString();
+    if (StringUtils.isNotBlank(armor)) {
+      equipmentSb.append(armor);
+    }
+    String chest = this.getChest(eggData).toString();
+    if (StringUtils.isNotBlank(chest)) {
+      equipmentSb.append(chest);
+    }
+    return equipmentSb;
+  }
+
   private StringBuilder getColorStyle(EggDataBase eggData) {
     StringBuilder colorStyleSb = new StringBuilder();
-    if (Objects.nonNull(eggData.getColor())) {
-      colorStyleSb.append(eggData.getColor());
-      if (!colorStyleSb.isEmpty()) {
-        colorStyleSb.append(SPLITTER);
-      }
-      colorStyleSb.append(eggData.getStyle());
+    String color = eggData.getColor();
+    if (StringUtils.isNotBlank(color)) {
+      colorStyleSb.append(color);
     }
-    if (Objects.nonNull(eggData.getStyle())) {
-      if (!colorStyleSb.isEmpty()) {
-        colorStyleSb.append(SPLITTER);
-      }
-      colorStyleSb.append(eggData.getStyle());
+    String style = eggData.getStyle();
+    if (StringUtils.isNotBlank(style)) {
+      colorStyleSb.append(SPLITTER);
+      colorStyleSb.append(style);
     }
     return colorStyleSb;
   }
@@ -251,9 +241,10 @@ public abstract class LoreWriter {
 
   private StringBuilder getOwner(EggDataBase eggData) {
     StringBuilder ownerSb = new StringBuilder();
-    if (Objects.nonNull(eggData.getOwner())) {
+    String owner = eggData.getOwner();
+    if (StringUtils.isNotBlank(owner)) {
       ownerSb.append(LABEL_OWNER);
-      ownerSb.append(eggData.getOwner());
+      ownerSb.append(owner);
     }
     return ownerSb;
   }
