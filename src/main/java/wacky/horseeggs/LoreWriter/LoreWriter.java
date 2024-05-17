@@ -18,38 +18,57 @@ import org.bukkit.entity.Entity;
 import wacky.horseeggs.eggData.EggDataBase;
 
 /**
- * Base class for Write to Lore on HorseEgg ItemStack.
+ * <p>
+ * HorseEgg の ItemStack {@link org.bukkit.inventory.ItemStack} の<br>
+ * Lore へ書き込む文字列を構築する機能の実装クラス.
+ * </p>
  */
 @Getter
 public abstract class LoreWriter {
-  /** {@link Material.CHEST}. */
+  /**
+   * <p>
+   * チェストのマテリアル名<br>
+   * {@link Material.CHEST}.
+   * </p>
+   */
   private static final String ITEM_CHEST = Material.CHEST.name();
-  /** {@link Material.SADDLE}. */
+
+  /**
+   * <p>
+   * サドルのマテリアル名<br>
+   * {@link Material.SADDLE}.
+   * </p>
+   */
   private static final String ITEM_SADDLE = Material.SADDLE.name();
+
   /**
    * <p>
    * Health lore label. {@value}
    * </p>
    */
   private static final String LABEL_HEALTH = "HP: ";
+
   /**
    * <p>
    * Jump height lore label. {@value}
    * </p>
    */
   private static final String LABEL_HEIGHT = "Height: ";
+
   /**
    * <p>
    * Owner lore label. {@value}
    * </p>
    */
   private static final String LABEL_OWNER = "Owner: ";
+
   /**
    * <p>
    * Speed lore label. {@value}
    * </p>
    */
   private static final String LABEL_SPEED = "Speed: ";
+
   /**
    * <p>
    * Strength lore label. {@value}
@@ -63,12 +82,14 @@ public abstract class LoreWriter {
    * </p>
    */
   private static final String SPLITTER = "/";
+
   /**
    * <p>
    * Value prefix. {@value}
    * </p>
    */
   private static final String VALUE_PREFIX = "[";
+
   /**
    * <p>
    * Value suffix. {@value}
@@ -76,15 +97,72 @@ public abstract class LoreWriter {
    */
   private static final String VALUE_SUFFIX = "]";
 
+  /**
+   * <p>
+   * カラー、スタイル.
+   * </p>
+   */
   private String colorStyleLore;
-  private String healthLore;
-  private String heightLore;
-  private String ownerLore;
-  private String equipmentLore;
-  private String speedLore;
-  private String strengthLore;
 
-  protected List<String> generateLore(EggDataBase eggData) {
+  /**
+   * <p>
+   * 体力（整数値のみ） [残Health] / [最大Health].
+   * </p>
+   */
+  private String healthLore;
+
+  /**
+   * <p>
+   * 跳躍力（5文字）.
+   * </p>
+   */
+  private String heightLore;
+
+  /**
+   * <p>
+   * オーナー（テイムした人、プレイヤー名）.
+   * </p>
+   */
+  private String ownerLore;
+
+  /**
+   * <p>
+   * 装備品（サドル、ウマ鎧、カーペット、チェスト）.
+   * </p>
+   */
+  private String equipmentLore;
+
+  /**
+   * <p>
+   * 移動速度（6文字）.
+   * </p>
+   */
+  private String speedLore;
+
+  /**
+   * <p>
+   * 運搬力（ラマ、行商人のラマ）.
+   * </p>
+   */
+  private String strengthLore;
+  
+  @Getter
+  private List<String> loreList;
+  
+  public LoreWriter(EggDataBase eggData) {
+    this.loreList = this.generateLore(eggData);
+  }
+  
+  /**
+   * <p>
+   * ItemStack でツールチップとして表示するLore文字列を構築します.
+   * </p>
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return Lore {@link ArrayList}
+   */
+  private List<String> generateLore(EggDataBase eggData) {
     return new ArrayList<>() {
       {
         // 1. 体力
@@ -135,6 +213,22 @@ public abstract class LoreWriter {
 
   public abstract List<String> generateLore(Entity entity);
 
+  /**
+   * <p>
+   * 装備品のLore文字列を構築します<br>
+   * 装備品が1つも無い場合は、空の {@link StringBuilder} を返します<br>
+   * <br>
+   * <b>パターン：</b><br>
+   * ウマ：<i>[SADDLE][ウマ鎧名]</i><br>
+   * ロバ、ラバ：<i>[SADDLE][CHEST]</i><br>
+   * スケルトンホース：<i>[SADDLE]</i><br>
+   * ラマ、行商人のラマ：<i>[カーペット名][CHEST]</i>.
+   * </p>
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return 装備品のLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getEquipment(EggDataBase eggData) {
     StringBuilder equipmentSb = new StringBuilder();
     String saddle = this.getSaddle(eggData).toString();
@@ -152,20 +246,45 @@ public abstract class LoreWriter {
     return equipmentSb;
   }
 
+  /**
+   * <p>
+   * カラーとスタイルのLore文字列を構築します<br>
+   * カラーが無い場合は、空の {@link StringBuilder} を返します<br>
+   * <b>パターン：</b><br>
+   * ウマ：<i>[カラー名]/[スタイル名]</i><br>
+   * ラマ、行商人のラマ：<i>[カラー名]</i>.
+   * </p>
+   *
+   * @param eggData {@link EggDataBase}
+   * 
+   * @return カラー、スタイルのLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getColorStyle(EggDataBase eggData) {
     StringBuilder colorStyleSb = new StringBuilder();
     String color = eggData.getColor();
     if (StringUtils.isNotBlank(color)) {
       colorStyleSb.append(color);
-    }
-    String style = eggData.getStyle();
-    if (StringUtils.isNotBlank(style)) {
-      colorStyleSb.append(SPLITTER);
-      colorStyleSb.append(style);
+      String style = eggData.getStyle();
+      if (StringUtils.isNotBlank(style)) {
+        colorStyleSb.append(SPLITTER);
+        colorStyleSb.append(style);
+      }
     }
     return colorStyleSb;
   }
 
+  /**
+   * <p>
+   * チェストのアイテム名をLore文字列として構築します<br>
+   * チェストを保持していない場合は、空の {@link StringBuilder} を返します<br>
+   * <b>パターン：</b><br>
+   * チェストを保持している場合：<i>[チェストのマテリアル名]</i>.
+   * </p>
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return チェストのアイテム名のLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getChest(EggDataBase eggData) {
     StringBuilder chestSb = new StringBuilder();
     if (Objects.nonNull(eggData.getIsCarryingChest())) {
@@ -178,6 +297,20 @@ public abstract class LoreWriter {
     return chestSb;
   }
 
+  /**
+   * <p>
+   * 体力をLore文字列として構築します<br>
+   * 体力は必ず保持しています<br>
+   * 保持していない場合は、空の {@link StringBuilder} を返しますが、<br>
+   * これはキャッチしたエンティティが通常でない可能性があります<br>
+   * <b>パターン：</b><br>
+   * <i> {@value LoreWriter#LABEL_HEALTH} [現在体力] {@value LoreWriter#SPLITTER}[最大体力] </i>.
+   * </p>
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return 体力のLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getHealth(EggDataBase eggData) {
     StringBuilder healthSb = new StringBuilder();
     Double health = eggData.getHealth();
@@ -215,6 +348,22 @@ public abstract class LoreWriter {
     return healthMeterSb.toString();
   }
 
+  /**
+   * <p>
+   * 跳躍力のLore文字列を構築します<br>
+   * 跳躍力は必ず保持しています<br>
+   * 保持していない場合は、空の {@link StringBuilder} を返しますが、<br>
+   * これはキャッチしたエンティティが通常でない可能性があります<br>
+   * <b>パターン：</b><br>
+   * <i> {@value LoreWriter#LABEL_HEIGHT}[跳躍力] </i>.
+   * </p>
+   *
+   * @apiNote 小数点を含む5文字がセットされます
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return 跳躍力のLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getHeight(EggDataBase eggData) {
     StringBuilder heightSb = new StringBuilder();
     if (Objects.nonNull(eggData.getJump())) {
@@ -239,6 +388,20 @@ public abstract class LoreWriter {
     return heightSb;
   }
 
+  /**
+   * <p>
+   * オーナーをLore文字列として構築します<br>
+   * テイムされていないエンティティの場合は、空の {@link StringBuilder} を返します<br>
+   * <b>パターン：</b><br>
+   * オーナーを保持している場合：<i> {@value LoreWriter#LABEL_OWNER} [オーナー]</i>.
+   * </p>
+   *
+   * @apiNote オーナーはテイムした人、プレーヤー名です
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return オーナーのLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getOwner(EggDataBase eggData) {
     StringBuilder ownerSb = new StringBuilder();
     String owner = eggData.getOwner();
@@ -249,6 +412,18 @@ public abstract class LoreWriter {
     return ownerSb;
   }
 
+  /**
+   * <p>
+   * サドルのアイテム名をLore文字列として構築します<br>
+   * サドルを保持していない場合は、空の {@link StringBuilder} を返します<br>
+   * <b>パターン：</b><br>
+   * サドルを保持している場合：<i>[サドルのマテリアル名]</i>.
+   * </p>
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return サドルのアイテム名のLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getSaddle(EggDataBase eggData) {
     StringBuilder saddleSb = new StringBuilder();
     if (Objects.nonNull(eggData.getIsSaddled())) {
@@ -261,6 +436,18 @@ public abstract class LoreWriter {
     return saddleSb;
   }
 
+  /**
+   * <p>
+   * 馬鎧のアイテム名をLore文字列として構築します<br>
+   * 馬鎧を保持していない場合は、空の {@link StringBuilder} を返します<br>
+   * <b>パターン：</b><br>
+   * 馬鎧を保持している場合：<i>[馬鎧のマテリアル名]</i>.
+   * </p>
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return 馬鎧のアイテム名のLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getArmor(EggDataBase eggData) {
     StringBuilder armorSb = new StringBuilder();
     if (Objects.nonNull(eggData.getArmor())) {
@@ -271,6 +458,22 @@ public abstract class LoreWriter {
     return armorSb;
   }
 
+  /**
+   * <p>
+   * 地上移動速度のLore文字列を構築します<br>
+   * 地上移動速度は必ず保持しています<br>
+   * 保持していない場合は、空の {@link StringBuilder} を返しますが、<br>
+   * これはキャッチしたエンティティが通常でない可能性があります<br>
+   * <b>パターン：</b><br>
+   * <i> {@value LoreWriter#LABEL_SPEED}[地上移動速度] </i>.
+   * </p>
+   *
+   * @apiNote 小数点を含む6文字がセットされます
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return 地上移動速度のLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getSpeed(EggDataBase eggData) {
     StringBuilder speedSb = new StringBuilder();
     if (Objects.nonNull(eggData.getSpeed())) {
@@ -286,6 +489,44 @@ public abstract class LoreWriter {
     return speedSb;
   }
 
+  /**
+   * <p>
+   * 運搬力のLore文字列を構築します<br>
+   * 運搬力を保持していない場合は、空の {@link StringBuilder} を返します<br>
+   * <b>パターン：</b><br>
+   * 運搬力を保持している場合：<i>{@value LoreWriter#LABEL_STRENGTH} [運搬力]</i>.
+   * </p>
+   *
+   * @apiNote
+   *          <p>
+   *          運搬力はラマ、行商人のラマのみに存在します<br>
+   *          運搬力は搭載したチェストのインベントリの広さを示します
+   *          </p>
+   *          <p>
+   *          例）運搬力が3のとき<br>
+   *          <table style="border: 1px solid gray;">
+   *          <tr style="border: 1px solid gray;">
+   *          <td style="border: 1px solid gray;">■</td>
+   *          <td style="border: 1px solid gray;">■</td>
+   *          <td style="border: 1px solid gray;">■</td>
+   *          </tr>
+   *          <tr style="border: 1px solid gray;">
+   *          <td style="border: 1px solid gray;">■</td>
+   *          <td style="border: 1px solid gray;">■</td>
+   *          <td style="border: 1px solid gray;">■</td>
+   *          </tr>
+   *          <tr style="border: 1px solid gray;">
+   *          <td style="border: 1px solid gray;">■</td>
+   *          <td style="border: 1px solid gray;">■</td>
+   *          <td style="border: 1px solid gray;">■</td>
+   *          </tr>
+   *          </table>
+   *          </p>
+   *
+   * @param eggData {@link EggDataBase}
+   *
+   * @return 運搬力のLore文字列 {@link StringBuilder}
+   */
   private StringBuilder getStrength(EggDataBase eggData) {
     StringBuilder strengthSb = new StringBuilder();
     if (Objects.nonNull(eggData.getStrength())) {
