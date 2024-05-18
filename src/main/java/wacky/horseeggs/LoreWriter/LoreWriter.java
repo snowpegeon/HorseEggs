@@ -78,7 +78,7 @@ public abstract class LoreWriter {
 
   /**
    * <p>
-   * Lore text splitter. {@value}
+   * Lore text valueSplitter. {@value}
    * </p>
    */
   private static final String SPLITTER = "/";
@@ -382,8 +382,9 @@ public abstract class LoreWriter {
       final int digit5 = 5;
       if (heightValue.length() > digit5) {
         heightSb.append(heightValue.substring(0, digit5));
+      } else {
+        heightSb.append(heightValue);        
       }
-      heightSb.append(heightValue);
     }
     return heightSb;
   }
