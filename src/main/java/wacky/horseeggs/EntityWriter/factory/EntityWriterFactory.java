@@ -28,19 +28,19 @@ public class EntityWriterFactory {
   public EntityWriter newLoreWriter(EntityType entityType) {
     switch (entityType) {
       case LLAMA:
-        return new LlamaLoreWriter();
+//        return new LlamaLoreWriter();
       case MULE:
-        return new MuleLoreWriter();
+//        return new MuleLoreWriter();
       case DONKEY:
-        return new DonkeyLoreWriter();
+//        return new DonkeyLoreWriter();
       case HORSE:
-        return new HorseEntityWriter();
+//        return new HorseEntityWriter();
       case ZOMBIE_HORSE:
-        return new ZombieHorseLoreWriter();
+//        return new ZombieHorseLoreWriter();
       case SKELETON_HORSE:
-        return new SkeletonHorseLoreWriter();
+//        return new SkeletonHorseLoreWriter();
       case TRADER_LLAMA:
-        return new TraderLlamaLoreWriter();
+//        return new TraderLlamaLoreWriter();
       default:
         return null;
     }

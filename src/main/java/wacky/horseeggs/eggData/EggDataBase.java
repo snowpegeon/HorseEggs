@@ -4,6 +4,7 @@
 
 package wacky.horseeggs.eggData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,6 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -67,7 +67,7 @@ public abstract class EggDataBase {
   /** ツールチップとして表示されるテキストのリスト. */
   @Setter
   private List<String> loreList;
-  /** テイムした人、オーナー（プレイヤー名）. */
+  /** オーナー（テイムした人、プレイヤー名）. */
   private String owner;
   /** チェストが付いているか（ロバ、ラマ、ラマ、行商人のラマ）. */
   private Boolean isCarryingChest;
@@ -166,13 +166,14 @@ public abstract class EggDataBase {
       this.strength = getStrength(absHorse);
 
       this.owner = getOwner(absHorse);
-      
+      this.loreList = new ArrayList<>();
+
       // HorseEgg タグデータ構築
       this.tagDataMap = this.buildTagDataMap();
       this.horseEggTagDataMap = Map.of(EGG_NAME, tagDataMap);
 
       // EntityTag タグデータ構築
-      this.idNamespaceMap = Map.of(dataKeyId, dataKeyMinecraft);
+      this.idNamespaceMap = Map.of(dataKeyId, dataKeyMinecraft + type);
       this.entityTagMap = Map.of(dataKeyEntityTag, idNamespaceMap);
 
       // display タグデータ構築
@@ -211,7 +212,7 @@ public abstract class EggDataBase {
   }
 
   private Map<String, ?> buildTagDataMap() {
-    Map<String, Object> horseEggDataMap = new HashMap<>() {
+    return new HashMap<>() {
       {
         if (Objects.nonNull(name)) {
           put(dataKeyName, name);
@@ -260,7 +261,6 @@ public abstract class EggDataBase {
         }
       }
     };
-    return horseEggDataMap;
   }
 
   private String getArmor(AbstractHorse absHorse) {
@@ -466,7 +466,7 @@ public abstract class EggDataBase {
     return uuid;
   }
 
-  private long getUuidMost(AbstractHorse absHorse) {
+  private Long getUuidMost(AbstractHorse absHorse) {
     Long uuidMost = null;
     if (absHorse.isTamed()) {
       uuidMost = absHorse.getOwner().getUniqueId().getMostSignificantBits();
@@ -507,13 +507,13 @@ public abstract class EggDataBase {
     return isCarryingChest;
   }
 
-  private  Boolean isCarryingChest(HashMap<String, ?> metaData) {
+  private Boolean isCarryingChest(HashMap<String, ?> metaData) {
     Byte hasChest = (Byte) metaData.get(dataKeyChest);
-      return hasChest == 1;
+    return hasChest == 1;
   }
 
   private boolean isSaddled(AbstractHorse absHorse) {
-    boolean hasSaddle = false;
+    Boolean hasSaddle = false;
     if (absHorse instanceof AbstractHorseInventory absHorseInv) {
       hasSaddle = Objects.nonNull(absHorseInv.getSaddle());
     }
@@ -523,7 +523,9 @@ public abstract class EggDataBase {
   private boolean isSaddled(HashMap<String, ?> metaData) {
     boolean hasSaddle = false;
     if (metaData.containsKey(dataKeySaddle)) {
-      hasSaddle = (boolean) metaData.get(dataKeySaddle);
+      if (Objects.nonNull(metaData.get(dataKeySaddle))) {
+        hasSaddle = (boolean) metaData.get(dataKeySaddle);        
+      }
     }
     return hasSaddle;
   }

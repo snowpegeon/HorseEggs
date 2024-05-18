@@ -3,6 +3,7 @@ package wacky.horseeggs;
 import com.github.teruteru128.logger.Logger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Barrel;
@@ -199,9 +200,13 @@ public class HorseEggs extends JavaPlugin implements Listener {
     }
 
     if (item.getType() == Material.GHAST_SPAWN_EGG
-        || item.getType() == Material.PIG_SPAWN_EGG && item.getItemMeta().hasLore()) {
-      this.log.trace(PREF_LOG_TRACE + "item.getItemMeta().getLore().get(0).equals(\"Empty\") ? "
-          + item.getItemMeta().getLore().get(0).equals("Empty"));
+        || item.getType() == Material.PIG_SPAWN_EGG
+        && item.getItemMeta().hasLore()) {
+
+      if (Objects.nonNull(item.getItemMeta().getLore()) && !item.getItemMeta().getLore().isEmpty()) {
+        this.log.trace(PREF_LOG_TRACE + "item.getItemMeta().getLore().get(0).equals(\"Empty\") ? "
+            + item.getItemMeta().getLore().get(0).equals("Empty"));
+      }
 
       if (item.getItemMeta().getLore().get(0).equals("Empty")) {
         this.log.debug(PREF_LOG_DEBUG + "lore[0] is \"Empty\"");

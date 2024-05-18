@@ -33,6 +33,7 @@ import org.bukkit.inventory.LlamaInventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import wacky.horseeggs.HorseEggs;
+import wacky.horseeggs.LoreWriter.factory.LoreWriterFactory;
 import wacky.horseeggs.eggData.EggDataBase;
 import wacky.horseeggs.eggData.factory.EggDataFactory;
 
@@ -273,8 +274,8 @@ public class PlayerInteractListener implements Listener {
         // 馬系の何であるかを識別
         EntityType type = horse.getType();
         EggDataBase eggData = new EggDataFactory().newEggData(type, horse);
-
-        if(Objects.isNull(eggData)){
+        eggData.setLoreList(new LoreWriterFactory().newLoreWriter(type, eggData).generateLore(entity));
+        if (Objects.isNull(eggData)) {
           this.log.error("This EntityType is null.");
           return;
         }
