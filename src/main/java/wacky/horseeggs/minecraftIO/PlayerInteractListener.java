@@ -38,6 +38,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import wacky.horseeggs.HorseEggs;
+import wacky.horseeggs.LoreWriter.LoreWriter;
 import wacky.horseeggs.LoreWriter.factory.LoreWriterFactory;
 import wacky.horseeggs.eggData.EggDataBase;
 import wacky.horseeggs.eggData.factory.EggDataFactory;
@@ -329,7 +330,7 @@ public class PlayerInteractListener implements Listener {
 
         this.log.trace(PREF_LOG_TRACE + "type=" + type);
         this.log.trace(PREF_LOG_TRACE + "eggData=" + eggData);
-        ItemStack horseegg = new ItemStack(eggData.getEmptyEggMaterial());
+        ItemStack horseegg = new ItemStack(eggData.getFilledEggMaterial());
 //        ItemStack horseegg = null;
 //        switch (type) {
 //          // 見た目を馬卵にする方法
@@ -371,8 +372,7 @@ public class PlayerInteractListener implements Listener {
         this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg);
 
         // 保存タグ情報の構築
-        ItemStack stack = horseegg.clone();
-        RtagEditor<ItemStack, RtagItem> editor = new RtagItem(stack);
+        RtagEditor<ItemStack, RtagItem> editor = new RtagItem(horseegg);
 
         editor.set(eggData.getIdNamespaceMap());
         this.log.trace(PREF_LOG_TRACE + "IdNamespaceMap: " + eggData.getIdNamespaceMap());
@@ -621,11 +621,12 @@ public class PlayerInteractListener implements Listener {
           this.log.info("horseEgg ItemMeta is NULL.End.");
           return;
         }
+        LoreWriter loreWriter = LoreWriterFactory.newLoreWriter(eggData.getEntityType(), eggData);
         this.log.trace(PREF_LOG_TRACE + "ItemMeta meta <- horseegg.getItemMeta()");
-        meta.setDisplayName(eggData.getDisplayName());
+        meta.setDisplayName(Objects.nonNull(eggData.getName()) ? eggData.getName() : eggData.getDisplayName());
 //        meta.setDisplayName(horse.getCustomName());
         this.log.trace(PREF_LOG_TRACE + "meta.setDisplayName(eggData.getDisplayName())");
-        meta.setLore(eggData.getLoreList());
+        meta.setLore(loreWriter.getLoreList());
 //        meta.setLore(loreList);
         this.log.trace(PREF_LOG_TRACE + "meta.setLore(eggData.getLoreList())");
         this.log.trace(PREF_LOG_TRACE + "meta=" + meta);
