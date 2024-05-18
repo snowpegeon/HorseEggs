@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
@@ -32,223 +33,195 @@ import org.bukkit.inventory.LlamaInventory;
  * <p>
  * アイテムHorseEggの基底クラス.
  * </p>
- *
  */
 @Getter
 public abstract class EggDataBase {
 
   /**
    * <p>
-   * スポーンエッグをHorseEggと識別するキー.
-   * {@link String}
+   * スポーンエッグをHorseEggと識別するキー. {@link String}
    * </p>
    */
   public static final String ENTITY_EGG_CONTENT_KEY = "EntityEgg";
 
   /**
    * <p>
-   * HorseEggの中身を空と定義する値.
-   * {@link String}
+   * HorseEggの中身を空と定義する値. {@link String}
    * </p>
    */
   public static final String ENTITY_EGG_CONTENT_EMPTY = "Empty";
 
   /**
    * <p>
-   * HorseEggに付属する情報を引き出すためのNBTタグのキー.
-   * {@link String}
+   * HorseEggに付属する情報を引き出すためのNBTタグのキー. {@link String}
    * </p>
    */
   public static final String ENTITY_EGG_NBT_KEY = "EntityEgg_NBT";
 
   /**
    * <p>
-   * HorseEggの同時出し入れ対策のためのタイムスタンプを取得するキー.
-   * {@link String}
+   * HorseEggの同時出し入れ対策のためのタイムスタンプを取得するキー. {@link String}
    * </p>
    */
   public static final String ENTITY_EGG_TIMESTAMP_KEY = "EntityEggTimeStump";
 
   /**
    * <p>
-   * HorseEggの表示名.
-   * {@link String}
+   * HorseEggの表示名. {@link String}
    * </p>
    */
   public static final String EGG_NAME = "HorseEgg";
 
   /**
    * <p>
-   * 対象のエンティティがインベントリを保持しているか.
-   * {@link boolean}
+   * 対象のエンティティがインベントリを保持しているか. {@link boolean}
    * </p>
    */
   public boolean hasInventory = false;
 
   /**
    * <p>
-   * Loreを出すときの1番目のデータキー.
-   * {@link String}
+   * Loreを出すときの1番目のデータキー. {@link String}
    * </p>
    */
   private final String dataKeyDisplay = "display";
 
   /**
    * <p>
-   * Loreを出すときの2番目のデータキー.
-   * {@link String}
+   * Loreを出すときの2番目のデータキー. {@link String}
    * </p>
    */
   private final String dataKeyLore = "Lore";
 
   /**
    * <p>
-   * EntityのIDを出すときの1番目のデータキー.
-   * {@link String}
+   * EntityのIDを出すときの1番目のデータキー. {@link String}
    * </p>
    */
   private final String dataKeyEntityTag = "EntityTag";
 
   /**
    * <p>
-   * EntityのIDを出すときの2番目のデータキー.
-   * {@link String}
+   * EntityのIDを出すときの2番目のデータキー. {@link String}
    * </p>
    */
   private final String dataKeyId = "id";
 
   /**
    * <p>
-   * minecraft: のnamespaceを出すための文字列.
-   * {@link String}
+   * minecraft: のnamespaceを出すための文字列. {@link String}
    * </p>
    */
   private final String dataKeyMinecraft = NamespacedKey.MINECRAFT + ":";
 
   /**
    * <p>
-   * Chest有無のデータを取得するためのデータキー.
-   * {@link String}
+   * Chest有無のデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyChest = "Chest";
 
   /**
    * <p>
-   * 速さのデータを取得するためのデータキー.
-   * {@link String}
+   * 速さのデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeySpeed = "Speed";
 
   /**
    * <p>
-   * HPのデータを取得するためのデータキー.
-   * {@link String}
+   * HPのデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyHealth = "Health";
 
   /**
    * <p>
-   * UUIDLeastのデータを取得するためのデータキー.
-   * {@link String}
+   * UUIDLeastのデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyUuidLeast = "UUIDLeast";
 
   /**
    * <p>
-   * UUIDMostのデータを取得するためのデータキー.
-   * {@link String}
+   * UUIDMostのデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyUuidMost = "UUIDMost";
 
   /**
    * <p>
-   * 毛色データを取得するためのデータキー.
-   * {@link String}
+   * 毛色データを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyColor = "Color";
 
   /**
    * <p>
-   * ジャンプ高さのデータを取得するためのデータキー.
-   * {@link String}
+   * ジャンプ高さのデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyJump = "Jump";
 
   /**
    * <p>
-   * 最大HPのデータを取得するためのデータキー.
-   * {@link String}
+   * 最大HPのデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyMaxHealth = "MaxHealth";
 
   /**
    * <p>
-   * エンティティの名前のデータを取得するためのデータキー.
-   * {@link String}
+   * エンティティの名前のデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyName = "Name";
 
   /**
    * <p>
-   * エンティティの種別のデータを取得するためのデータキー.
-   * {@link String}
+   * エンティティの種別のデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyType = "Type";
 
   /**
    * <p>
-   * Variantデータを取得するためのデータキー.
-   * {@link String}
+   * Variantデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyVariant = "Variant";
 
   /**
    * <p>
-   * 鎧のデータを取得するためのデータキー.
-   * {@link String}
+   * 鎧のデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyArmor = "Armor";
 
   /**
    * <p>
-   * 模様のデータを取得するためのデータキー.
-   * {@link String}
+   * 模様のデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyStyle = "Style";
 
   /**
    * <p>
-   * 鞍の着脱のデータを取得するためのデータキー.
-   * {@link String}
+   * 鞍の着脱のデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeySaddle = "Saddle";
 
   /**
    * <p>
-   * 収納領域のデータを取得するためのデータキー.
-   * {@link String}
+   * 収納領域のデータを取得するためのデータキー. {@link String}
    * </p>
    */
   private final String dataKeyStrength = "Strength";
 
   /**
    * <p>
-   * ツールチップとして表示されるテキストのリスト.
-   * {@link List}
+   * ツールチップとして表示されるテキストのリスト. {@link List}
    * </p>
    */
   @Setter
@@ -256,176 +229,154 @@ public abstract class EggDataBase {
 
   /**
    * <p>
-   * オーナー（テイムした人、プレイヤー名）.
-   * {@link String}
+   * オーナー（テイムした人、プレイヤー名）. {@link String}
    * </p>
    */
   private String owner;
 
   /**
    * <p>
-   * チェストが付いているか（ロバ、ラマ、ラマ、行商人のラマ）.
-   * {@link String}
+   * チェストが付いているか（ロバ、ラマ、ラマ、行商人のラマ）. {@link String}
    * </p>
    */
   private Boolean isCarryingChest;
 
   /**
    * <p>
-   * ブロック上で移動する時の速度.
-   * {@link Double}
+   * ブロック上で移動する時の速度. {@link Double}
    * </p>
    */
   private Double speed;
 
   /**
    * <p>
-   * 現在体力.
-   * {@link Double}
+   * 現在体力. {@link Double}
    * </p>
    */
   private Double health;
 
   /**
    * <p>
-   * エンティティの色（ウマ、ラマ、行商人のラマ）.
-   * {@link String}
+   * エンティティの色（ウマ、ラマ、行商人のラマ）. {@link String}
    * </p>
    */
   private String color;
 
   /**
    * <p>
-   * 跳躍力.
-   * {@link Double}
+   * 跳躍力. {@link Double}
    * </p>
    */
   private Double jump;
 
   /**
    * <p>
-   * 最大体力.
-   * {@link Double}
+   * 最大体力. {@link Double}
    * </p>
    */
   private Double maxHealth;
 
   /**
    * <p>
-   * 名札で付けた名前.
-   * {@link String}
+   * 名札で付けた名前. {@link String}
    * </p>
    */
   private String name;
 
   /**
    * <p>
-   * サドル（ウマ、ロバ、ラバ）.
-   * {@link Boolean}
+   * サドル（ウマ、ロバ、ラバ）. {@link Boolean}
    * </p>
    */
   private Boolean isSaddled;
 
   /**
    * <p>
-   * Variant.
-   * {@link String}
+   * Variant. {@link String}
    * </p>
    */
   private String variant;
 
   /**
    * <p>
-   * エンティティタイプ.
-   * {@link String}
+   * エンティティタイプ. {@link String}
    * </p>
    */
   private String type;
 
   /**
    * <p>
-   * テイムしたプレイヤーのUUID.
-   * {@link Long}
+   * テイムしたプレイヤーのUUID. {@link Long}
    * </p>
    */
   private Long uuidLeast;
 
   /**
    * <p>
-   * テイムしたプレイヤーのUUID.
-   * {@link Long}
+   * テイムしたプレイヤーのUUID. {@link Long}
    * </p>
    */
   private Long uuidMost;
 
   /**
    * <p>
-   * 装備（ウマ：鎧、ラマ：カーペット）.
-   * {@link String}
+   * 装備（ウマ：鎧、ラマ：カーペット）. {@link String}
    * </p>
    */
   private String armor;
 
   /**
    * <p>
-   * 模様（ウマ）.
-   * {@link String}
+   * 模様（ウマ）. {@link String}
    * </p>
    */
   private String style;
 
   /**
    * <p>
-   * 運搬力（ラマ、行商人のラマ）.
-   * {@link Integer}
+   * 運搬力（ラマ、行商人のラマ）. {@link Integer}
    * </p>
    */
   private Integer strength;
 
   /**
    * <p>
-   * {@link #dataKeyId}タグにつけるデータマップの中身.
-   * {@link Map}
+   * {@link #dataKeyId}タグにつけるデータマップの中身. {@link Map}
    * </p>
    */
   private Map<String, ?> tagDataMap;
 
   /**
    * <p>
-   * {@link #dataKeyId}を直接埋め込むためのデータマップ.
-   * {@link Map}
+   * {@link #dataKeyId}を直接埋め込むためのデータマップ. {@link Map}
    * </p>
    */
   private Map<String, ?> horseEggTagDataMap;
 
   /**
    * <p>
-   * {@link #dataKeyId}を構築するMap.
-   * {@link Map}
+   * {@link #dataKeyId}を構築するMap. {@link Map}
    * </p>
    */
   private Map<String, ?> idNamespaceMap;
 
   /**
    * <p>
-   * {@link #dataKeyEntityTag}を直接埋め込むためのデータマップ.
-   * {@link Map}
+   * {@link #dataKeyEntityTag}を直接埋め込むためのデータマップ. {@link Map}
    * </p>
    */
   private Map<String, ?> entityTagMap;
 
   /**
    * <p>
-   * {@link #dataKeyDisplay}を直接埋め込むためのデータマップ.
-   * {@link Map}
+   * {@link #dataKeyDisplay}を直接埋め込むためのデータマップ. {@link Map}
    * </p>
    */
   private Map<String, ?> displayMap;
 
   /**
    * <p>
-   * HorseEggに関連するタグを直接埋め込むためのデータマップ.
-   * {@link List}
+   * HorseEggに関連するタグを直接埋め込むためのデータマップ. {@link List}
    * </p>
    */
   private List<?> horseEggTagDataList;
@@ -434,12 +385,11 @@ public abstract class EggDataBase {
    * デフォルトコンストラクタ.
    *
    * @deprecated
-   *             <p>
-   *             このコンストラクタは通常使用しないでください。<br>
-   *             使用目的別で、各コンストラクタを呼び出してください。<br>
-   *             キャプチャー：{@link EggDataBase#EggDataBase(AbstractHorse)}<br>
-   *             リリース：{@link EggDataBase#EggDataBase(HashMap)}
-   *             </p>
+   *     <p>
+   *     このコンストラクタは通常使用しないでください。<br> 使用目的別で、各コンストラクタを呼び出してください。<br>
+   *     キャプチャー：{@link EggDataBase#EggDataBase(AbstractHorse)}<br>
+   *     リリース：{@link EggDataBase#EggDataBase(HashMap)}
+   *     </p>
    */
   public EggDataBase() {
     this.isCarryingChest = null;
@@ -460,8 +410,7 @@ public abstract class EggDataBase {
   }
 
   /**
-   * {@link AbstractHorse}を利用したコンストラクタ.<br>
-   * 実体の馬からHorseEggを利用するために使用.
+   * {@link AbstractHorse}を利用したコンストラクタ.<br> 実体の馬からHorseEggを利用するために使用.
    *
    * @param absHorse {@link AbstractHorse}
    */
@@ -510,8 +459,7 @@ public abstract class EggDataBase {
   }
 
   /**
-   * {@link HashMap}を利用したコンストラクタ.<br>
-   * HorseEggのアイテムから実体を作るときに使用.
+   * {@link HashMap}を利用したコンストラクタ.<br> HorseEggのアイテムから実体を作るときに使用.
    *
    * @param metaData {@link HashMap}
    */
@@ -652,7 +600,7 @@ public abstract class EggDataBase {
       } else if (absHorse instanceof LlamaInventory llamaInv) {
         item = llamaInv.getDecor();
       }
-      if(Objects.nonNull(item)){
+      if (Objects.nonNull(item)) {
         armor = item.getType().name();
       }
     }
@@ -761,7 +709,7 @@ public abstract class EggDataBase {
   private Double getMaxHealth(AbstractHorse absHorse) {
     AttributeInstance maxHealth = absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH);
     Double health = null;
-    if(Objects.nonNull(maxHealth)){
+    if (Objects.nonNull(maxHealth)) {
       health = maxHealth.getValue();
     }
     return health;
@@ -826,7 +774,12 @@ public abstract class EggDataBase {
    * @return {@link Double} 速度.
    */
   private Double getSpeed(AbstractHorse absHorse) {
-    return absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+    Double speed = null;
+    AttributeInstance speedInstance = absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+    if (Objects.nonNull(speedInstance)) {
+      speed = speedInstance.getBaseValue();
+    }
+    return speed;
   }
 
   /**
@@ -917,6 +870,7 @@ public abstract class EggDataBase {
    * @param metaData {@link HashMap} 卵のItemStackから取得されたメタデータ.
    * @return {@link String} 種類.
    */
+  @Nullable
   private String getType(HashMap<String, ?> metaData) {
     String type = null;
     if (metaData.containsKey(dataKeyType)) {
@@ -931,11 +885,12 @@ public abstract class EggDataBase {
    * @param absHorse {@link AbstractHorse} エンティティ本体.
    * @return {@link Long} 飼い主のUUIDLeast.
    */
+  @Nullable
   private Long getUuidLeast(AbstractHorse absHorse) {
     Long uuidLeast = null;
     if (absHorse.isTamed()) {
       AnimalTamer owner = absHorse.getOwner();
-      if(Objects.nonNull(owner)){
+      if (Objects.nonNull(owner)) {
         uuidLeast = owner.getUniqueId().getLeastSignificantBits();
       }
     }
@@ -948,6 +903,7 @@ public abstract class EggDataBase {
    * @param metaData {@link HashMap} 卵のItemStackから取得されたメタデータ.
    * @return {@link Long} 飼い主のUUIDLeast.
    */
+  @Nullable
   private Long getUuidLeast(HashMap<String, ?> metaData) {
     Long uuid = null;
     if (metaData.containsKey(dataKeyUuidLeast)) {
@@ -962,11 +918,12 @@ public abstract class EggDataBase {
    * @param absHorse {@link AbstractHorse} エンティティ本体.
    * @return {@link Long} 飼い主のUUIDMost.
    */
+  @Nullable
   private Long getUuidMost(AbstractHorse absHorse) {
     Long uuidMost = null;
     if (absHorse.isTamed()) {
       AnimalTamer owner = absHorse.getOwner();
-      if(Objects.nonNull(owner)){
+      if (Objects.nonNull(owner)) {
         uuidMost = owner.getUniqueId().getMostSignificantBits();
       }
     }
@@ -979,7 +936,8 @@ public abstract class EggDataBase {
    * @param metaData {@link HashMap} 卵のItemStackから取得されたメタデータ.
    * @return {@link Long} 飼い主のUUIDMost.
    */
-  private long getUuidMost(HashMap<String, ?> metaData) {
+  @Nullable
+  private Long getUuidMost(HashMap<String, ?> metaData) {
     Long uuidMost = null;
     if (metaData.containsKey(dataKeyUuidMost)) {
       uuidMost = (long) metaData.get(dataKeyUuidMost);
@@ -992,10 +950,7 @@ public abstract class EggDataBase {
    *
    * @param absHorse {@link AbstractHorse} エンティティ本体.
    * @return {@link String} Variant.
-   *
-   * @deprecated
-   *     このメソッドは旧式データの取得のため残しているものです.<br>
-   *     通常は使わないでください.
+   * @deprecated このメソッドは旧式データの取得のため残しているものです.<br> 通常は使わないでください.
    */
   private String getVariant(AbstractHorse absHorse) {
     // NOTE: 実装をtoStringからnameに変更してる
@@ -1007,11 +962,9 @@ public abstract class EggDataBase {
    *
    * @param metaData {@link HashMap} 卵のItemStackから取得されたメタデータ.
    * @return {@link String} Variant.
-   *
-   * @deprecated
-   *     このメソッドは旧式データの取得のため残しているものです.<br>
-   *     通常は使わないでください.
+   * @deprecated このメソッドは旧式データの取得のため残しているものです.<br> 通常は使わないでください.
    */
+  @Nullable
   private String getVariant(HashMap<String, ?> metaData) {
     String variant = null;
     if (metaData.containsKey(dataKeyVariant)) {
@@ -1026,6 +979,7 @@ public abstract class EggDataBase {
    * @param absHorse {@link AbstractHorse} エンティティ本体.
    * @return {@link Boolean} チェストの有無.
    */
+  @Nullable
   private Boolean isCarryingChest(AbstractHorse absHorse) {
     Boolean isCarryingChest = null;
     if (absHorse instanceof ChestedHorse chestedHorse) {
@@ -1069,7 +1023,7 @@ public abstract class EggDataBase {
     boolean hasSaddle = false;
     if (metaData.containsKey(dataKeySaddle)) {
       if (Objects.nonNull(metaData.get(dataKeySaddle))) {
-        hasSaddle = (boolean) metaData.get(dataKeySaddle);        
+        hasSaddle = (boolean) metaData.get(dataKeySaddle);
       }
     }
     return hasSaddle;
