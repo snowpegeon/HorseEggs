@@ -692,12 +692,6 @@ public class PlayerInteractListener implements Listener {
         + "PlayerInteractListener.void:onPlayerInteract(PlayerInteractEvent)");
     this.log.debug(PREF_LOG_DEBUG + "[IN PARAM]event=" + event.toString());
 
-    Player player = event.getPlayer();
-    this.log.trace(PREF_LOG_TRACE + "Player player <- event.getPlayer()");
-
-    PlayerInventory inv = player.getInventory();
-    this.log.trace(PREF_LOG_TRACE + "PlayerInventory inv <- player.getInventory()");
-
     ItemStack item = event.getItem();
     this.log.trace(PREF_LOG_TRACE + "ItemStack item = event.getItem()");
 
@@ -738,6 +732,8 @@ public class PlayerInteractListener implements Listener {
         return;
       }
 
+      Player player = event.getPlayer();
+      this.log.trace(PREF_LOG_TRACE + "Player player <- event.getPlayer()");
       this.log.trace(PREF_LOG_TRACE + "!player.isSneaking() ? " + !player.isSneaking());
       this.log.trace(PREF_LOG_TRACE + "plugin.isClickable(event.getClickedBlock()) ? "
           + plugin.isClickable(event.getClickedBlock()));
@@ -762,26 +758,19 @@ public class PlayerInteractListener implements Listener {
       }
 
       // 馬がめり込まないようにしたい
-      Block centerBlock = event.getClickedBlock().getRelative(event.getBlockFace());
-      this.log.trace(PREF_LOG_TRACE
-          + "Block centerBlock <- event.getClickedBlock().getRelative(event.getBlockFace())");
-
       Boolean[][] blocks = new Boolean[5][5];
       this.log.trace(PREF_LOG_TRACE + "Boolean[][] blocks <- new Boolean[5][5]");
-
       Arrays.fill(blocks[0], false);
       this.log.trace(PREF_LOG_TRACE + "Arrays.fill(blocks[0], false)");
-
       Arrays.fill(blocks[4], false);
       this.log.trace(PREF_LOG_TRACE + "Arrays.fill(blocks[4], false)");
 
+      this.log.trace(PREF_LOG_TRACE + "[LOOP START](int i = 1; i <= 3; i++)");
+      Block centerBlock = event.getClickedBlock().getRelative(event.getBlockFace());
+      this.log.trace(PREF_LOG_TRACE
+          + "Block centerBlock <- event.getClickedBlock().getRelative(event.getBlockFace())");
       boolean canSpawnCenter = true;
       this.log.trace(PREF_LOG_TRACE + "boolean canSpawnCenter <- true");
-
-      this.log.trace(PREF_LOG_TRACE + "[LOOP START](int i = 1; i <= 3; i++)");
-
-      Location loc = centerBlock.getLocation();
-      this.log.trace(PREF_LOG_TRACE + "Location loc <- centerBlock.getLocation()");
       for (int i = 1; i <= 3; i++) {
         Arrays.fill(blocks[i], false);
 
@@ -802,6 +791,8 @@ public class PlayerInteractListener implements Listener {
       }
       this.log.trace(PREF_LOG_TRACE + "[LOOP END](int i = 1; i <= 3; i++)");
 
+      Location loc = centerBlock.getLocation();
+      this.log.trace(PREF_LOG_TRACE + "Location loc <- centerBlock.getLocation()");
       this.log.trace(PREF_LOG_TRACE + "canSpawnCenter ? " + canSpawnCenter);
       if (canSpawnCenter) {
         loc.add(0.5, 0, 0.5);
@@ -853,6 +844,8 @@ public class PlayerInteractListener implements Listener {
           + (plugin.config.getBoolean("single-use")));
       this.log.trace(PREF_LOG_TRACE + "item.getAmount() == 1 ? " + (item.getAmount() == 1));
 
+      PlayerInventory inv = player.getInventory();
+      this.log.trace(PREF_LOG_TRACE + "PlayerInventory inv <- player.getInventory()");
       int amount = item.getAmount();
       this.log.trace(PREF_LOG_TRACE + "int amount = item.getAmount()");
       if (plugin.config.getBoolean("single-use")) {
