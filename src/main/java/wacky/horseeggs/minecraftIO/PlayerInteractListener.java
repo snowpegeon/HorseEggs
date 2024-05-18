@@ -1,23 +1,31 @@
 package wacky.horseeggs.minecraftIO;
 
+import static org.bukkit.Material.GLOWSTONE;
+import static org.bukkit.Material.ICE;
+import static org.bukkit.Material.OCHRE_FROGLIGHT;
+import static org.bukkit.Material.PEARLESCENT_FROGLIGHT;
+import static org.bukkit.Material.REDSTONE_BLOCK;
+import static org.bukkit.Material.REDSTONE_LAMP;
+import static org.bukkit.Material.SEA_LANTERN;
+import static org.bukkit.Material.SHROOMLIGHT;
+import static org.bukkit.Material.TNT;
+import static org.bukkit.Material.VERDANT_FROGLIGHT;
+
 import com.github.teruteru128.logger.Logger;
 import com.saicone.rtag.RtagEditor;
 import com.saicone.rtag.RtagItem;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.AbstractHorse;
-import org.bukkit.entity.AnimalTamer;
-import org.bukkit.entity.ChestedHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
-import org.bukkit.entity.Llama;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -25,11 +33,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.AbstractHorseInventory;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.LlamaInventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import wacky.horseeggs.HorseEggs;
@@ -39,24 +44,62 @@ import wacky.horseeggs.eggData.factory.EggDataFactory;
 
 
 /**
- * HorseEggsのプレイヤーインタラクトリスナークラス.
+ * <p>
+ * HorseEggsのプレイヤーインタラクトリスナークラス. {@link Listener}クラスを継承して、HorseEggsの<br>
+ * {@link PlayerInteractEntityEvent}を実行する実装クラス.
+ * </p>
  */
 public class PlayerInteractListener implements Listener {
-  /** ログのプレフィックス(TRACE). */
-  private static final String PREF_LOG_TRACE = "[TRACE] ";
-  /** ログのプレフィックス(DEBUG). */
-  private static final String PREF_LOG_DEBUG = "[DEBUG] ";
-  /** ログの開始. */
-  private static final String PREF_LOG_START = "[START] ";
-  /** ログの終了. */
-  private static final String PREF_LOG_END = "[END] ";
-  /** このプラグイン. */
-  private HorseEggs plugin;
-  /** ロガー. */
-  private Logger log;
 
   /**
-   * コンストラクタ.
+   * <p>
+   * ログのプレフィックス(TRACE). {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_TRACE = "[TRACE] ";
+
+  /**
+   * <p>
+   * ログのプレフィックス(DEBUG). {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_DEBUG = "[DEBUG] ";
+
+  /**
+   * <p>
+   * ログの開始プレフィックス. {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_START = "[START] ";
+
+  /**
+   * <p>
+   * ログの終了プレフィックス. {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_END = "[END] ";
+
+  /**
+   * <p>
+   * プラグイン本体.<br> {@link org.bukkit.plugin.Plugin}を継承. {@link HorseEggs}
+   * </p>
+   */
+  private final HorseEggs plugin;
+  /**
+   * <p>
+   * ログを出力するためのLogger.<br> {@link Logger}
+   * </p>
+   */
+  private final Logger log;
+
+  private static final Set<Material> SUFFOCATING_MATERIALS = Collections.unmodifiableSet(
+      EnumSet.of(TNT, ICE, GLOWSTONE, REDSTONE_BLOCK, SEA_LANTERN, SHROOMLIGHT, REDSTONE_LAMP,
+          OCHRE_FROGLIGHT, PEARLESCENT_FROGLIGHT, VERDANT_FROGLIGHT));
+
+  /**
+   * <p>
+   * コンストラクタ.<br> ここでこのイベントを鯖へ登録処理を実施.
+   * </p>
    *
    * @param plugin {@link wacky.horseeggs.HorseEggs}
    * @param logger {@link com.github.teruteru128.logger.Logger}
@@ -68,7 +111,7 @@ public class PlayerInteractListener implements Listener {
     this.log.debug(PREF_LOG_DEBUG + PREF_LOG_START
         + "PlayerInteractListener.PlayerInteractListener(HorseEggs, Logger)");
     this.log.trace(PREF_LOG_TRACE + "[IN PARAM]plugin=" + plugin.toString());
-    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]_logger=" + logger.toString());
+    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]_logger=" + logger);
 
     this.plugin.getServer().getPluginManager().registerEvents(this, plugin); // a
     this.log.trace(
@@ -79,7 +122,10 @@ public class PlayerInteractListener implements Listener {
   }
 
   /**
-   * プレーヤーがエンティティを右クリックしたときに呼び出されるイベントの処理.
+   * <p>
+   * プレーヤーがエンティティを右クリックしたときに呼び出されるイベントの処理.<br>
+   * ここで、MOBをHorseEggs{@link EggDataBase}へのキャプチャーする処理を実施してる.
+   * </p>
    *
    * @param event {@link org.bukkit.event.player.PlayerInteractEntityEvent}
    */
@@ -102,23 +148,23 @@ public class PlayerInteractListener implements Listener {
     // イベント中の情報を取得
     // このイベント中のプレイヤー
     Player player = event.getPlayer();
-    this.log.trace(PREF_LOG_TRACE + "player=" + player.toString());
+    this.log.trace(PREF_LOG_TRACE + "player=" + player);
     // このイベント中のプレイヤーのイベントリ情報
     PlayerInventory inv = player.getInventory();
-    this.log.trace(PREF_LOG_TRACE + "inv=" + inv.toString());
+    this.log.trace(PREF_LOG_TRACE + "inv=" + inv);
     // このイベント中で「使用（右クリック）」されたエンティティ情報
     Entity entity = event.getRightClicked();
-    this.log.trace(PREF_LOG_TRACE + "entity=" + entity.toString());
-    // 馬エンティティ格納用
-    AbstractHorse horse;
-    this.log.trace(PREF_LOG_TRACE + "horse");
+    this.log.trace(PREF_LOG_TRACE + "entity=" + entity);
     // このイベント中のプレイヤーのメインハンドのアイテムスタック
     ItemStack itemInHand = player.getInventory().getItemInMainHand();
-    this.log.trace(PREF_LOG_TRACE + "itemInHand=" + itemInHand.toString());
+    this.log.trace(PREF_LOG_TRACE + "itemInHand=" + itemInHand);
 
     // 2-1.使用（右クリック）のアイテムがキャッチ済HorseEggかを検査する
     // キャッチ済みの場合はリリース処理を行う。
     // 馬卵を他のエンティティ、馬に使ったとき
+    // 馬エンティティ格納用
+    AbstractHorse horse;
+    this.log.trace(PREF_LOG_TRACE + "horse");
     this.log
         .trace(PREF_LOG_TRACE + "plugin.isHorseEgg(itemInHand) ? " + plugin.isHorseEgg(itemInHand));
     if (plugin.isHorseEgg(itemInHand)) {
@@ -149,10 +195,10 @@ public class PlayerInteractListener implements Listener {
 
       // 「使用（右クリック）」された対象のロケーションを取得
       Location loc = event.getRightClicked().getLocation();
-      this.log.trace(PREF_LOG_TRACE + "loc=" + loc.toString());
+      this.log.trace(PREF_LOG_TRACE + "loc=" + loc);
       // 馬のリリースを行う
-      new ReleaseHorse(itemInHand, loc, log);
-      this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.");
+      ReleaseHorse.releseHorseFromHorseEgg(itemInHand, loc, log);
+      this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.releseHorseFromHorseEgg.");
       // アイテムの現在合計値を取得
       int amount = itemInHand.getAmount();
       this.log.trace(PREF_LOG_TRACE + "amount=" + amount);
@@ -244,7 +290,7 @@ public class PlayerInteractListener implements Listener {
         // 馬系の場合
         // 馬エンティティに変換
         horse = (AbstractHorse) entity;
-        this.log.trace(PREF_LOG_TRACE + "horse=" + horse.toString());
+        this.log.trace(PREF_LOG_TRACE + "horse=" + horse);
       } else {
         // 馬系以外は処理を終了
         this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END
@@ -274,13 +320,14 @@ public class PlayerInteractListener implements Listener {
         // 馬系の何であるかを識別
         EntityType type = horse.getType();
         EggDataBase eggData = new EggDataFactory().newEggData(type, horse);
-        eggData.setLoreList(new LoreWriterFactory().newLoreWriter(type, eggData).generateLore(entity));
+        eggData.setLoreList(
+            new LoreWriterFactory().newLoreWriter(type, eggData).generateLore(entity));
         if (Objects.isNull(eggData)) {
           this.log.error("This EntityType is null.");
           return;
         }
 
-        this.log.trace(PREF_LOG_TRACE + "type=" + type.toString());
+        this.log.trace(PREF_LOG_TRACE + "type=" + type);
         this.log.trace(PREF_LOG_TRACE + "eggData=" + eggData);
         ItemStack horseegg = new ItemStack(eggData.getEmptyEggMaterial());
 //        ItemStack horseegg = null;
@@ -321,11 +368,11 @@ public class PlayerInteractListener implements Listener {
 //                + "PlayerInteractListener.void:onPlayerInteractEntity(PlayerInteractEntityEvent)");
 //            return;
 //        }
-        this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg.toString());
+        this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg);
 
         // 保存タグ情報の構築
         ItemStack stack = horseegg.clone();
-        RtagEditor editor = new RtagItem(stack);
+        RtagEditor<ItemStack, RtagItem> editor = new RtagItem(stack);
 
         editor.set(eggData.getIdNamespaceMap());
         this.log.trace(PREF_LOG_TRACE + "IdNamespaceMap: " + eggData.getIdNamespaceMap());
@@ -453,7 +500,7 @@ public class PlayerInteractListener implements Listener {
         this.log.trace(PREF_LOG_TRACE + "Location loc <- horse.getLocation()");
         loc.add(0, 0.5, 0);
         this.log.trace(PREF_LOG_TRACE + "loc.add(0, 0.5, 0)");
-        this.log.trace(PREF_LOG_TRACE + "loc=" + loc.toString());
+        this.log.trace(PREF_LOG_TRACE + "loc=" + loc);
 
 //        this.log.trace(PREF_LOG_TRACE + "horse.isTamed() ? " + horse.isTamed());
 //        if (horse.isTamed()) {
@@ -569,6 +616,11 @@ public class PlayerInteractListener implements Listener {
 //        this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg.toString());
 //
         ItemMeta meta = horseegg.getItemMeta();
+        // ItemMetaとれなかったら、そもそもおかしいので処理終了
+        if (Objects.isNull(meta)) {
+          this.log.info("horseEgg ItemMeta is NULL.End.");
+          return;
+        }
         this.log.trace(PREF_LOG_TRACE + "ItemMeta meta <- horseegg.getItemMeta()");
         meta.setDisplayName(eggData.getDisplayName());
 //        meta.setDisplayName(horse.getCustomName());
@@ -576,11 +628,11 @@ public class PlayerInteractListener implements Listener {
         meta.setLore(eggData.getLoreList());
 //        meta.setLore(loreList);
         this.log.trace(PREF_LOG_TRACE + "meta.setLore(eggData.getLoreList())");
-        this.log.trace(PREF_LOG_TRACE + "meta=" + meta.toString());
+        this.log.trace(PREF_LOG_TRACE + "meta=" + meta);
 
         horseegg.setItemMeta(meta);
         this.log.trace(PREF_LOG_TRACE + "horseegg.setItemMeta(meta)");
-        this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg.toString());
+        this.log.trace(PREF_LOG_TRACE + "horseegg=" + horseegg);
 
         this.log.trace(PREF_LOG_TRACE + "inv.getItemInMainHand().getAmount() == 1 ? "
             + (inv.getItemInMainHand().getAmount() == 1));
@@ -612,15 +664,12 @@ public class PlayerInteractListener implements Listener {
   }
 
   /**
-   * プレイヤーがオブジェクトまたは空気に対して呼び出されるイベント処理<br>
-   * ハンドごとに 1 回発生する可能性があります。 <br>
-   * ハンドは getHand() を使用して決定できます。<br>
+   * <p>
+   * プレイヤーがオブジェクトまたは空気に対して呼び出されるイベント処理<br> ハンドごとに 1 回発生する可能性があります。 <br> ハンドは getHand()
+   * を使用して決定できます。<br>
    * <br>
-   * このイベントは、バニラの動作が何もしない場合 (空気対してなど)、キャンセルされたものとして発生します。<br>
-   * 誤解を避けるために言うと、これは、後続のインタラクション アクティビティ (ブロックの配置など)<br>
-   * が発生したときではなく、後続のコードが実行されないサーバーによる何らかの予測の結果として<br>
-   * イベントが発生した場合にのみ、イベントがキャンセル状態になることを意味します。<br>
-   * 不正な位置 (BlockCanBuildEvent など) では失敗します。.
+   * ここでは、HorseEggs{@link EggDataBase}に入った馬のリリース処理を行っている.
+   * </p>
    *
    * @param event {@link org.bukkit.event.player.PlayerInteractEvent}
    */
@@ -629,12 +678,6 @@ public class PlayerInteractListener implements Listener {
     this.log.debug(PREF_LOG_DEBUG + PREF_LOG_START
         + "PlayerInteractListener.void:onPlayerInteract(PlayerInteractEvent)");
     this.log.debug(PREF_LOG_DEBUG + "[IN PARAM]event=" + event.toString());
-
-    Player player = event.getPlayer();
-    this.log.trace(PREF_LOG_TRACE + "Player player <- event.getPlayer()");
-
-    PlayerInventory inv = player.getInventory();
-    this.log.trace(PREF_LOG_TRACE + "PlayerInventory inv <- player.getInventory()");
 
     ItemStack item = event.getItem();
     this.log.trace(PREF_LOG_TRACE + "ItemStack item = event.getItem()");
@@ -660,8 +703,9 @@ public class PlayerInteractListener implements Listener {
       event.setUseItemInHand(Result.DENY);
       this.log.trace(PREF_LOG_TRACE + "event.setUseItemInHand(Result.DENY)");
 
-      this.log.trace(PREF_LOG_TRACE + "event.isCancelled() ? " + event.isCancelled());
-      if (event.isCancelled()) {
+      this.log.trace(
+          PREF_LOG_TRACE + "event.isCancelled() ? " + (event.useInteractedBlock() == Result.DENY));
+      if (event.useInteractedBlock() == Result.DENY) {
         // まさかの水源、溶岩源を右クリックした場合、cancelledのはずだけどスポーンエッグは使える
         this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END
             + "PlayerInteractListener.void:onPlayerInteract(PlayerInteractEvent)");
@@ -676,10 +720,20 @@ public class PlayerInteractListener implements Listener {
         return;
       }
 
+      Block clickedBlock = event.getClickedBlock();
+      this.log.trace(PREF_LOG_TRACE + "clickedBlock ? " + clickedBlock);
+      // クリックしたブロックがとれなかったら、処理を強制停止
+      if (Objects.isNull(clickedBlock)) {
+        this.log.info("clickedBlock is null.End.");
+        return;
+      }
+
+      Player player = event.getPlayer();
+      this.log.trace(PREF_LOG_TRACE + "Player player <- event.getPlayer()");
       this.log.trace(PREF_LOG_TRACE + "!player.isSneaking() ? " + !player.isSneaking());
       this.log.trace(PREF_LOG_TRACE + "plugin.isClickable(event.getClickedBlock()) ? "
-          + plugin.isClickable(event.getClickedBlock()));
-      if (!player.isSneaking() && plugin.isClickable(event.getClickedBlock())) {
+          + plugin.isClickable(clickedBlock));
+      if (!player.isSneaking() && plugin.isClickable(clickedBlock)) {
         // ブロック優先
         this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END
             + "PlayerInteractListener.void:onPlayerInteract(PlayerInteractEvent)");
@@ -700,26 +754,19 @@ public class PlayerInteractListener implements Listener {
       }
 
       // 馬がめり込まないようにしたい
-      Block centerBlock = event.getClickedBlock().getRelative(event.getBlockFace());
-      this.log.trace(PREF_LOG_TRACE
-          + "Block centerBlock <- event.getClickedBlock().getRelative(event.getBlockFace())");
-
-      Location loc = centerBlock.getLocation();
-      this.log.trace(PREF_LOG_TRACE + "Location loc <- centerBlock.getLocation()");
-
       Boolean[][] blocks = new Boolean[5][5];
       this.log.trace(PREF_LOG_TRACE + "Boolean[][] blocks <- new Boolean[5][5]");
-
       Arrays.fill(blocks[0], false);
       this.log.trace(PREF_LOG_TRACE + "Arrays.fill(blocks[0], false)");
-
       Arrays.fill(blocks[4], false);
       this.log.trace(PREF_LOG_TRACE + "Arrays.fill(blocks[4], false)");
 
+      this.log.trace(PREF_LOG_TRACE + "[LOOP START](int i = 1; i <= 3; i++)");
+      Block centerBlock = clickedBlock.getRelative(event.getBlockFace());
+      this.log.trace(PREF_LOG_TRACE
+          + "Block centerBlock <- event.getClickedBlock().getRelative(event.getBlockFace())");
       boolean canSpawnCenter = true;
       this.log.trace(PREF_LOG_TRACE + "boolean canSpawnCenter <- true");
-
-      this.log.trace(PREF_LOG_TRACE + "[LOOP START](int i = 1; i <= 3; i++)");
       for (int i = 1; i <= 3; i++) {
         Arrays.fill(blocks[i], false);
 
@@ -740,60 +787,65 @@ public class PlayerInteractListener implements Listener {
       }
       this.log.trace(PREF_LOG_TRACE + "[LOOP END](int i = 1; i <= 3; i++)");
 
+      Location loc = centerBlock.getLocation();
+      this.log.trace(PREF_LOG_TRACE + "Location loc <- centerBlock.getLocation()");
       this.log.trace(PREF_LOG_TRACE + "canSpawnCenter ? " + canSpawnCenter);
       if (canSpawnCenter) {
         loc.add(0.5, 0, 0.5);
         this.log.trace(PREF_LOG_TRACE + "loc.add(0.5, 0, 0.5)");
 
-        this.log.trace(PREF_LOG_TRACE + "new ReleaseHorse(item, loc, log)");
-        new ReleaseHorse(item, loc, log);
+        this.log.trace(PREF_LOG_TRACE + "ReleaseHorse.releseHorseFromHorseEgg(item, loc, log)");
+        ReleaseHorse.releseHorseFromHorseEgg(item, loc, log);
 
       } else {
         this.log.trace(PREF_LOG_TRACE + "search:");
-        search: {
-          this.log.trace(PREF_LOG_TRACE + "[LOOP START]for (int i = 0; i < 3; i++)");
-          for (int i = 0; i < 3; i++) {
-            // どっかにブロック有り。
-            this.log.trace(PREF_LOG_TRACE + "[LOOP START]for (int j = 0; j < 3; j++)");
-            for (int j = 0; j < 3; j++) {
-              // 周囲9マス()にブロックが無いか
-              boolean canSpawn = !blocks[i][j] && !blocks[i][j + 1] && !blocks[i][j + 2]
-                  && !blocks[i + 1][j] && !blocks[i + 1][j + 1] && !blocks[i + 1][j + 2]
-                  && !blocks[i + 2][j] && !blocks[i + 2][j + 1] && !blocks[i + 2][j + 2];
+        search:
+          {
+            this.log.trace(PREF_LOG_TRACE + "[LOOP START]for (int i = 0; i < 3; i++)");
+            for (int i = 0; i < 3; i++) {
+              // どっかにブロック有り。
+              this.log.trace(PREF_LOG_TRACE + "[LOOP START]for (int j = 0; j < 3; j++)");
+              for (int j = 0; j < 3; j++) {
+                // 周囲9マス()にブロックが無いか
+                boolean canSpawn = !blocks[i][j] && !blocks[i][j + 1] && !blocks[i][j + 2]
+                    && !blocks[i + 1][j] && !blocks[i + 1][j + 1] && !blocks[i + 1][j + 2]
+                    && !blocks[i + 2][j] && !blocks[i + 2][j + 1] && !blocks[i + 2][j + 2];
 
-              this.log.trace(PREF_LOG_TRACE + "canSpawn ? " + canSpawn);
-              if (canSpawn) {
-                loc.add(i * 0.5, 0, j * 0.5);
-                this.log.trace(PREF_LOG_TRACE + "loc.add(i * 0.5, 0, j * 0.5)");
+                this.log.trace(PREF_LOG_TRACE + "canSpawn ? " + canSpawn);
+                if (canSpawn) {
+                  loc.add(i * 0.5, 0, j * 0.5);
+                  this.log.trace(PREF_LOG_TRACE + "loc.add(i * 0.5, 0, j * 0.5)");
 
-                this.log.trace(PREF_LOG_TRACE + "new ReleaseHorse(item, loc, log)");
-                new ReleaseHorse(item, loc, log);
+                  this.log.trace(
+                      PREF_LOG_TRACE + "ReleaseHorse.releseHorseFromHorseEgg(item, loc, log)");
+                  ReleaseHorse.releseHorseFromHorseEgg(item, loc, log);
 
-                this.log.trace(PREF_LOG_TRACE + "break search");
-                break search;
+                  this.log.trace(PREF_LOG_TRACE + "break search");
+                  break search;
+                }
               }
+              this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int j = 0; j < 3; j++)");
             }
-            this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int j = 0; j < 3; j++)");
-          }
-          this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int i = 0; i < 3; i++)");
-          // スポーン失敗。
-          event.setCancelled(true);
-          this.log.trace(PREF_LOG_TRACE + "event.setCancelled(true)");
+            this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int i = 0; i < 3; i++)");
+            // スポーン失敗。
+            event.setCancelled(true);
+            this.log.trace(PREF_LOG_TRACE + "event.setCancelled(true)");
 
-          this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END
-              + "PlayerInteractListener.void:onPlayerInteract(PlayerInteractEvent)");
-          return;
-        }
+            this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END
+                + "PlayerInteractListener.void:onPlayerInteract(PlayerInteractEvent)");
+            return;
+          }
       }
 
       // オフハンド対策
-      int amount = item.getAmount();
-      this.log.trace(PREF_LOG_TRACE + "int amount = item.getAmount()");
-
       this.log.trace(PREF_LOG_TRACE + "plugin.config.getBoolean(\"single-use\") ? "
           + (plugin.config.getBoolean("single-use")));
       this.log.trace(PREF_LOG_TRACE + "item.getAmount() == 1 ? " + (item.getAmount() == 1));
 
+      PlayerInventory inv = player.getInventory();
+      this.log.trace(PREF_LOG_TRACE + "PlayerInventory inv <- player.getInventory()");
+      int amount = item.getAmount();
+      this.log.trace(PREF_LOG_TRACE + "int amount = item.getAmount()");
       if (plugin.config.getBoolean("single-use")) {
         this.log.trace(PREF_LOG_TRACE + "amount == 1 ? " + (amount == 1));
         if (amount == 1) {
@@ -833,7 +885,12 @@ public class PlayerInteractListener implements Listener {
           loc.add(0, 0.5, 0);
           this.log.trace(PREF_LOG_TRACE + "loc.add(0, 0.5, 0)");
 
-          loc.getWorld().dropItem(loc, plugin.emptyHorseEgg(1));
+          World world = loc.getWorld();
+          if (Objects.isNull(world)) {
+            this.log.error("WorldData is Null!End.");
+            return;
+          }
+          world.dropItem(loc, plugin.emptyHorseEgg(1));
           this.log.trace(PREF_LOG_TRACE + "loc.getWorld().dropItem(loc, plugin.emptyHorseEgg(1))");
         } else {
           inv.addItem(plugin.emptyHorseEgg(1));
@@ -848,9 +905,12 @@ public class PlayerInteractListener implements Listener {
   }
 
   /**
+   * <p>
    * マテリアルが窒息するものか検査します.
+   * </p>
    *
    * @param mat {@link org.bukkit.Material}
+   * @return {@link boolean} 窒息するか.
    */
   private boolean isSuffocating(Material mat) {
     this.log.debug(
@@ -858,28 +918,16 @@ public class PlayerInteractListener implements Listener {
     this.log.trace(PREF_LOG_TRACE + "[IN PARAM]mat=" + mat.toString());
 
     this.log.trace(PREF_LOG_TRACE + "mat.isOccluding() ? " + mat.isOccluding());
-    this.log.trace(PREF_LOG_TRACE
-        + "mat == Material.TNT || mat == Material.ICE || mat == Material.GLOWSTONE\r\n"
-        + "        || mat == Material.REDSTONE_BLOCK || mat == Material.SEA_LANTERN\r\n"
-        + "        || mat == Material.SHROOMLIGHT || mat == Material.REDSTONE_LAMP\r\n"
-        + "        || mat == Material.OCHRE_FROGLIGHT || mat == Material.PEARLESCENT_FROGLIGHT\r\n"
-        + "        || mat == Material.VERDANT_FROGLIGHT ? "
-        + (mat == Material.TNT || mat == Material.ICE || mat == Material.GLOWSTONE
-            || mat == Material.REDSTONE_BLOCK || mat == Material.SEA_LANTERN
-            || mat == Material.SHROOMLIGHT || mat == Material.REDSTONE_LAMP
-            || mat == Material.OCHRE_FROGLIGHT || mat == Material.PEARLESCENT_FROGLIGHT
-            || mat == Material.VERDANT_FROGLIGHT));
+    this.log.trace(
+        PREF_LOG_TRACE + "SUFFOCATING_MATERIALS.contains(mat): " + SUFFOCATING_MATERIALS.contains(
+            mat));
     if (mat.isOccluding()) {
       // 窒息する透過ブロック
       this.log.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
       this.log.debug(
           PREF_LOG_DEBUG + PREF_LOG_END + "PlayerInteractListener.boolean:isSuffocating(Material)");
       return true;
-    } else if (mat == Material.TNT || mat == Material.ICE || mat == Material.GLOWSTONE
-        || mat == Material.REDSTONE_BLOCK || mat == Material.SEA_LANTERN
-        || mat == Material.SHROOMLIGHT || mat == Material.REDSTONE_LAMP
-        || mat == Material.OCHRE_FROGLIGHT || mat == Material.PEARLESCENT_FROGLIGHT
-        || mat == Material.VERDANT_FROGLIGHT) {
+    } else if (SUFFOCATING_MATERIALS.contains(mat)) {
       this.log.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
       this.log.debug(
           PREF_LOG_DEBUG + PREF_LOG_END + "PlayerInteractListener.boolean:isSuffocating(Material)");

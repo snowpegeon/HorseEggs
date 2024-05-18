@@ -1,43 +1,62 @@
-/**
- * 
- */
 package wacky.horseeggs.eggData;
 
 import java.util.HashMap;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 
 /**
- * 
+ * <p>
+ * 商人ラマを捕獲するためのHorseEggの実体クラス.
+ * </p>
  */
 public class TraderLlamaEggData extends LlamaEggData {
 
   /**
-   * コンストラクタ
+   * <p>
+   * デフォルトコンストラクタ.
+   * </p>
+   *
+   * @deprecated
+   *     <p>
+   *     このコンストラクタは通常使用しないでください。<br> 使用目的別で、各コンストラクタを呼び出してください。<br>
+   *     キャプチャー：{@link TraderLlamaEggData#TraderLlamaEggData(AbstractHorse)}<br>
+   *     リリース：{@link TraderLlamaEggData#TraderLlamaEggData(HashMap)}
+   *     </p>
    */
   public TraderLlamaEggData() {
     super();
-    // TODO 自動生成されたコンストラクター・スタブ
   }
 
   /**
-   * コンストラクタ（AbstractHorse）
+   * <p>
+   * コンストラクタ（AbstractHorse） .
+   * </p>
+   *
    * @param absHorse スポーン中の馬情報.
    */
-  public TraderLlamaEggData(AbstractHorse absHorse){
+  public TraderLlamaEggData(AbstractHorse absHorse) {
     super(absHorse);
   }
 
   /**
-   * コンストラクタ（ItemStack）
+   * <p>
+   * コンストラクタ（ItemStack）.
+   * </p>
+   *
    * @param metaData HorseEggsのmeta情報
    */
-  public TraderLlamaEggData(HashMap<String, ?> metaData){
+  public TraderLlamaEggData(HashMap<String, ?> metaData) {
     super(metaData);
   }
 
+  /**
+   * <p>
+   * 卵に格納できるエンティティタイプを取得.
+   * </p>
+   *
+   * @return {@link EntityType}.
+   */
   @Override
   public EntityType getEntityType() {
     return EntityType.TRADER_LLAMA;

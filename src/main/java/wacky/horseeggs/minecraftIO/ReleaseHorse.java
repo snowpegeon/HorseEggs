@@ -31,6 +31,8 @@ import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.Llama;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.NumberConversions;
+import wacky.horseeggs.EntityWriter.EntityWriter;
+import wacky.horseeggs.EntityWriter.factory.EntityWriterFactory;
 import wacky.horseeggs.eggData.EggDataBase;
 import wacky.horseeggs.eggData.factory.EggDataFactory;
 
@@ -64,41 +66,31 @@ public class ReleaseHorse {
     this.log.trace(PREF_LOG_TRACE + "[IN PARAM]logger=" + logger.toString());
 
     this.log.trace(PREF_LOG_TRACE + "releseHorseEgg(item, loc)");
-    boolean releseResult = releseHorseFromHorseEgg(item, loc);
+//    boolean releseResult = releseHorseFromHorseEgg(item, loc);
     this.log.trace(PREF_LOG_TRACE + "boolean releseResult <- releseHorseFromHorseEgg(item, loc)");
-    this.log.trace(PREF_LOG_TRACE + "releseResult=" + releseResult);
+//    this.log.trace(PREF_LOG_TRACE + "releseResult=" + releseResult);
 //    if (releseResult) {
 //      this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.ReleaseHorse(ItemStack, Location, Logger):End");
 //      return;
 //    }
 
-    this.log.trace(PREF_LOG_TRACE + "--- Run old implements ---");
-    String name = null;
-    Double MaxHP = 0.0;
-    Double HP = 0.0;
-    Double speed = 0.0;
-    Double jump = 0.0;
-    OfflinePlayer owner = null;
-    ItemStack saddle = null;
-    ItemStack armor = null;
-    Boolean chest = false;
-    Variant variant = null; // もはや別Entity.
-    EntityType type = null;
-    Color color = null;
-    Llama.Color Lcolor = null;
-    Style style = null;
-    short decor = 0;
-    int strength = 0;
-
-    ItemStack stack = item.clone();
-    RtagItem tagItem = new RtagItem(stack);
-    HashMap<String, Object> he = tagItem.get("HorseEgg");
-    EggDataBase eggData = new EggDataFactory().newEggData(stack.getType(), he);
-
-    if(Objects.isNull(eggData)){
-      this.log.error("This MaterialType is null.");
-      return;
-    }
+//    this.log.trace(PREF_LOG_TRACE + "--- Run old implements ---");
+//    String name = null;
+//    Double MaxHP = 0.0;
+//    Double HP = 0.0;
+//    Double speed = 0.0;
+//    Double jump = 0.0;
+//    OfflinePlayer owner = null;
+//    ItemStack saddle = null;
+//    ItemStack armor = null;
+//    Boolean chest = false;
+//    Variant variant = null; // もはや別Entity.
+//    EntityType type = null;
+//    Color color = null;
+//    Llama.Color Lcolor = null;
+//    Style style = null;
+//    short decor = 0;
+//    int strength = 0;
 
 //    net.minecraft.world.item.ItemStack stack = CraftItemStack.asNMSCopy(item);
 //    CompoundTag horseData = stack.getTag().getCompound("HorseEgg");
@@ -241,9 +233,6 @@ public class ReleaseHorse {
 
 //    }
 
-    // 馬生成をギリギリまで遅らせる 1.12では馬、ロバ、骨馬は全て別種
-    AbstractHorse horse = (AbstractHorse) loc.getWorld().spawnEntity(loc, type);
-
 //     speedは書き込みもめんｄ
 //    CompoundTag tag = new CompoundTag();
 //    net.minecraft.world.entity.animal.horse.AbstractHorse eh =
@@ -263,13 +252,9 @@ public class ReleaseHorse {
 //    }
 //    tag.put("Attributes", attributes);
 //    eh.readAdditionalSaveData(tag); // 速度書き込んでペースト
-    horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(eggData.getSpeed());
-
-    horse.setAge(6000); // 繁殖待ち6000tick
-    Optional<EggDataBase> opt = Optional.ofNullable(eggData);
-    opt.ifPresent(ed -> {
-
-    });
+//    horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(eggData.getSpeed());
+//
+//    horse.setAge(6000); // 繁殖待ち6000tick
 //    horse.setCustomName(name);
 //    horse.setMaxHealth(MaxHP);
 //    horse.setHealth(HP);
@@ -301,36 +286,43 @@ public class ReleaseHorse {
 //    }
   }
 
-  private boolean releseHorseFromHorseEgg(ItemStack item, Location loc) {
-    this.log
+  public static boolean releseHorseFromHorseEgg(ItemStack item, Location loc, Logger logger) {
+    logger
         .debug(PREF_LOG_DEBUG + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location):Start");
-    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]item=" + item.toString());
-    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]loc=" + loc.toString());
+    logger.trace(PREF_LOG_TRACE + "[IN PARAM]item=" + item.toString());
+    logger.trace(PREF_LOG_TRACE + "[IN PARAM]loc=" + loc.toString());
 
-    final Set<EntityType> horseEntityTypes = Collections.unmodifiableSet(
-        EnumSet.of(EntityType.HORSE, EntityType.DONKEY, EntityType.MULE, EntityType.ZOMBIE_HORSE,
-            EntityType.SKELETON_HORSE, EntityType.LLAMA, EntityType.TRADER_LLAMA));
+    // ItemStackは何らかの理由で変質することがあるので、コピーして利用
+    ItemStack stack = item.clone();
 
-    this.log.trace(PREF_LOG_TRACE + "RtagItem rtagItem <- new RtagItem(item)");
-    RtagItem rtagItem = new RtagItem(item);
-    this.log.trace(PREF_LOG_TRACE + rtagItem.toString());
+    // データの読み取り処理
+    logger.trace(PREF_LOG_TRACE + "RtagItem rtagItem <- new RtagItem(item)");
+    RtagItem tagItem = new RtagItem(stack);
+    logger.trace(PREF_LOG_TRACE + tagItem.toString());
 
-    this.log.trace(PREF_LOG_TRACE + "var horseEggKey <- rtagItem.get(HORSE_EGG_KEY)");
-    var horseEggKey = rtagItem.get(HORSE_EGG_KEY);
+    logger.trace(PREF_LOG_TRACE + "var horseEggKey <- rtagItem.get(HORSE_EGG_KEY)");
+    HashMap<String, Object> he = tagItem.get(HORSE_EGG_KEY);
+    if (he != null) {
+      logger.trace(PREF_LOG_TRACE + he.toString());
+    }
+    logger.trace(PREF_LOG_TRACE + "[IN PARAM]he=" + he);
 
-    if (horseEggKey != null) {
-      this.log.trace(PREF_LOG_TRACE + horseEggKey.toString());
+    logger.trace(PREF_LOG_TRACE + "var eggData <- new EggDataFactory().newEggData(stack.getType(), he)");
+    EggDataBase eggData = new EggDataFactory().newEggData(stack.getType(), he);
+    if(Objects.isNull(eggData)){
+      logger.error("This MaterialType is null.");
+      return false;
     }
 
-    EntityType type = null;
-    // var entity = loc.getWorld().spawnEntity(loc, type);
+    // 馬生成をギリギリまで遅らせる 1.12では馬、ロバ、骨馬は全て別種
+    AbstractHorse horse = (AbstractHorse) loc.getWorld().spawnEntity(loc, eggData.getEntityType());
 
-
-
-    this.log.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
-    this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location):End");
+    // 馬情報の書き込み
+    EntityWriter eWriter = EntityWriterFactory.newLoreWriter(eggData.getEntityType(), horse);
+    eWriter.writeHorse(eggData);
+    logger.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
+    logger.debug(PREF_LOG_DEBUG + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location):End");
     return true;
-
   }
   
   private boolean captureHorseToHorseEgg() {
