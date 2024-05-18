@@ -1,12 +1,27 @@
 package wacky.horseeggs.minecraftIO;
 
+import static org.bukkit.Material.GLOWSTONE;
+import static org.bukkit.Material.ICE;
+import static org.bukkit.Material.OCHRE_FROGLIGHT;
+import static org.bukkit.Material.PEARLESCENT_FROGLIGHT;
+import static org.bukkit.Material.REDSTONE;
+import static org.bukkit.Material.REDSTONE_BLOCK;
+import static org.bukkit.Material.REDSTONE_LAMP;
+import static org.bukkit.Material.SEA_LANTERN;
+import static org.bukkit.Material.SHROOMLIGHT;
+import static org.bukkit.Material.TNT;
+import static org.bukkit.Material.VERDANT_FROGLIGHT;
+
 import com.github.teruteru128.logger.Logger;
 import com.saicone.rtag.RtagEditor;
 import com.saicone.rtag.RtagItem;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -39,24 +54,70 @@ import wacky.horseeggs.eggData.factory.EggDataFactory;
 
 
 /**
- * HorseEggsのプレイヤーインタラクトリスナークラス.
+ * <p>
+ *   HorseEggsのプレイヤーインタラクトリスナークラス.
+ *   {@link Listener}クラスを継承して、HorseEggsの<br>
+ *   {@link PlayerInteractEntityEvent}を実行する実装クラス.
+ * </p>
  */
 public class PlayerInteractListener implements Listener {
-  /** ログのプレフィックス(TRACE). */
+  /**
+   * <p>
+   *   ログのプレフィックス(TRACE).
+   *   {@link String}
+   * </p>
+   */
   private static final String PREF_LOG_TRACE = "[TRACE] ";
-  /** ログのプレフィックス(DEBUG). */
-  private static final String PREF_LOG_DEBUG = "[DEBUG] ";
-  /** ログの開始. */
-  private static final String PREF_LOG_START = "[START] ";
-  /** ログの終了. */
-  private static final String PREF_LOG_END = "[END] ";
-  /** このプラグイン. */
-  private HorseEggs plugin;
-  /** ロガー. */
-  private Logger log;
 
   /**
-   * コンストラクタ.
+   * <p>
+   *   ログのプレフィックス(DEBUG).
+   *   {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_DEBUG = "[DEBUG] ";
+
+  /**
+   * <p>
+   *   ログの開始プレフィックス.
+   *   {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_START = "[START] ";
+
+  /**
+   * <p>
+   *   ログの終了プレフィックス.
+   *   {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_END = "[END] ";
+
+  /**
+   * <p>
+   *   プラグイン本体.<br>
+   *   {@link org.bukkit.plugin.Plugin}を継承.
+   *   {@link HorseEggs}
+   * </p>
+   */
+  private HorseEggs plugin;
+  /**
+   * <p>
+   *   ログを出力するためのLogger.<br>
+   *   {@link Logger}
+   * </p>
+   */
+  private Logger log;
+
+  private static final Set<Material> SUFFOCATING_MATERIALS = Collections.unmodifiableSet(
+      EnumSet.of(TNT, ICE, GLOWSTONE, REDSTONE_BLOCK, SEA_LANTERN, SHROOMLIGHT, REDSTONE_LAMP,
+          OCHRE_FROGLIGHT, PEARLESCENT_FROGLIGHT, VERDANT_FROGLIGHT));
+
+  /**
+   * <p>
+   * コンストラクタ.<br>
+   * ここでこのイベントを鯖へ登録処理を実施.
+   * </p>
    *
    * @param plugin {@link wacky.horseeggs.HorseEggs}
    * @param logger {@link com.github.teruteru128.logger.Logger}
@@ -79,7 +140,10 @@ public class PlayerInteractListener implements Listener {
   }
 
   /**
-   * プレーヤーがエンティティを右クリックしたときに呼び出されるイベントの処理.
+   * <p>
+   * プレーヤーがエンティティを右クリックしたときに呼び出されるイベントの処理.<br>
+   * ここで、MOBをHorseEggs{@link EggDataBase}へのキャプチャーする処理を実施してる.
+   * </p>
    *
    * @param event {@link org.bukkit.event.player.PlayerInteractEntityEvent}
    */
@@ -109,9 +173,6 @@ public class PlayerInteractListener implements Listener {
     // このイベント中で「使用（右クリック）」されたエンティティ情報
     Entity entity = event.getRightClicked();
     this.log.trace(PREF_LOG_TRACE + "entity=" + entity.toString());
-    // 馬エンティティ格納用
-    AbstractHorse horse;
-    this.log.trace(PREF_LOG_TRACE + "horse");
     // このイベント中のプレイヤーのメインハンドのアイテムスタック
     ItemStack itemInHand = player.getInventory().getItemInMainHand();
     this.log.trace(PREF_LOG_TRACE + "itemInHand=" + itemInHand.toString());
@@ -119,6 +180,9 @@ public class PlayerInteractListener implements Listener {
     // 2-1.使用（右クリック）のアイテムがキャッチ済HorseEggかを検査する
     // キャッチ済みの場合はリリース処理を行う。
     // 馬卵を他のエンティティ、馬に使ったとき
+    // 馬エンティティ格納用
+    AbstractHorse horse;
+    this.log.trace(PREF_LOG_TRACE + "horse");
     this.log
         .trace(PREF_LOG_TRACE + "plugin.isHorseEgg(itemInHand) ? " + plugin.isHorseEgg(itemInHand));
     if (plugin.isHorseEgg(itemInHand)) {
@@ -612,15 +676,13 @@ public class PlayerInteractListener implements Listener {
   }
 
   /**
+   * <p>
    * プレイヤーがオブジェクトまたは空気に対して呼び出されるイベント処理<br>
    * ハンドごとに 1 回発生する可能性があります。 <br>
    * ハンドは getHand() を使用して決定できます。<br>
    * <br>
-   * このイベントは、バニラの動作が何もしない場合 (空気対してなど)、キャンセルされたものとして発生します。<br>
-   * 誤解を避けるために言うと、これは、後続のインタラクション アクティビティ (ブロックの配置など)<br>
-   * が発生したときではなく、後続のコードが実行されないサーバーによる何らかの予測の結果として<br>
-   * イベントが発生した場合にのみ、イベントがキャンセル状態になることを意味します。<br>
-   * 不正な位置 (BlockCanBuildEvent など) では失敗します。.
+   * ここでは、HorseEggs{@link EggDataBase}に入った馬のリリース処理を行っている.
+   * </p>
    *
    * @param event {@link org.bukkit.event.player.PlayerInteractEvent}
    */
@@ -704,9 +766,6 @@ public class PlayerInteractListener implements Listener {
       this.log.trace(PREF_LOG_TRACE
           + "Block centerBlock <- event.getClickedBlock().getRelative(event.getBlockFace())");
 
-      Location loc = centerBlock.getLocation();
-      this.log.trace(PREF_LOG_TRACE + "Location loc <- centerBlock.getLocation()");
-
       Boolean[][] blocks = new Boolean[5][5];
       this.log.trace(PREF_LOG_TRACE + "Boolean[][] blocks <- new Boolean[5][5]");
 
@@ -720,6 +779,9 @@ public class PlayerInteractListener implements Listener {
       this.log.trace(PREF_LOG_TRACE + "boolean canSpawnCenter <- true");
 
       this.log.trace(PREF_LOG_TRACE + "[LOOP START](int i = 1; i <= 3; i++)");
+
+      Location loc = centerBlock.getLocation();
+      this.log.trace(PREF_LOG_TRACE + "Location loc <- centerBlock.getLocation()");
       for (int i = 1; i <= 3; i++) {
         Arrays.fill(blocks[i], false);
 
@@ -787,13 +849,12 @@ public class PlayerInteractListener implements Listener {
       }
 
       // オフハンド対策
-      int amount = item.getAmount();
-      this.log.trace(PREF_LOG_TRACE + "int amount = item.getAmount()");
-
       this.log.trace(PREF_LOG_TRACE + "plugin.config.getBoolean(\"single-use\") ? "
           + (plugin.config.getBoolean("single-use")));
       this.log.trace(PREF_LOG_TRACE + "item.getAmount() == 1 ? " + (item.getAmount() == 1));
 
+      int amount = item.getAmount();
+      this.log.trace(PREF_LOG_TRACE + "int amount = item.getAmount()");
       if (plugin.config.getBoolean("single-use")) {
         this.log.trace(PREF_LOG_TRACE + "amount == 1 ? " + (amount == 1));
         if (amount == 1) {
@@ -848,7 +909,9 @@ public class PlayerInteractListener implements Listener {
   }
 
   /**
+   * <p>
    * マテリアルが窒息するものか検査します.
+   * </p>
    *
    * @param mat {@link org.bukkit.Material}
    */
@@ -858,28 +921,14 @@ public class PlayerInteractListener implements Listener {
     this.log.trace(PREF_LOG_TRACE + "[IN PARAM]mat=" + mat.toString());
 
     this.log.trace(PREF_LOG_TRACE + "mat.isOccluding() ? " + mat.isOccluding());
-    this.log.trace(PREF_LOG_TRACE
-        + "mat == Material.TNT || mat == Material.ICE || mat == Material.GLOWSTONE\r\n"
-        + "        || mat == Material.REDSTONE_BLOCK || mat == Material.SEA_LANTERN\r\n"
-        + "        || mat == Material.SHROOMLIGHT || mat == Material.REDSTONE_LAMP\r\n"
-        + "        || mat == Material.OCHRE_FROGLIGHT || mat == Material.PEARLESCENT_FROGLIGHT\r\n"
-        + "        || mat == Material.VERDANT_FROGLIGHT ? "
-        + (mat == Material.TNT || mat == Material.ICE || mat == Material.GLOWSTONE
-            || mat == Material.REDSTONE_BLOCK || mat == Material.SEA_LANTERN
-            || mat == Material.SHROOMLIGHT || mat == Material.REDSTONE_LAMP
-            || mat == Material.OCHRE_FROGLIGHT || mat == Material.PEARLESCENT_FROGLIGHT
-            || mat == Material.VERDANT_FROGLIGHT));
+    this.log.trace(PREF_LOG_TRACE + "SUFFOCATING_MATERIALS.contains(mat): " + SUFFOCATING_MATERIALS.contains(mat));
     if (mat.isOccluding()) {
       // 窒息する透過ブロック
       this.log.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
       this.log.debug(
           PREF_LOG_DEBUG + PREF_LOG_END + "PlayerInteractListener.boolean:isSuffocating(Material)");
       return true;
-    } else if (mat == Material.TNT || mat == Material.ICE || mat == Material.GLOWSTONE
-        || mat == Material.REDSTONE_BLOCK || mat == Material.SEA_LANTERN
-        || mat == Material.SHROOMLIGHT || mat == Material.REDSTONE_LAMP
-        || mat == Material.OCHRE_FROGLIGHT || mat == Material.PEARLESCENT_FROGLIGHT
-        || mat == Material.VERDANT_FROGLIGHT) {
+    } else if (SUFFOCATING_MATERIALS.contains(mat)) {
       this.log.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
       this.log.debug(
           PREF_LOG_DEBUG + PREF_LOG_END + "PlayerInteractListener.boolean:isSuffocating(Material)");
