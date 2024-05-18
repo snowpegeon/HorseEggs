@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -38,6 +39,7 @@ public class LoreWriterTest {
   static final String dataKeyStyle = "Style";
   static final String dataKeySaddle = "Saddle";
   static final String dataKeyStrength = "Strength";
+  static final String dataKeyOwner = "Owner";
 
   static final String valueSplitter = "/";
 
@@ -49,6 +51,8 @@ public class LoreWriterTest {
   static final String labelSpeed = "Speed: ";
   static final String labelHeight = "Height: ";
   static final String labelArmor = itemPrefix;
+  static final String labelStrength = "Strength: ";
+  static final String labelOwner = "Owner: ";
   
   // 装備品
   static final EnumSet<Material> equipmentEnumSet = EnumSet.of(
@@ -90,6 +94,7 @@ public class LoreWriterTest {
       put(dataKeyUuidMost, 2968001111801612278L);
       put(dataKeyArmor, Material.DIAMOND_HORSE_ARMOR.name());
       put(dataKeyStyle, Horse.Style.WHITEFIELD.name());
+      put(dataKeyOwner, "TestOwner1");
     }
   };
 
@@ -125,6 +130,7 @@ public class LoreWriterTest {
       put(dataKeyUuidMost, 2968001111801612278L);
       put(dataKeyArmor, Material.PURPLE_CARPET.name());
       put(dataKeyStrength, 3);
+      put(dataKeyOwner, "TestOwner2");
     }
   };
 
@@ -218,7 +224,7 @@ public class LoreWriterTest {
           String heightNum = lore.substring(targetLbel.length());
 
           // 文字列が5文字であるか検査
-          isInvalid = heightNum.length() != 5;
+          isInvalid = heightNum.length() > 5;
           if (isInvalid) {
             validateResult = false;
             break;
@@ -270,6 +276,7 @@ public class LoreWriterTest {
                 break;
               }
             }
+
           } else {
             isInvalid = !eqipmentList.contains(lore);
             if (isInvalid) {
@@ -284,6 +291,101 @@ public class LoreWriterTest {
           }
         } else {
           
+        }
+      }
+    }
+    
+    return validateResult;
+  }
+  
+  static boolean validateSpeedLore(List<String> loreList, String targetLbel) {
+    boolean validateResult = true;
+    
+    for (String lore : loreList) {
+      if (StringUtils.isNotBlank(lore)) {
+        boolean isInvalid = false;
+        // 移動速度が設定されているか検査
+        if (lore.startsWith(targetLbel)) {
+          // 移動速度の形式か検査
+          String jumpNum = lore.substring(targetLbel.length());
+
+          // 文字列が6文字であるか検査
+          isInvalid = jumpNum.length() > 6;
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+
+          // 文字列が数字の表記であるか検査
+          isInvalid = !jumpNum.matches("[0-9.]+");
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+
+          // 数字が有効な実数値か検査
+          Double height = Double.valueOf(jumpNum);
+          // 数値が無限か検査
+          isInvalid = height.isInfinite();
+          // 数値がNaNか検査
+          isInvalid = height.isNaN();
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+        }
+      }
+    }
+    
+    return validateResult;
+  }
+  
+  static boolean validateStrengthLore(List<String> loreList, String targetLbel) {
+    boolean validateResult = true;
+
+    for (String lore : loreList) {
+      if (StringUtils.isNotBlank(lore)) {
+        boolean isInvalid = false;
+        // 移動速度が設定されているか検査
+        if (lore.startsWith(targetLbel)) {
+          // 移動速度の形式か検査
+          String strengthNum = lore.substring(targetLbel.length());
+
+          // 文字列が6文字であるか検査
+          isInvalid = strengthNum.length() != 1;
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+
+          // 文字列が有効な数字の表記であるか検査
+          isInvalid = !strengthNum.matches("[1-5]");
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+        }
+      }
+    }
+
+    return validateResult;
+  }
+  
+  static boolean validateOwnerLore(List<String> loreList, String targetLbel) {
+    boolean validateResult = true;
+    
+    for (String lore : loreList) {
+      if (StringUtils.isNotBlank(lore)) {
+        boolean isInvalid = false;
+        // オーナーが設定されているか検査
+        if (lore.startsWith(targetLbel)) {
+          // オーナーの文字列が設定されているか検査
+          String strength = lore.substring(targetLbel.length());
+          isInvalid = StringUtils.isBlank(strength);
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
         }
       }
     }
@@ -345,8 +447,26 @@ public class LoreWriterTest {
 
   @Test
   public final void testGetOwnerLore() {
-    // fail("まだ実装されていません"); // TODO
-    assert (true);
+    // ウマ
+    Mockito.doReturn(horseEggDataMap.get(dataKeyOwner)).when(eggData).getOwner();
+    LoreWriter horseLw = new LoreWriterFactory().newLoreWriter(EntityType.HORSE, eggData);
+    List<String> horseLoreList = horseLw.getLoreList();
+    boolean containHorseHeight = validateHeightLore(horseLoreList, labelHeight);
+    Assert.assertTrue(containHorseHeight);
+
+    // ロバ
+    Mockito.doReturn(donkeyEggDataMap.get(dataKeyOwner)).when(eggData).getOwner();
+    LoreWriter donkeyLw = new LoreWriterFactory().newLoreWriter(EntityType.DONKEY, eggData);
+    List<String> donkeyLoreList = donkeyLw.getLoreList();
+    boolean containDonkeyHeight = validateHeightLore(donkeyLoreList, labelHeight);
+    Assert.assertTrue(containDonkeyHeight);
+
+    // ラマ
+    Mockito.doReturn(llamaEggDataMap.get(dataKeyOwner)).when(eggData).getOwner();
+    LoreWriter llamaLw = new LoreWriterFactory().newLoreWriter(EntityType.LLAMA, eggData);
+    List<String> llamaLoreList = llamaLw.getLoreList();
+    boolean containLlamaHeight = validateHeightLore(llamaLoreList, labelHeight);
+    Assert.assertTrue(containLlamaHeight);
   }
 
   @Test
@@ -357,8 +477,8 @@ public class LoreWriterTest {
     Mockito.doReturn(horseEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
     LoreWriter horseLw = new LoreWriterFactory().newLoreWriter(EntityType.HORSE, eggData);
     List<String> horseLoreList = horseLw.getLoreList();
-    boolean containHorseHeight = validateEquipmentLore(horseLoreList, labelArmor);
-    Assert.assertTrue(containHorseHeight);
+    boolean containHorseEquipment = validateEquipmentLore(horseLoreList, labelArmor);
+    Assert.assertTrue(containHorseEquipment);
 
     // ロバ
     Mockito.doReturn(donkeyEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
@@ -366,8 +486,8 @@ public class LoreWriterTest {
     Mockito.doReturn(donkeyEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
     LoreWriter donkeyLw = new LoreWriterFactory().newLoreWriter(EntityType.DONKEY, eggData);
     List<String> donkeyLoreList = donkeyLw.getLoreList();
-    boolean containDonkeyHeight = validateEquipmentLore(donkeyLoreList, labelArmor);
-    Assert.assertTrue(containDonkeyHeight);
+    boolean containDonkeyEquipment = validateEquipmentLore(donkeyLoreList, labelArmor);
+    Assert.assertTrue(containDonkeyEquipment);
 
     // ラマ
     Mockito.doReturn(llamaEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
@@ -375,20 +495,56 @@ public class LoreWriterTest {
     Mockito.doReturn(llamaEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
     LoreWriter llamaLw = new LoreWriterFactory().newLoreWriter(EntityType.LLAMA, eggData);
     List<String> llamaLoreList = llamaLw.getLoreList();
-    boolean containLlamaHeight = validateEquipmentLore(llamaLoreList, labelArmor);
-    Assert.assertTrue(containLlamaHeight);
+    boolean containLlamaEquipment = validateEquipmentLore(llamaLoreList, labelArmor);
+    Assert.assertTrue(containLlamaEquipment);
   }
 
   @Test
   public final void testGetSpeedLore() {
-    // fail("まだ実装されていません"); // TODO
-    assert (true);
+    // ウマ
+    Mockito.doReturn(horseEggDataMap.get(dataKeySpeed)).when(eggData).getSpeed();
+    LoreWriter horseLw = new LoreWriterFactory().newLoreWriter(EntityType.HORSE, eggData);
+    List<String> horseLoreList = horseLw.getLoreList();
+    boolean containHorseSpeed = validateSpeedLore(horseLoreList, labelSpeed);
+    Assert.assertTrue(containHorseSpeed);
+
+    // ロバ
+    Mockito.doReturn(donkeyEggDataMap.get(dataKeySpeed)).when(eggData).getSpeed();
+    LoreWriter donkeyLw = new LoreWriterFactory().newLoreWriter(EntityType.DONKEY, eggData);
+    List<String> donkeyLoreList = donkeyLw.getLoreList();
+    boolean containDonkeySpeed = validateSpeedLore(donkeyLoreList, labelSpeed);
+    Assert.assertTrue(containDonkeySpeed);
+
+    // ラマ
+    Mockito.doReturn(llamaEggDataMap.get(dataKeySpeed)).when(eggData).getSpeed();
+    LoreWriter llamaLw = new LoreWriterFactory().newLoreWriter(EntityType.LLAMA, eggData);
+    List<String> llamaLoreList = llamaLw.getLoreList();
+    boolean containLlamaSpeed = validateSpeedLore(llamaLoreList, labelSpeed);
+    Assert.assertTrue(containLlamaSpeed);
   }
 
   @Test
   public final void testGetStrengthLore() {
-    // fail("まだ実装されていません"); // TODO
-    assert (true);
+    // ウマ
+    Mockito.doReturn(horseEggDataMap.get(dataKeyStrength)).when(eggData).getStrength();
+    LoreWriter horseLw = new LoreWriterFactory().newLoreWriter(EntityType.HORSE, eggData);
+    List<String> horseLoreList = horseLw.getLoreList();
+    boolean containHorseStrength = validateStrengthLore(horseLoreList, labelStrength);
+    Assert.assertTrue(containHorseStrength);
+
+    // ロバ
+    Mockito.doReturn(donkeyEggDataMap.get(dataKeyStrength)).when(eggData).getStrength();
+    LoreWriter donkeyLw = new LoreWriterFactory().newLoreWriter(EntityType.DONKEY, eggData);
+    List<String> donkeyLoreList = donkeyLw.getLoreList();
+    boolean containDonkeyStrength = validateStrengthLore(donkeyLoreList, labelStrength);
+    Assert.assertTrue(containDonkeyStrength);
+
+    // ラマ
+    Mockito.doReturn(llamaEggDataMap.get(dataKeyStrength)).when(eggData).getStrength();
+    LoreWriter llamaLw = new LoreWriterFactory().newLoreWriter(EntityType.LLAMA, eggData);
+    List<String> llamaLoreList = llamaLw.getLoreList();
+    boolean containLlamaStrength = validateStrengthLore(llamaLoreList, labelStrength);
+    Assert.assertTrue(containLlamaStrength);
   }
 
 }

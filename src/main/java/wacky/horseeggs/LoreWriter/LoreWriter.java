@@ -484,8 +484,9 @@ public abstract class LoreWriter {
       final int digit6 = 6;
       if (sppedValue.length() > digit6) {
         speedSb.append(sppedValue.substring(0, digit6));
+      } else {
+        speedSb.append(sppedValue);
       }
-      speedSb.append(sppedValue);
     }
     return speedSb;
   }
