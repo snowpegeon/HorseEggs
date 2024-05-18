@@ -10,16 +10,22 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * 
+ * 商人ラマを捕獲するためのHorseEggの実体クラス.
  */
 public class TraderLlamaEggData extends LlamaEggData {
 
   /**
-   * コンストラクタ
+   * デフォルトコンストラクタ.
+   *
+   * @deprecated
+   *     <p>
+   *     このコンストラクタは通常使用しないでください。<br> 使用目的別で、各コンストラクタを呼び出してください。<br>
+   *     キャプチャー：{@link TraderLlamaEggData#TraderLlamaEggData(AbstractHorse)}<br>
+   *     リリース：{@link TraderLlamaEggData#TraderLlamaEggData(HashMap)}
+   *     </p>
    */
   public TraderLlamaEggData() {
     super();
-    // TODO 自動生成されたコンストラクター・スタブ
   }
 
   /**
@@ -38,6 +44,11 @@ public class TraderLlamaEggData extends LlamaEggData {
     super(metaData);
   }
 
+  /**
+   * 卵に格納できるエンティティタイプを取得.
+   *
+   * @return {@link EntityType}.
+   */
   @Override
   public EntityType getEntityType() {
     return EntityType.TRADER_LLAMA;

@@ -10,16 +10,23 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * 
+ * ラバを捕獲するためのHorseEggの実体クラス.
  */
 public class MuleEggData extends EggDataBase {
 
   /**
-   * コンストラクタ
+   * デフォルトコンストラクタ.
+   *
+   * @deprecated
+   *     <p>
+   *     このコンストラクタは通常使用しないでください。<br>
+   *     使用目的別で、各コンストラクタを呼び出してください。<br>
+   *     キャプチャー：{@link MuleEggData#MuleEggData(AbstractHorse)}<br>
+   *     リリース：{@link MuleEggData#MuleEggData(HashMap)}
+   *     </p>
    */
   public MuleEggData() {
     super();
-    // TODO 自動生成されたコンストラクター・スタブ
   }
 
   /**
@@ -38,6 +45,11 @@ public class MuleEggData extends EggDataBase {
     super(metaData);
   }
 
+  /**
+   * 卵に格納できるエンティティタイプを取得.
+   *
+   * @return {@link EntityType}.
+   */
   @Override
   public EntityType getEntityType() {
     return EntityType.MULE;

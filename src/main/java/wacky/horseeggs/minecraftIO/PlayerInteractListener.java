@@ -910,6 +910,7 @@ public class PlayerInteractListener implements Listener {
    * </p>
    *
    * @param mat {@link org.bukkit.Material}
+   * @return {@link boolean} 窒息するか.
    */
   private boolean isSuffocating(Material mat) {
     this.log.debug(

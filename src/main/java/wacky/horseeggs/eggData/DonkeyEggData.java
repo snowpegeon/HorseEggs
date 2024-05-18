@@ -10,16 +10,22 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * 
+ * ロバを捕獲するためのHorseEggの実体クラス.
  */
 public class DonkeyEggData extends EggDataBase {
 
   /**
-   * コンストラクタ
+   * デフォルトコンストラクタ.
+   *
+   * @deprecated
+   *     <p>
+   *     このコンストラクタは通常使用しないでください。<br> 使用目的別で、各コンストラクタを呼び出してください。<br>
+   *     キャプチャー：{@link DonkeyEggData#DonkeyEggData(AbstractHorse)}<br>
+   *     リリース：{@link DonkeyEggData#DonkeyEggData(HashMap)}
+   *     </p>
    */
   public DonkeyEggData() {
     super();
-    // TODO 自動生成されたコンストラクター・スタブ
   }
 
   /**
@@ -38,6 +44,11 @@ public class DonkeyEggData extends EggDataBase {
     super(metaData);
   }
 
+  /**
+   * 卵に格納できるエンティティタイプを取得.
+   *
+   * @return {@link EntityType}.
+   */
   @Override
   public EntityType getEntityType() {
     return EntityType.DONKEY;
