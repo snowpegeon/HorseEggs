@@ -4,17 +4,9 @@
 
 package wacky.horseeggs.EntityWriter.factory;
 
-import org.bukkit.entity.AbstractArrow;
-import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
-import wacky.horseeggs.EntityWriter.DonkyEntityWriter;
 import wacky.horseeggs.EntityWriter.EntityWriter;
 import wacky.horseeggs.EntityWriter.HorseEntityWriter;
-import wacky.horseeggs.EntityWriter.LlamaEntityWriter;
-import wacky.horseeggs.EntityWriter.MuleEntityWriter;
-import wacky.horseeggs.EntityWriter.SkeltonHorseEntityWriter;
-import wacky.horseeggs.EntityWriter.TraderLlamaEntityWriter;
-import wacky.horseeggs.EntityWriter.ZombieHorseEntityWriter;
 import wacky.horseeggs.LoreWriter.DonkeyLoreWriter;
 import wacky.horseeggs.LoreWriter.HorseLoreWriter;
 import wacky.horseeggs.LoreWriter.LlamaLoreWriter;
@@ -33,22 +25,22 @@ public class EntityWriterFactory {
    *
    * @param entityType {@link EntityType}
    */
-  public static EntityWriter newLoreWriter(EntityType entityType, AbstractHorse absHorse) {
+  public EntityWriter newLoreWriter(EntityType entityType) {
     switch (entityType) {
       case LLAMA:
-        return new LlamaEntityWriter(absHorse);
+//        return new LlamaLoreWriter();
       case MULE:
-        return new MuleEntityWriter(absHorse);
+//        return new MuleLoreWriter();
       case DONKEY:
-        return new DonkyEntityWriter(absHorse);
+//        return new DonkeyLoreWriter();
       case HORSE:
-        return new HorseEntityWriter(absHorse);
+//        return new HorseEntityWriter();
       case ZOMBIE_HORSE:
-        return new ZombieHorseEntityWriter(absHorse);
+//        return new ZombieHorseLoreWriter();
       case SKELETON_HORSE:
-        return new SkeltonHorseEntityWriter(absHorse);
+//        return new SkeletonHorseLoreWriter();
       case TRADER_LLAMA:
-        return new TraderLlamaEntityWriter(absHorse);
+//        return new TraderLlamaLoreWriter();
       default:
         return null;
     }
