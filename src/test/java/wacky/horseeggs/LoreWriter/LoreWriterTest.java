@@ -1,21 +1,24 @@
 package wacky.horseeggs.LoreWriter;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import java.text.Collator;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
-import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Llama;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import wacky.horseeggs.LoreWriter.factory.LoreWriterFactory;
 import wacky.horseeggs.eggData.EggDataBase;
 
 public class LoreWriterTest {
@@ -36,10 +39,41 @@ public class LoreWriterTest {
   static final String dataKeySaddle = "Saddle";
   static final String dataKeyStrength = "Strength";
 
-  // 空卵データ
+  static final String valueSplitter = "/";
+
+  static final String itemPrefix = "[";
+  static final String itemSuffix = "]";
+  static final String itemSplitter = "\\" + itemSuffix + "\\" + itemPrefix;
+
+  static final String labelHealth = "HP: ";
+  static final String labelSpeed = "Speed: ";
+  static final String labelHeight = "Height: ";
+  static final String labelArmor = itemPrefix;
+  
+  // 装備品
+  static final EnumSet<Material> equipmentEnumSet = EnumSet.of(
+      // サドル
+      Material.SADDLE
+      // チェスト
+      , Material.CHEST
+      // ウマ鎧
+      , Material.LEATHER_HORSE_ARMOR, Material.IRON_HORSE_ARMOR, Material.GOLDEN_HORSE_ARMOR,
+      Material.DIAMOND_HORSE_ARMOR
+      // カーペット
+      , Material.BLACK_CARPET, Material.BLUE_CARPET, Material.BROWN_CARPET, Material.CYAN_CARPET,
+      Material.GRAY_CARPET, Material.GREEN_CARPET, Material.LIGHT_BLUE_CARPET,
+      Material.LIGHT_GRAY_CARPET, Material.LIME_CARPET, Material.MAGENTA_CARPET,
+      Material.MOSS_CARPET, Material.ORANGE_CARPET, Material.PINK_CARPET, Material.PURPLE_CARPET,
+      Material.RED_CARPET, Material.WHITE_CARPET, Material.YELLOW_CARPET);
+    
+  static final List<String> eqipmentList = equipmentEnumSet.stream().map(e -> {
+    return itemPrefix + e.name() + itemSuffix;
+  }).collect(Collectors.toList());
+
+  // 空卵テストデータ
   static final Map<String, Object> emptyEggDataMap = null;
 
-  // ウマ卵データ
+  // ウマ卵テストデータ
   static final Map<String, Object> horseEggDataMap = new HashMap<>() {
     {
       put(dataKeyChest, false);
@@ -59,7 +93,7 @@ public class LoreWriterTest {
     }
   };
 
-  // ロバ卵データ
+  // ロバ卵テストデータ
   static final Map<String, Object> donkeyEggDataMap = new HashMap<>() {
     {
       put(dataKeyChest, true);
@@ -75,7 +109,7 @@ public class LoreWriterTest {
     }
   };
 
-  // ラマ卵データ
+  // ラマ卵テストデータ
   static final Map<String, Object> llamaEggDataMap = new HashMap<>() {
     {
       put(dataKeyChest, true);
@@ -95,14 +129,7 @@ public class LoreWriterTest {
   };
 
   @Mock
-  AbstractHorse absHorse;
-
-  @Mock
   EggDataBase eggData;
-
-  @Spy
-  @InjectMocks
-  LoreWriter loreWriter;
 
   @Before
   public void setUp() throws Exception {
@@ -113,130 +140,255 @@ public class LoreWriterTest {
     MockitoAnnotations.openMocks(this);
   }
 
-  // HorseEggData createHorseEggData() {
-  // new Server.Spigot();
-  // Bukkit.spigot();
-  // Spigot spigot = new Spigot();
-  // final EntityType entityTypeHorse = EntityType.HORSE;
-
-  // ワールド生成
-  // WorldCreator wc = new WorldCreator("test");
-  // Server server; // = new Server();
-  // Bukkit bukkit; // = new Bukkit();
-  // World world = wc.createWorld();
-
-  // 位置をセット
-  // Location loc = new Location(world, 0d, 0d, 0d);
-
-  // エンティティをスポーン
-  // Entity entity = loc.getWorld().spawnEntity(loc, entityTypeHorse, false);
-  // Horse horse = (Horse) entity;
-  // Horse horse = new Horse()
-
-  // ウマ卵データ作成
-  // EggDataBase eggData = new EggDataFactory().newEggData(entityTypeHorse, horse);
-  // return (HorseEggData) eggData;
-  // }
-
   @Test
   public final void testLoreWriter() {
-//    fail("まだ実装されていません"); // TODO
+    // fail("まだ実装されていません"); // TODO
+    assert (true);
   }
 
   @Test
   public final void testGetHealthMeter() {
-//    fail("まだ実装されていません"); // TODO
+    // fail("まだ実装されていません"); // TODO
+    assert (true);
   }
 
   @Test
   public final void testGetLoreList() {
-//    fail("まだ実装されていません"); // TODO
+    // fail("まだ実装されていません"); // TODO
+    assert (true);
   }
 
   @Test
   public final void testGetColorStyleLore() {
-//    fail("まだ実装されていません"); // TODO
+    // fail("まだ実装されていません"); // TODO
+    assert (true);
   }
 
+  static boolean validateHealthLore(List<String> loreList, String targetLbel) {
+    boolean validateResult = true;
+    // 設定値を検査
+    for (String lore : loreList) {
+      if (StringUtils.isNotBlank(lore)) {
+        boolean isInvalid = false;
+        // 体力が設定されているか検査
+        if (lore.startsWith(targetLbel)) {
+          // [現在体力]/[最大体力]の形式か検査
+          String healthNum = lore.substring(targetLbel.length());
+          String[] healths = healthNum.split(valueSplitter);
+          isInvalid = healths.length != 2;
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+
+          // 値が有効な数値であるか検査
+          for (String healthValue : healths) {
+            // 文字列が数字の表記であるか検査
+            isInvalid = !healthValue.matches("[0-9.]+");
+            if (isInvalid) {
+              validateResult = false;
+              break;
+            }
+
+            // 数字が有効な実数値か検査
+            Double health = Double.valueOf(healthValue);
+            isInvalid = health.isInfinite();
+            isInvalid = health.isNaN();
+            // isInvalid = !(health.isInfinite() || health.isNaN());
+            if (isInvalid) {
+              validateResult = false;
+              break;
+            }
+          }
+        }
+      }
+    }
+    return validateResult;
+  }
+
+  static boolean validateHeightLore(List<String> loreList, String targetLbel) {
+    boolean validateResult = true;
+
+    for (String lore : loreList) {
+      if (StringUtils.isNotBlank(lore)) {
+        boolean isInvalid = false;
+        // 跳躍力が設定されているか検査
+        if (lore.startsWith(targetLbel)) {
+          // 跳躍力の形式か検査
+          String heightNum = lore.substring(targetLbel.length());
+
+          // 文字列が5文字であるか検査
+          isInvalid = heightNum.length() != 5;
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+
+          // 文字列が数字の表記であるか検査
+          isInvalid = !heightNum.matches("[0-9.]+");
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+
+          // 数字が有効な実数値か検査
+          Double height = Double.valueOf(heightNum);
+          // 数値が無限か検査
+          isInvalid = height.isInfinite();
+          // 数値がNaNか検査
+          isInvalid = height.isNaN();
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+        }
+      }
+    }
+
+    return validateResult;
+  }
+
+  static boolean validateEquipmentLore(List<String> loreList, String targetLbel) {
+    boolean validateResult = true;
+    
+    for (String lore : loreList) {
+      if (StringUtils.isNotBlank(lore)) {
+        boolean isInvalid = false;
+        // 装備が設定されているか検査
+        if (lore.startsWith(targetLbel)) {
+          // 装備の形式か検査
+          if (lore.contains("][")) {
+            String[] equips = lore.split(itemSplitter);
+            isInvalid = equips.length != 2;
+            equips[0] = equips[0] + itemSuffix;
+            equips[1] = itemPrefix + equips[1];
+            
+            for (String equip : equips) {
+              isInvalid = !eqipmentList.contains(equip);
+              if (isInvalid) {
+                validateResult = false;
+                break;
+              }
+            }
+          } else {
+            isInvalid = !eqipmentList.contains(lore);
+            if (isInvalid) {
+              validateResult = false;
+              break;
+            }
+            
+          }
+          if (isInvalid) {
+            validateResult = false;
+            break;
+          }
+        } else {
+          
+        }
+      }
+    }
+    
+    return validateResult;
+  }
+  
   @Test
   public final void testGetHealthLore() {
-    // 入力ソースの振る舞いを設定
     // ウマ
-    Mockito.doReturn(horseEggDataMap.get(dataKeyChest)).when(eggData).getIsCarryingChest();
-    Mockito.doReturn(horseEggDataMap.get(dataKeySpeed)).when(eggData).getSpeed();
     Mockito.doReturn(horseEggDataMap.get(dataKeyHealth)).when(eggData).getHealth();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyUuidLeast)).when(eggData).getUuidLeast();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyColor)).when(eggData).getColor();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyJump)).when(eggData).getJump();
     Mockito.doReturn(horseEggDataMap.get(dataKeyMaxHealth)).when(eggData).getMaxHealth();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyName)).when(eggData).getName();
-    Mockito.doReturn(horseEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyVariant)).when(eggData).getVariant();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyType)).when(eggData).getType();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyUuidMost)).when(eggData).getUuidMost();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
-    Mockito.doReturn(horseEggDataMap.get(dataKeyStyle)).when(eggData).getStyle();
-    
-    
-    
+    LoreWriter horseLw = new LoreWriterFactory().newLoreWriter(EntityType.HORSE, eggData);
+    List<String> horseLoreList = horseLw.getLoreList();
+    boolean containHorseHealth = validateHealthLore(horseLoreList, labelHealth);
+    Assert.assertTrue(containHorseHealth);
+
     // ロバ
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyChest)).when(eggData).getIsCarryingChest();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeySpeed)).when(eggData).getSpeed();
     Mockito.doReturn(donkeyEggDataMap.get(dataKeyHealth)).when(eggData).getHealth();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyUuidLeast)).when(eggData).getUuidLeast();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyColor)).when(eggData).getColor();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyJump)).when(eggData).getJump();
     Mockito.doReturn(donkeyEggDataMap.get(dataKeyMaxHealth)).when(eggData).getMaxHealth();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyName)).when(eggData).getName();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyVariant)).when(eggData).getVariant();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyType)).when(eggData).getType();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyUuidMost)).when(eggData).getUuidMost();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
-    Mockito.doReturn(donkeyEggDataMap.get(dataKeyStyle)).when(eggData).getStyle();
-    
+    LoreWriter donkeyLw = new LoreWriterFactory().newLoreWriter(EntityType.DONKEY, eggData);
+    List<String> donkeyLoreList = donkeyLw.getLoreList();
+    boolean containDonkeyHealth = validateHealthLore(donkeyLoreList, labelHealth);
+    Assert.assertTrue(containDonkeyHealth);
+
     // ラマ
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyChest)).when(eggData).getIsCarryingChest();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeySpeed)).when(eggData).getSpeed();
     Mockito.doReturn(llamaEggDataMap.get(dataKeyHealth)).when(eggData).getHealth();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyUuidLeast)).when(eggData).getUuidLeast();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyColor)).when(eggData).getColor();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyJump)).when(eggData).getJump();
     Mockito.doReturn(llamaEggDataMap.get(dataKeyMaxHealth)).when(eggData).getMaxHealth();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyName)).when(eggData).getName();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyVariant)).when(eggData).getVariant();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyType)).when(eggData).getType();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyUuidMost)).when(eggData).getUuidMost();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
-    Mockito.doReturn(llamaEggDataMap.get(dataKeyStyle)).when(eggData).getStyle();
-    
+    LoreWriter llamaLw = new LoreWriterFactory().newLoreWriter(EntityType.LLAMA, eggData);
+    List<String> llamaLoreList = llamaLw.getLoreList();
+    boolean containLlamaHealth = validateHealthLore(llamaLoreList, labelHealth);
+    Assert.assertTrue(containLlamaHealth);
 
   }
 
   @Test
   public final void testGetHeightLore() {
-//    fail("まだ実装されていません"); // TODO
+    // ウマ
+    Mockito.doReturn(horseEggDataMap.get(dataKeyJump)).when(eggData).getJump();
+    LoreWriter horseLw = new LoreWriterFactory().newLoreWriter(EntityType.HORSE, eggData);
+    List<String> horseLoreList = horseLw.getLoreList();
+    boolean containHorseHeight = validateHeightLore(horseLoreList, labelHeight);
+    Assert.assertTrue(containHorseHeight);
+
+    // ロバ
+    Mockito.doReturn(donkeyEggDataMap.get(dataKeyJump)).when(eggData).getJump();
+    LoreWriter donkeyLw = new LoreWriterFactory().newLoreWriter(EntityType.DONKEY, eggData);
+    List<String> donkeyLoreList = donkeyLw.getLoreList();
+    boolean containDonkeyHeight = validateHeightLore(donkeyLoreList, labelHeight);
+    Assert.assertTrue(containDonkeyHeight);
+
+    // ラマ
+    Mockito.doReturn(llamaEggDataMap.get(dataKeyJump)).when(eggData).getJump();
+    LoreWriter llamaLw = new LoreWriterFactory().newLoreWriter(EntityType.LLAMA, eggData);
+    List<String> llamaLoreList = llamaLw.getLoreList();
+    boolean containLlamaHeight = validateHeightLore(llamaLoreList, labelHeight);
+    Assert.assertTrue(containLlamaHeight);
   }
 
   @Test
   public final void testGetOwnerLore() {
-//    fail("まだ実装されていません"); // TODO
+    // fail("まだ実装されていません"); // TODO
+    assert (true);
   }
 
   @Test
   public final void testGetEquipmentLore() {
-//    fail("まだ実装されていません"); // TODO
+    // ウマ
+    Mockito.doReturn(horseEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
+    Mockito.doReturn(horseEggDataMap.get(dataKeyChest)).when(eggData).getIsCarryingChest();
+    Mockito.doReturn(horseEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
+    LoreWriter horseLw = new LoreWriterFactory().newLoreWriter(EntityType.HORSE, eggData);
+    List<String> horseLoreList = horseLw.getLoreList();
+    boolean containHorseHeight = validateEquipmentLore(horseLoreList, labelArmor);
+    Assert.assertTrue(containHorseHeight);
+
+    // ロバ
+    Mockito.doReturn(donkeyEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
+    Mockito.doReturn(donkeyEggDataMap.get(dataKeyChest)).when(eggData).getIsCarryingChest();
+    Mockito.doReturn(donkeyEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
+    LoreWriter donkeyLw = new LoreWriterFactory().newLoreWriter(EntityType.DONKEY, eggData);
+    List<String> donkeyLoreList = donkeyLw.getLoreList();
+    boolean containDonkeyHeight = validateEquipmentLore(donkeyLoreList, labelArmor);
+    Assert.assertTrue(containDonkeyHeight);
+
+    // ラマ
+    Mockito.doReturn(llamaEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
+    Mockito.doReturn(llamaEggDataMap.get(dataKeyChest)).when(eggData).getIsCarryingChest();
+    Mockito.doReturn(llamaEggDataMap.get(dataKeySaddle)).when(eggData).getIsSaddled();
+    LoreWriter llamaLw = new LoreWriterFactory().newLoreWriter(EntityType.LLAMA, eggData);
+    List<String> llamaLoreList = llamaLw.getLoreList();
+    boolean containLlamaHeight = validateEquipmentLore(llamaLoreList, labelArmor);
+    Assert.assertTrue(containLlamaHeight);
   }
 
   @Test
   public final void testGetSpeedLore() {
-//    fail("まだ実装されていません"); // TODO
+    // fail("まだ実装されていません"); // TODO
+    assert (true);
   }
 
   @Test
   public final void testGetStrengthLore() {
-//    fail("まだ実装されていません"); // TODO
+    // fail("まだ実装されていません"); // TODO
+    assert (true);
   }
 
 }
