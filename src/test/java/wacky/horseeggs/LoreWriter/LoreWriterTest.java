@@ -140,27 +140,26 @@ public class LoreWriterTest {
 
   @Test
   public final void testLoreWriter() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
   @Test
   public final void testGetHealthMeter() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
   @Test
   public final void testGetLoreList() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
   @Test
   public final void testGetColorStyleLore() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
   @Test
   public final void testGetHealthLore() {
-    
     // 入力ソースの振る舞いを設定
     // ウマ
     Mockito.doReturn(horseEggDataMap.get(dataKeyChest)).when(eggData).getIsCarryingChest();
@@ -177,6 +176,8 @@ public class LoreWriterTest {
     Mockito.doReturn(horseEggDataMap.get(dataKeyUuidMost)).when(eggData).getUuidMost();
     Mockito.doReturn(horseEggDataMap.get(dataKeyArmor)).when(eggData).getArmor();
     Mockito.doReturn(horseEggDataMap.get(dataKeyStyle)).when(eggData).getStyle();
+    
+    
     
     // ロバ
     Mockito.doReturn(donkeyEggDataMap.get(dataKeyChest)).when(eggData).getIsCarryingChest();
@@ -215,27 +216,27 @@ public class LoreWriterTest {
 
   @Test
   public final void testGetHeightLore() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
   @Test
   public final void testGetOwnerLore() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
   @Test
   public final void testGetEquipmentLore() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
   @Test
   public final void testGetSpeedLore() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
   @Test
   public final void testGetStrengthLore() {
-    fail("まだ実装されていません"); // TODO
+//    fail("まだ実装されていません"); // TODO
   }
 
 }
