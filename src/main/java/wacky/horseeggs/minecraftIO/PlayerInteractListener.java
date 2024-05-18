@@ -617,7 +617,7 @@ public class PlayerInteractListener implements Listener {
 //
         ItemMeta meta = horseegg.getItemMeta();
         // ItemMetaとれなかったら、そもそもおかしいので処理終了
-        if(Objects.isNull(meta)){
+        if (Objects.isNull(meta)) {
           this.log.info("horseEgg ItemMeta is NULL.End.");
           return;
         }
@@ -703,7 +703,8 @@ public class PlayerInteractListener implements Listener {
       event.setUseItemInHand(Result.DENY);
       this.log.trace(PREF_LOG_TRACE + "event.setUseItemInHand(Result.DENY)");
 
-      this.log.trace(PREF_LOG_TRACE + "event.isCancelled() ? " + (event.useInteractedBlock() == Result.DENY));
+      this.log.trace(
+          PREF_LOG_TRACE + "event.isCancelled() ? " + (event.useInteractedBlock() == Result.DENY));
       if (event.useInteractedBlock() == Result.DENY) {
         // まさかの水源、溶岩源を右クリックした場合、cancelledのはずだけどスポーンエッグは使える
         this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END
@@ -719,15 +720,15 @@ public class PlayerInteractListener implements Listener {
         return;
       }
 
-      Player player = event.getPlayer();
       Block clickedBlock = event.getClickedBlock();
       this.log.trace(PREF_LOG_TRACE + "clickedBlock ? " + clickedBlock);
       // クリックしたブロックがとれなかったら、処理を強制停止
-      if(Objects.isNull(clickedBlock)){
+      if (Objects.isNull(clickedBlock)) {
         this.log.info("clickedBlock is null.End.");
         return;
       }
 
+      Player player = event.getPlayer();
       this.log.trace(PREF_LOG_TRACE + "Player player <- event.getPlayer()");
       this.log.trace(PREF_LOG_TRACE + "!player.isSneaking() ? " + !player.isSneaking());
       this.log.trace(PREF_LOG_TRACE + "plugin.isClickable(event.getClickedBlock()) ? "
@@ -885,7 +886,7 @@ public class PlayerInteractListener implements Listener {
           this.log.trace(PREF_LOG_TRACE + "loc.add(0, 0.5, 0)");
 
           World world = loc.getWorld();
-          if(Objects.isNull(world)){
+          if (Objects.isNull(world)) {
             this.log.error("WorldData is Null!End.");
             return;
           }
