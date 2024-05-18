@@ -1,6 +1,3 @@
-/**
- * @author sho_5414
- */
 package wacky.horseeggs.eggData;
 
 import java.util.HashMap;
@@ -16,18 +13,20 @@ public class HorseEggData extends EggDataBase {
   /**
    * デフォルトコンストラクタ.
    *
-   * @deprecated <p>
-   * このコンストラクタは通常使用しないでください。<br> 使用目的別で、各コンストラクタを呼び出してください。<br>
-   * キャプチャー：{@link HorseEggData#HorseEggData(AbstractHorse)}<br>
-   * リリース：{@link HorseEggData#HorseEggData(HashMap)}
-   * </p>
+   *     <p>
+   *     このコンストラクタは通常使用しないでください。<br> 使用目的別で、各コンストラクタを呼び出してください。<br>
+   *     キャプチャー：{@link LlamaEggData#LlamaEggData(AbstractHorse)}<br>
+   *     リリース：{@link LlamaEggData#LlamaEggData(HashMap)}
+   *     </p>
    */
   public HorseEggData() {
     super();
   }
 
   /**
-   * コンストラクタ（AbstractHorse）
+   * <p>
+   * コンストラクタ（AbstractHorse） .
+   * </p>
    *
    * @param absHorse スポーン中の馬情報.
    */
@@ -36,9 +35,11 @@ public class HorseEggData extends EggDataBase {
   }
 
   /**
-   * コンストラクタ（ItemStack）
+   * <p>
+   * コンストラクタ（ItemStack）.
+   * </p>
    *
-   * @param metaData HorseEggsのアイテム
+   * @param metaData HorseEggsのmeta情報
    */
   public HorseEggData(HashMap<String, ?> metaData) {
     super(metaData);

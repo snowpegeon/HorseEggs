@@ -1,6 +1,3 @@
-/**
- *
- */
 package wacky.horseeggs.eggData;
 
 import java.util.HashMap;
@@ -29,7 +26,10 @@ public class LlamaEggData extends EggDataBase {
   }
 
   /**
-   * コンストラクタ（AbstractHorse）
+   * <p>
+   * コンストラクタ（AbstractHorse） .
+   * </p>
+   *
    * @param absHorse スポーン中の馬情報.
    */
   public LlamaEggData(AbstractHorse absHorse) {
@@ -37,8 +37,11 @@ public class LlamaEggData extends EggDataBase {
   }
 
   /**
-   * コンストラクタ（ItemStack）
-   * @param metaData HorseEggsのアイテム
+   * <p>
+   * コンストラクタ（ItemStack）.
+   * </p>
+   *
+   * @param metaData HorseEggsのmeta情報
    */
   public LlamaEggData(HashMap<String, ?> metaData) {
     super(metaData);

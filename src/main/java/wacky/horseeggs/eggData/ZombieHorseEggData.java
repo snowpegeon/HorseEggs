@@ -1,6 +1,3 @@
-/**
- *
- */
 package wacky.horseeggs.eggData;
 
 import java.util.HashMap;
@@ -9,12 +6,16 @@ import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
 
 /**
+ * <p>
  * ゾンビホースを捕獲するためのHorseEggの実体クラス.
+ * </p>
  */
 public class ZombieHorseEggData extends EggDataBase {
 
   /**
+   * <p>
    * デフォルトコンストラクタ.
+   * </p>
    *
    * @deprecated
    *     <p>
@@ -28,7 +29,10 @@ public class ZombieHorseEggData extends EggDataBase {
   }
 
   /**
-   * コンストラクタ（AbstractHorse）
+   * <p>
+   * コンストラクタ（AbstractHorse） .
+   * </p>
+   *
    * @param absHorse スポーン中の馬情報.
    */
   public ZombieHorseEggData(AbstractHorse absHorse) {
@@ -36,7 +40,10 @@ public class ZombieHorseEggData extends EggDataBase {
   }
 
   /**
-   * コンストラクタ（ItemStack）
+   * <p>
+   * コンストラクタ（ItemStack）.
+   * </p>
+   *
    * @param metaData HorseEggsのmeta情報
    */
   public ZombieHorseEggData(HashMap<String, ?> metaData) {
@@ -44,7 +51,9 @@ public class ZombieHorseEggData extends EggDataBase {
   }
 
   /**
+   * <p>
    * 卵に格納できるエンティティタイプを取得.
+   * </p>
    *
    * @return {@link EntityType}.
    */
