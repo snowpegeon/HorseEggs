@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package wacky.horseeggs.eggData;
 
@@ -7,7 +7,6 @@ import java.util.HashMap;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * ロバを捕獲するためのHorseEggの実体クラス.
@@ -32,7 +31,7 @@ public class DonkeyEggData extends EggDataBase {
    * コンストラクタ（AbstractHorse）
    * @param absHorse スポーン中の馬情報.
    */
-  public DonkeyEggData(AbstractHorse absHorse){
+  public DonkeyEggData(AbstractHorse absHorse) {
     super(absHorse);
   }
 
@@ -40,7 +39,7 @@ public class DonkeyEggData extends EggDataBase {
    * コンストラクタ（ItemStack）
    * @param metaData HorseEggsのアイテム
    */
-  public DonkeyEggData(HashMap<String, ?> metaData){
+  public DonkeyEggData(HashMap<String, ?> metaData) {
     super(metaData);
   }
 
