@@ -318,7 +318,7 @@ public class ReleaseHorse {
     AbstractHorse horse = (AbstractHorse) loc.getWorld().spawnEntity(loc, eggData.getEntityType());
 
     // 馬情報の書き込み
-    EntityWriter eWriter = EntityWriterFactory.newLoreWriter(eggData.getEntityType(), horse);
+    EntityWriter eWriter = EntityWriterFactory.newEntityWriter(eggData.getEntityType(), horse);
     eWriter.writeHorse(eggData);
     logger.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
     logger.debug(PREF_LOG_DEBUG + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location):End");
