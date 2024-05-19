@@ -50,7 +50,7 @@ public class LoreWriterFactory {
    *
    * @param entityType {@link EntityType}
    */
-  public LoreWriter newLoreWriter(EntityType entityType, EggDataBase eggData) {
+  public static LoreWriter newLoreWriter(EntityType entityType, EggDataBase eggData) {
     switch (entityType) {
       case LLAMA:
         return new LlamaLoreWriter(eggData);

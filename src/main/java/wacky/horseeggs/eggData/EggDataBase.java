@@ -13,6 +13,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -448,9 +449,14 @@ public abstract class EggDataBase {
       this.entityTagMap = Map.of(dataKeyEntityTag, idNamespaceMap);
 
       // display タグデータ構築
-      this.displayMap = Map.ofEntries(
-          Map.entry(dataKeyLore, loreList),
-          Map.entry(dataKeyName, name));
+      this.displayMap = new HashMap<>(){
+        {
+          put(dataKeyLore, loreList);
+          if(Objects.nonNull(name)) {
+            put(dataKeyName, name);
+          }
+        }
+      };
 
       // HorseEggs タグデータ構築
       this.horseEggTagDataList =
@@ -820,8 +826,8 @@ public abstract class EggDataBase {
    */
   private Integer getStrength(HashMap<String, ?> metaData) {
     Integer strength = null;
-    if (metaData.containsKey(dataKeyStyle)) {
-      strength = (Integer) metaData.get(dataKeyStyle);
+    if (metaData.containsKey(dataKeyStrength)) {
+      strength = (Integer) metaData.get(dataKeyStrength);
     }
     return strength;
   }
@@ -995,8 +1001,11 @@ public abstract class EggDataBase {
    * @return {@link Boolean} チェストの有無.
    */
   private Boolean isCarryingChest(HashMap<String, ?> metaData) {
-    Byte hasChest = (Byte) metaData.get(dataKeyChest);
-    return hasChest == 1;
+    Byte hasChest = null;
+    if(metaData.containsKey(dataKeyChest)){
+      hasChest = (Byte) metaData.get(dataKeyChest);
+    }
+    return Objects.nonNull(hasChest) && hasChest == 1;
   }
 
   /**
@@ -1022,8 +1031,8 @@ public abstract class EggDataBase {
   private boolean isSaddled(HashMap<String, ?> metaData) {
     boolean hasSaddle = false;
     if (metaData.containsKey(dataKeySaddle)) {
-      if (Objects.nonNull(metaData.get(dataKeySaddle))) {
-        hasSaddle = (boolean) metaData.get(dataKeySaddle);
+      if (metaData.get(dataKeySaddle) instanceof Byte isSaddledByte) {
+        hasSaddle = BooleanUtils.toBoolean(isSaddledByte.intValue());
       }
     }
     return hasSaddle;

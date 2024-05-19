@@ -1,5 +1,6 @@
 package wacky.horseeggs.EntityWriter;
 
+import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -28,7 +29,7 @@ public abstract class EntityWriter {
 
   protected boolean writeHorseBase(EggDataBase eggData){
     this.absHorse.setAge(6000); // 繁殖待ち6000tick
-    this.absHorse.setCustomName(eggData.getDisplayName());
+    this.absHorse.setCustomName(eggData.getName());
     this.absHorse.setMaxHealth(eggData.getMaxHealth());
     this.absHorse.setHealth(eggData.getHealth());
     this.absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(eggData.getSpeed());
@@ -50,7 +51,10 @@ public abstract class EntityWriter {
   }
 
   private OfflinePlayer getPlayer(Long most, Long least) {
-    return Bukkit.getOfflinePlayer(new UUID(most, least));
+    if(Objects.nonNull(most) && Objects.nonNull(least)){
+      return Bukkit.getOfflinePlayer(new UUID(most, least));
+    }
+    return null;
   }
 
   private ItemStack getSaddle(boolean isSaddled) {
