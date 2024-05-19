@@ -25,7 +25,7 @@ import wacky.horseeggs.LoreWriter.ZombieHorseLoreWriter;
 import wacky.horseeggs.eggData.EggDataBase;
 
 /**
- * Factory class of LoreWriter.
+ * Factory class of EntityWriter.
  */
 public class EntityWriterFactory {
   /**
