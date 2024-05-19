@@ -24,8 +24,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.AbstractHorse;
+import org.bukkit.entity.ChestedHorse;
+import org.bukkit.entity.Donkey;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Mule;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
@@ -596,6 +599,33 @@ public class PlayerInteractListener implements Listener {
 //          }
 //          this.log.trace(PREF_LOG_TRACE + "[LOOP END]for (int i = 2; i < hInv.getSize(); i++)");
 //        }
+
+        // チェスト付き馬達のチェストの中身バラマキ
+        if (entity instanceof ChestedHorse) {
+          this.log.debug("entity is ChestedHorse");
+
+          // ロバかラバの場合、アイテム化しないよう先頭にある鞍をあらかじめ除外しておく
+          AbstractHorse abHorse = null;
+          if (entity instanceof Donkey || entity instanceof Mule) {
+            this.log.trace("entity is Donkey or Mule.");
+            abHorse = (AbstractHorse) entity;
+
+            // サドルがついてる場合は、外す
+            this.log.trace("hasSaddle: " + Objects.nonNull(abHorse.getInventory().getSaddle()));
+            if (Objects.nonNull(abHorse.getInventory().getSaddle())) {
+              this.log.trace("this entity has Saddle.");
+              abHorse.getInventory().setSaddle(null);
+            }
+          }
+          for (ItemStack storageItem : horse.getInventory().getStorageContents()) {
+            if (storageItem != null) {
+              this.log.debug("StorageItem is not null.Item drop!");
+              entity.getWorld().dropItem(loc, storageItem);
+            }
+          }
+          this.log.debug("HorseInventory Clear.");
+          horse.getInventory().clear();
+        }
 
         // 構築したタグ情報をインベントリ保存する
         editor.set(eggData.getHorseEggTagDataMap());

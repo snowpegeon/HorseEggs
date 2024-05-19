@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.BooleanUtils;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -27,9 +28,9 @@ import org.bukkit.entity.Llama;
 import org.bukkit.entity.TraderLlama;
 import org.bukkit.inventory.AbstractHorseInventory;
 import org.bukkit.inventory.HorseInventory;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.LlamaInventory;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 /**
  * <p>
@@ -202,6 +203,13 @@ public abstract class EggDataBase {
 
   /**
    * <p>
+   * 鎧の色データを取得するためのデータキー. {@link String}
+   * </p>
+   */
+  private final String dataKeyArmorColor = "ArmorColor";
+
+  /**
+   * <p>
    * 模様のデータを取得するためのデータキー. {@link String}
    * </p>
    */
@@ -343,6 +351,13 @@ public abstract class EggDataBase {
 
   /**
    * <p>
+   * 染色鎧の色. {@link String}
+   * </p>
+   */
+  private String armorColor;
+
+  /**
+   * <p>
    * {@link #dataKeyId}タグにつけるデータマップの中身. {@link Map}
    * </p>
    */
@@ -384,6 +399,13 @@ public abstract class EggDataBase {
   private List<?> horseEggTagDataList;
 
   /**
+   * <p>
+   * ArmorColorをタグに保持するためのフォーマット形式. {@link String}
+   * </p>
+   */
+  public static final String ArmorColorFormat = "%d,%d,%d,%d";
+
+  /**
    * デフォルトコンストラクタ.
    *
    * @deprecated
@@ -407,6 +429,7 @@ public abstract class EggDataBase {
     this.type = null;
     this.uuidMost = null;
     this.armor = null;
+    this.armorColor = null;
     this.style = null;
     this.strength = null;
   }
@@ -435,6 +458,7 @@ public abstract class EggDataBase {
       this.type = getType(absHorse);
       this.uuidMost = getUuidMost(absHorse);
       this.armor = getArmor(absHorse);
+      this.armorColor = getArmorColor(absHorse);
       this.style = getStyle(absHorse);
       this.strength = getStrength(absHorse);
 
@@ -489,6 +513,7 @@ public abstract class EggDataBase {
       this.type = getType(meta);
       this.uuidMost = getUuidMost(meta);
       this.armor = getArmor(meta);
+      this.armorColor = getArmorColor(meta);
       this.style = getStyle(meta);
       this.strength = getStrength(meta);
     });
@@ -585,6 +610,9 @@ public abstract class EggDataBase {
         if (Objects.nonNull(armor)) {
           put(dataKeyArmor, armor);
         }
+        if (Objects.nonNull(armorColor)) {
+          put(dataKeyArmorColor, armorColor);
+        }
         if (Objects.nonNull(isCarryingChest)) {
           put(dataKeyChest, isCarryingChest);
         }
@@ -626,6 +654,40 @@ public abstract class EggDataBase {
       armor = (String) metaData.get(dataKeyArmor);
     }
     return armor;
+  }
+
+  /**
+   * {@link AbstractHorse}から鎧の色データを取得.
+   *
+   * @param absHorse {@link AbstractHorse} エンティティ本体.
+   * @return {@link String} 鎧の色アイテム文字列.
+   */
+  private String getArmorColor(AbstractHorse absHorse) {
+    String armorColor = null;
+    if (absHorse.getInventory() instanceof HorseInventory horseInv) {
+      ItemStack item = horseInv.getArmor();
+      if (item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta && Objects.nonNull(
+          leatherArmorMeta.getColor())) {
+        Color col = leatherArmorMeta.getColor();
+        armorColor = String.format(ArmorColorFormat, col.getAlpha(), col.getRed(), col.getGreen(),
+            col.getBlue());
+      }
+    }
+    return armorColor;
+  }
+
+  /**
+   * {@link HashMap}から鎧の色データを取得.
+   *
+   * @param metaData {@link HashMap} 卵のItemStackから取得されたメタデータ.
+   * @return {@link String} 鎧の色復元用文字列.
+   */
+  private String getArmorColor(HashMap<String, ?> metaData) {
+    String armorColor = null;
+    if (metaData.containsKey(dataKeyArmorColor)) {
+      armorColor = (String) metaData.get(dataKeyArmorColor);
+    }
+    return armorColor;
   }
 
   /**
