@@ -666,8 +666,8 @@ public abstract class EggDataBase {
     String armorColor = null;
     if (absHorse.getInventory() instanceof HorseInventory horseInv) {
       ItemStack item = horseInv.getArmor();
-      if (item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta && Objects.nonNull(
-          leatherArmorMeta.getColor())) {
+      if (Objects.nonNull(item) && item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta
+          && Objects.nonNull(leatherArmorMeta.getColor())) {
         Color col = leatherArmorMeta.getColor();
         armorColor = String.format(ArmorColorFormat, col.getAlpha(), col.getRed(), col.getGreen(),
             col.getBlue());
