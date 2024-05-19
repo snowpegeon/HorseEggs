@@ -71,7 +71,7 @@ public class LoreWriterFactoryTest {
 
     // コウモリだけが知っている
     LoreWriter otherLw = LoreWriterFactory.newLoreWriter(EntityType.BAT, eggData);
-    Assert.assertTrue(Objects.nonNull(otherLw));
+    Assert.assertTrue(Objects.isNull(otherLw));
   }
 
 }
