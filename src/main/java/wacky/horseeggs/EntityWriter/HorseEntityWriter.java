@@ -31,12 +31,17 @@ public class HorseEntityWriter extends  EntityWriter{
 
   private ItemStack getArmor(String type){
     Material armor = null;
-    armor = Material.matchMaterial(type, true);
+
+    if(Objects.isNull(type)) {
+      return null;
+    }
+
+    armor = Material.matchMaterial(type);
     if(Objects.nonNull(armor)) {
       return new ItemStack(armor);
     }
 
-    armor = Material.matchMaterial(type);
+    armor = Material.matchMaterial(type, true);
     if(Objects.nonNull(armor)) {
       return new ItemStack(armor);
     }

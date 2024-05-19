@@ -27,6 +27,7 @@ import org.bukkit.entity.Llama;
 import org.bukkit.entity.TraderLlama;
 import org.bukkit.inventory.AbstractHorseInventory;
 import org.bukkit.inventory.HorseInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.LlamaInventory;
 
@@ -599,11 +600,11 @@ public abstract class EggDataBase {
    */
   private String getArmor(AbstractHorse absHorse) {
     String armor = null;
-    if (absHorse instanceof AbstractHorseInventory absHorseInv) {
+    if (absHorse.getInventory() instanceof AbstractHorseInventory absHorseInv) {
       ItemStack item = null;
       if (absHorseInv instanceof HorseInventory horseInv) {
         item = horseInv.getArmor();
-      } else if (absHorse instanceof LlamaInventory llamaInv) {
+      } else if (absHorseInv instanceof LlamaInventory llamaInv) {
         item = llamaInv.getDecor();
       }
       if (Objects.nonNull(item)) {
@@ -1016,7 +1017,7 @@ public abstract class EggDataBase {
    */
   private boolean isSaddled(AbstractHorse absHorse) {
     boolean hasSaddle = false;
-    if (absHorse instanceof AbstractHorseInventory absHorseInv) {
+    if (absHorse.getInventory() instanceof AbstractHorseInventory absHorseInv) {
       hasSaddle = Objects.nonNull(absHorseInv.getSaddle());
     }
     return hasSaddle;

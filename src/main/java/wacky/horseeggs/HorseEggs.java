@@ -1,6 +1,7 @@
 package wacky.horseeggs;
 
 import com.github.teruteru128.logger.Logger;
+import com.saicone.rtag.RtagItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +41,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import wacky.horseeggs.EventHandler.BlockDispenseEventHandler;
+import wacky.horseeggs.eggData.EggDataBase;
+import wacky.horseeggs.eggData.factory.EggDataFactory;
 import wacky.horseeggs.minecraftIO.PlayerInteractListener;
 
 /**
@@ -208,7 +211,7 @@ public class HorseEggs extends JavaPlugin implements Listener {
             + item.getItemMeta().getLore().get(0).equals("Empty"));
       }
 
-      if (item.getItemMeta().getLore().get(0).equals("Empty")) {
+      if (item.getItemMeta().getDisplayName().equals(EggDataBase.EGG_NAME) && item.getItemMeta().getLore().get(0).equals("Empty")) {
         this.log.debug(PREF_LOG_DEBUG + "lore[0] is \"Empty\"");
         this.log.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
         this.log
@@ -236,27 +239,12 @@ public class HorseEggs extends JavaPlugin implements Listener {
     this.log.debug(PREF_LOG_DEBUG + PREF_LOG_START + "HorseEggs.boolean:isHorseEgg(ItemStack)");
     this.log.trace(PREF_LOG_TRACE + "[IN PARAM]item=" + item.toString());
 
-    this.log.trace(PREF_LOG_TRACE + "item.getType() == Material.HORSE_SPAWN_EGG ? "
-        + (item.getType() == Material.HORSE_SPAWN_EGG));
-    this.log.trace(PREF_LOG_TRACE + "item.getType() == Material.ZOMBIE_HORSE_SPAWN_EGG ? "
-        + (item.getType() == Material.ZOMBIE_HORSE_SPAWN_EGG));
-    this.log.trace(PREF_LOG_TRACE + "item.getType() == Material.SKELETON_HORSE_SPAWN_EGG ? "
-        + (item.getType() == Material.SKELETON_HORSE_SPAWN_EGG));
-    this.log.trace(PREF_LOG_TRACE + "item.getType() == Material.DONKEY_SPAWN_EGG ? "
-        + (item.getType() == Material.DONKEY_SPAWN_EGG));
-    this.log.trace(PREF_LOG_TRACE + "item.getType() == Material.MULE_SPAWN_EGG ? "
-        + (item.getType() == Material.MULE_SPAWN_EGG));
-    this.log.trace(PREF_LOG_TRACE + "item.getType() == Material.LLAMA_SPAWN_EGG ? "
-        + (item.getType() == Material.LLAMA_SPAWN_EGG));
-    this.log.trace(PREF_LOG_TRACE + "item.getType() == Material.TRADER_LLAMA_SPAWN_EGG ? "
-        + (item.getType() == Material.TRADER_LLAMA_SPAWN_EGG));
+    RtagItem itemTag = new RtagItem(item);
+    this.log.trace(PREF_LOG_TRACE + "itemTag.hasTag(EggDataBase.EGG_NAME): " + itemTag.hasTag(EggDataBase.EGG_NAME));
+    this.log.trace(PREF_LOG_TRACE + "EggDataFactory.isCaptureAbleEggMaterial(item.getType()): "
+        + EggDataFactory.isCaptureAbleEggMaterial(item.getType()));
 
-    if (item.getType() == Material.HORSE_SPAWN_EGG
-        || item.getType() == Material.ZOMBIE_HORSE_SPAWN_EGG
-        || item.getType() == Material.SKELETON_HORSE_SPAWN_EGG
-        || item.getType() == Material.DONKEY_SPAWN_EGG || item.getType() == Material.MULE_SPAWN_EGG
-        || item.getType() == Material.LLAMA_SPAWN_EGG
-        || item.getType() == Material.TRADER_LLAMA_SPAWN_EGG) {
+    if (itemTag.hasTag(EggDataBase.EGG_NAME) && EggDataFactory.isCaptureAbleEggMaterial(item.getType())) {
 
       this.log
           .trace(PREF_LOG_TRACE + "item.getItemMeta().hasLore() ? " + item.getItemMeta().hasLore());

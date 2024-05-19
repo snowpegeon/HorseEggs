@@ -1,16 +1,20 @@
 package wacky.horseeggs.eggData.factory;
 
+import static org.bukkit.Material.DONKEY_SPAWN_EGG;
+import static org.bukkit.Material.HORSE_SPAWN_EGG;
+import static org.bukkit.Material.LLAMA_SPAWN_EGG;
+import static org.bukkit.Material.MULE_SPAWN_EGG;
+import static org.bukkit.Material.SKELETON_HORSE_SPAWN_EGG;
+import static org.bukkit.Material.TRADER_LLAMA_SPAWN_EGG;
+import static org.bukkit.Material.ZOMBIE_HORSE_SPAWN_EGG;
+
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
-import wacky.horseeggs.LoreWriter.DonkeyLoreWriter;
-import wacky.horseeggs.LoreWriter.HorseLoreWriter;
-import wacky.horseeggs.LoreWriter.LlamaLoreWriter;
-import wacky.horseeggs.LoreWriter.MuleLoreWriter;
-import wacky.horseeggs.LoreWriter.SkeletonHorseLoreWriter;
-import wacky.horseeggs.LoreWriter.TraderLlamaLoreWriter;
-import wacky.horseeggs.LoreWriter.ZombieHorseLoreWriter;
 import wacky.horseeggs.eggData.DonkeyEggData;
 import wacky.horseeggs.eggData.EggDataBase;
 import wacky.horseeggs.eggData.HorseEggData;
@@ -24,7 +28,12 @@ import wacky.horseeggs.eggData.ZombieHorseEggData;
  * Factory class of EggData.
  */
 public class EggDataFactory {
-  public EggDataBase newEggData(EntityType entityType, AbstractHorse horse){
+
+  private static final Set<Material> CAPTURE_ABLE_EGG_MATERIALS = Collections.unmodifiableSet(
+      EnumSet.of(LLAMA_SPAWN_EGG, MULE_SPAWN_EGG, DONKEY_SPAWN_EGG, HORSE_SPAWN_EGG,
+          ZOMBIE_HORSE_SPAWN_EGG, SKELETON_HORSE_SPAWN_EGG, TRADER_LLAMA_SPAWN_EGG));
+
+  public EggDataBase newEggData(EntityType entityType, AbstractHorse horse) {
     switch (entityType) {
       case LLAMA:
         return new LlamaEggData(horse);
@@ -44,7 +53,8 @@ public class EggDataFactory {
         return null;
     }
   }
-  public EggDataBase newEggData(Material eggType, HashMap<String, ?> metaData){
+
+  public EggDataBase newEggData(Material eggType, HashMap<String, ?> metaData) {
     switch (eggType) {
       case LLAMA_SPAWN_EGG:
         return new LlamaEggData(metaData);
@@ -64,4 +74,9 @@ public class EggDataFactory {
         return null;
     }
   }
+
+  public static boolean isCaptureAbleEggMaterial(Material eggType) {
+    return CAPTURE_ABLE_EGG_MATERIALS.contains(eggType);
+  }
+
 }
