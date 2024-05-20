@@ -210,8 +210,6 @@ public abstract class LoreWriter {
     };
   }
 
-  public abstract List<String> generateLore(Entity entity);
-
   /**
    * <p>
    * 装備品のLore文字列を構築します<br>
