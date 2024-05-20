@@ -161,7 +161,7 @@ public abstract class LoreWriter {
    *
    * @return Lore {@link ArrayList}
    */
-  private List<String> generateLore(EggDataBase eggData) {
+  public List<String> generateLore(EggDataBase eggData) {
     return new ArrayList<>() {
       {
         // 1. 体力
