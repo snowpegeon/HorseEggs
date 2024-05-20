@@ -1,6 +1,7 @@
 /**
  * Factory for entity writer.
  */
+
 package wacky.horseeggs.EntityWriter.factory;
 
 import java.util.Objects;
