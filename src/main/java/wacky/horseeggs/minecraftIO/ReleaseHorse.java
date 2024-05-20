@@ -308,7 +308,7 @@ public class ReleaseHorse {
     logger.trace(PREF_LOG_TRACE + "[IN PARAM]he=" + he);
 
     logger.trace(PREF_LOG_TRACE + "var eggData <- new EggDataFactory().newEggData(stack.getType(), he)");
-    EggDataBase eggData = new EggDataFactory().newEggData(stack.getType(), he);
+    EggDataBase eggData = EggDataFactory.newEggData(stack.getType(), he);
     if(Objects.isNull(eggData)){
       logger.error("This MaterialType is null.");
       return false;

@@ -33,7 +33,7 @@ public class EggDataFactory {
       EnumSet.of(LLAMA_SPAWN_EGG, MULE_SPAWN_EGG, DONKEY_SPAWN_EGG, HORSE_SPAWN_EGG,
           ZOMBIE_HORSE_SPAWN_EGG, SKELETON_HORSE_SPAWN_EGG, TRADER_LLAMA_SPAWN_EGG));
 
-  public EggDataBase newEggData(EntityType entityType, AbstractHorse horse) {
+  public static EggDataBase newEggData(EntityType entityType, AbstractHorse horse) {
     switch (entityType) {
       case LLAMA:
         return new LlamaEggData(horse);
@@ -54,7 +54,7 @@ public class EggDataFactory {
     }
   }
 
-  public EggDataBase newEggData(Material eggType, HashMap<String, ?> metaData) {
+  public static EggDataBase newEggData(Material eggType, HashMap<String, ?> metaData) {
     switch (eggType) {
       case LLAMA_SPAWN_EGG:
         return new LlamaEggData(metaData);
