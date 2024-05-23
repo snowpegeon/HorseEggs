@@ -4,12 +4,16 @@
 
 package wacky.horseeggs.eggData.factory;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.HashMap;
 import java.util.Objects;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
+import org.bukkit.inventory.AbstractHorseInventory;
+import org.bukkit.inventory.ItemStack;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +57,9 @@ public class EggDataFactoryTest {
     // ラマ
     Mockito.doReturn(Horse.Variant.LLAMA).when(absHorse).getVariant();
     Mockito.doReturn(EntityType.LLAMA).when(absHorse).getType();
+    var inventory = mock(AbstractHorseInventory.class);
+    Mockito.doReturn(mock(ItemStack.class)).when(inventory).getSaddle();
+    Mockito.doReturn(inventory).when(absHorse).getInventory();
     EggDataBase llamaEd = EggDataFactory.newEggData(EntityType.LLAMA, absHorse);
     Assert.assertTrue(Objects.nonNull(llamaEd));
 
