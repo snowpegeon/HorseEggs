@@ -32,7 +32,7 @@ public class EntityWriterFactoryTest {
   }
 
   private void openMocks() {
-    MockitoAnnotations.openMocks(this);
+//    MockitoAnnotations.openMocks(this);
   }
 
   /**
