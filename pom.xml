@@ -114,7 +114,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.20.6-R0.1-SNAPSHOT</version>
+			<version>1.20.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -137,14 +137,22 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.14.0</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.13.2</version>
+		    <scope>test</scope>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.11.0-M1</version>
-			<scope>test</scope>
-		</dependency>
+		<!--<dependency>-->
+		<!--<groupId>org.junit.jupiter</groupId>-->
+		<!--<artifactId>junit-jupiter-api</artifactId>-->
+		<!--<version>5.11.0-M1</version>-->
+		<!--<scope>test</scope>-->
+		<!--</dependency>-->
 
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
 		<dependency>
@@ -154,11 +162,11 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.powermock/powermock-module-junit4 -->
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
 		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-module-junit4</artifactId>
-			<version>2.0.9</version>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<version>5.2.0</version>
 			<scope>test</scope>
 		</dependency>
 
