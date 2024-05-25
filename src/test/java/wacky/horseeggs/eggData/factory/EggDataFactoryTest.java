@@ -1,5 +1,5 @@
 /**
- * Factory for horse egg data. 
+ * Factory for egg data. 
  */
 
 package wacky.horseeggs.eggData.factory;

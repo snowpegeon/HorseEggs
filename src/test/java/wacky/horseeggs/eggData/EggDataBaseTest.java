@@ -1,5 +1,5 @@
 /**
- * Base of egg data.
+ * Egg data of base data.
  */
 
 package wacky.horseeggs.eggData;
@@ -40,7 +40,7 @@ import wacky.horseeggs.LoreWriter.factory.LoreWriterFactory;
 import wacky.horseeggs.eggData.factory.EggDataFactory;
 
 /**
- * [{@link EggDataBase} クラスを検証するテストクラスです.
+ * {@link EggDataBase} クラスを検証するテストクラスです.
  */
 // @Ignore("保留中")
 public class EggDataBaseTest {
@@ -163,8 +163,9 @@ public class EggDataBaseTest {
    */
   @Test
   public final void testEggDataBaseHashMapOfStringQ() {
-    this.setUpHorse();
-    var metaData = new HashMap<String, Object>() {
+    HashMap<String, Object> metaData = null;
+    // ウマ
+    metaData = new HashMap<String, Object>() {
       {
         put("Chest", (byte) 0);
         put("Speed", 1.0d);
@@ -178,13 +179,36 @@ public class EggDataBaseTest {
         put("Variant", "HORSE");
         put("Type", "HORSE");
         put("UUIDMost", 2968001111801612278L);
-        put("Armor", "DIAMOND_HORSE_ARMOR");
+        put("Armor", "LEATHER_HORSE_ARMOR");
         put("Style", "WHITEFIELD");
+        put("ArmorColor", "255,29,29,33");
       }
     };
-
-    EggDataBase eggData = EggDataFactory.newEggData(Material.HORSE_SPAWN_EGG, metaData);
-    Assert.assertTrue(Objects.nonNull(eggData));
+    this.setUpHorse();
+    EggDataBase horseEggData = EggDataFactory.newEggData(Material.HORSE_SPAWN_EGG, metaData);
+    Assert.assertTrue(Objects.nonNull(horseEggData));
+    
+    // ラマ
+    metaData = new HashMap<String, Object>() {
+      {
+        put("Chest", (byte) 1);
+        put("Speed", 0.17499999701976776d);
+        put("Health", 21.0d);
+        put("UUIDLeast", -6995725480010122770L);
+        put("Color", "GRAY");
+        put("Jump", 0.5d);
+        put("MaxHealth", 21.0d);
+        put("Saddle", (byte) 0);
+        put("Variant", "LLAMA");
+        put("Type", "LLAMA");
+        put("UUIDMost", 2968001111801612278L);
+        put("Armor", "PURPLE_CARPET");
+        put("Strength", 3);
+      }
+    };
+    this.setUpLlama();
+    EggDataBase llamaEggData = EggDataFactory.newEggData(Material.LLAMA_SPAWN_EGG, metaData);
+    Assert.assertTrue(Objects.nonNull(llamaEggData));
   }
 
   /**
@@ -287,9 +311,9 @@ public class EggDataBaseTest {
     EggDataBase eggData = EggDataFactory.newEggData(entityType, absHorse);
 
     LoreWriter lw = LoreWriterFactory.newLoreWriter(entityType, eggData);
-    var loreList = lw.generateLore(eggData);
-
-    Assert.assertTrue(Objects.nonNull(loreList));
+    var entityWriterloreList = lw.generateLore(eggData);
+    eggData.setLoreList(entityWriterloreList);
+    Assert.assertTrue(Objects.nonNull(eggData.getLoreList()));
   }
 
   /**
@@ -300,7 +324,7 @@ public class EggDataBaseTest {
     this.setUpDonkey();
 
     EggDataBase eggData = EggDataFactory.newEggData(EntityType.DONKEY, absHorse);
-    Assert.assertTrue(Objects.nonNull(eggData.getDisplayMap()));
+    Assert.assertTrue(Objects.nonNull(eggData.isHasInventory()));
   }
 
   /**
