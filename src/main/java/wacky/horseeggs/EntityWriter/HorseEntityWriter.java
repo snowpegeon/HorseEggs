@@ -26,7 +26,7 @@ public class HorseEntityWriter extends  EntityWriter{
     horse.setColor(Color.valueOf(eggData.getColor()));
     horse.setStyle(Style.valueOf(eggData.getStyle()));
     ItemStack armor = getArmor(eggData.getArmor());
-    if (armor.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta && Objects.nonNull(
+    if (Objects.nonNull(armor) && armor.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta && Objects.nonNull(
         eggData.getArmorColor())) {
       int[] colors = Stream.of(eggData.getArmorColor().split(",")).mapToInt(Integer::parseInt)
           .toArray();
