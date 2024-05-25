@@ -1,5 +1,5 @@
 /**
- * Factory for LoreWriter.
+ * Factory for EntityWriter.
  */
 
 package wacky.horseeggs.EntityWriter.factory;
@@ -25,15 +25,15 @@ import wacky.horseeggs.LoreWriter.ZombieHorseLoreWriter;
 import wacky.horseeggs.eggData.EggDataBase;
 
 /**
- * Factory class of LoreWriter.
+ * Factory class of EntityWriter.
  */
 public class EntityWriterFactory {
   /**
-   * Factory method for LoreWriter.
+   * Factory method for EntityWriter.
    *
    * @param entityType {@link EntityType}
    */
-  public static EntityWriter newLoreWriter(EntityType entityType, AbstractHorse horse) {
+  public static EntityWriter newEntityWriter(EntityType entityType, AbstractHorse horse) {
     switch (entityType) {
       case LLAMA:
         return new LlamaEntityWriter(horse);

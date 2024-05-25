@@ -308,7 +308,7 @@ public class ReleaseHorse {
     logger.trace(PREF_LOG_TRACE + "[IN PARAM]he=" + he);
 
     logger.trace(PREF_LOG_TRACE + "var eggData <- new EggDataFactory().newEggData(stack.getType(), he)");
-    EggDataBase eggData = new EggDataFactory().newEggData(stack.getType(), he);
+    EggDataBase eggData = EggDataFactory.newEggData(stack.getType(), he);
     if(Objects.isNull(eggData)){
       logger.error("This MaterialType is null.");
       return false;
@@ -318,7 +318,7 @@ public class ReleaseHorse {
     AbstractHorse horse = (AbstractHorse) loc.getWorld().spawnEntity(loc, eggData.getEntityType());
 
     // 馬情報の書き込み
-    EntityWriter eWriter = EntityWriterFactory.newLoreWriter(eggData.getEntityType(), horse);
+    EntityWriter eWriter = EntityWriterFactory.newEntityWriter(eggData.getEntityType(), horse);
     eWriter.writeHorse(eggData);
     logger.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
     logger.debug(PREF_LOG_DEBUG + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location):End");

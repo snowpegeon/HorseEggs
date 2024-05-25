@@ -628,16 +628,15 @@ public abstract class EggDataBase {
    */
   private String getArmor(AbstractHorse absHorse) {
     String armor = null;
-    if (absHorse.getInventory() instanceof AbstractHorseInventory absHorseInv) {
-      ItemStack item = null;
-      if (absHorseInv instanceof HorseInventory horseInv) {
-        item = horseInv.getArmor();
-      } else if (absHorseInv instanceof LlamaInventory llamaInv) {
-        item = llamaInv.getDecor();
-      }
-      if (Objects.nonNull(item)) {
-        armor = item.getType().name();
-      }
+    AbstractHorseInventory absHorseInv = absHorse.getInventory();
+    ItemStack item = null;
+    if (absHorseInv instanceof HorseInventory horseInv) {
+      item = horseInv.getArmor();
+    } else if (absHorseInv instanceof LlamaInventory llamaInv) {
+      item = llamaInv.getDecor();
+    }
+    if (Objects.nonNull(item)) {
+      armor = item.getType().name();
     }
     return armor;
   }
@@ -666,8 +665,8 @@ public abstract class EggDataBase {
     String armorColor = null;
     if (absHorse.getInventory() instanceof HorseInventory horseInv) {
       ItemStack item = horseInv.getArmor();
-      if (item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta && Objects.nonNull(
-          leatherArmorMeta.getColor())) {
+      if (Objects.nonNull(item) && item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta
+          && Objects.nonNull(leatherArmorMeta.getColor())) {
         Color col = leatherArmorMeta.getColor();
         armorColor = String.format(ArmorColorFormat, col.getAlpha(), col.getRed(), col.getGreen(),
             col.getBlue());
@@ -1078,11 +1077,7 @@ public abstract class EggDataBase {
    * @return {@link boolean} 鞍の有無.
    */
   private boolean isSaddled(AbstractHorse absHorse) {
-    boolean hasSaddle = false;
-    if (absHorse.getInventory() instanceof AbstractHorseInventory absHorseInv) {
-      hasSaddle = Objects.nonNull(absHorseInv.getSaddle());
-    }
-    return hasSaddle;
+    return Objects.nonNull(absHorse.getInventory().getSaddle());
   }
 
   /**

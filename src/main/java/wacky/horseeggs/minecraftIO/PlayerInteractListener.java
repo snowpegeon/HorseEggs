@@ -323,9 +323,9 @@ public class PlayerInteractListener implements Listener {
 
         // 馬系の何であるかを識別
         EntityType type = horse.getType();
-        EggDataBase eggData = new EggDataFactory().newEggData(type, horse);
+        EggDataBase eggData = EggDataFactory.newEggData(type, horse);
         eggData.setLoreList(
-            new LoreWriterFactory().newLoreWriter(type, eggData).generateLore(entity));
+            LoreWriterFactory.newLoreWriter(type, eggData).generateLore(eggData));
         if (Objects.isNull(eggData)) {
           this.log.error("This EntityType is null.");
           return;

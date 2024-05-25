@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import wacky.horseeggs.eggData.EggDataBase;
@@ -78,7 +77,7 @@ public abstract class LoreWriter {
 
   /**
    * <p>
-   * Lore text valueSplitter. {@value}
+   * Lore text value splitter. {@value}
    * </p>
    */
   private static final String SPLITTER = "/";
@@ -162,7 +161,7 @@ public abstract class LoreWriter {
    *
    * @return Lore {@link ArrayList}
    */
-  private List<String> generateLore(EggDataBase eggData) {
+  public List<String> generateLore(EggDataBase eggData) {
     return new ArrayList<>() {
       {
         // 1. 体力
@@ -210,8 +209,6 @@ public abstract class LoreWriter {
       }
     };
   }
-
-  public abstract List<String> generateLore(Entity entity);
 
   /**
    * <p>
@@ -322,30 +319,6 @@ public abstract class LoreWriter {
       healthSb.append(maxHealth.intValue());
     }
     return healthSb;
-  }
-
-  protected String getHealthMeter(double currentHealth, double maxHealth) {
-    StringBuilder healthMeterSb = new StringBuilder();
-    healthMeterSb.append("Health:[");
-    healthMeterSb.append(ChatColor.GREEN);
-    healthMeterSb.append("");
-    int i = 0;
-    double rate = currentHealth * 20 / maxHealth;
-    for (; i < rate; i++) {
-      healthMeterSb.append(":");
-    }
-    healthMeterSb.append(ChatColor.GRAY);
-    healthMeterSb.append("");
-    for (; i < 20; i++) {
-      healthMeterSb.append(":");
-    }
-    healthMeterSb.append(ChatColor.DARK_PURPLE);
-    healthMeterSb.append("](");
-    healthMeterSb.append(currentHealth);
-    healthMeterSb.append(" / ");
-    healthMeterSb.append(maxHealth);
-    healthMeterSb.append(")");
-    return healthMeterSb.toString();
   }
 
   /**
