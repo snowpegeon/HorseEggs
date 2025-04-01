@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import com.github.teruteru128.logger.Logger;
 import wacky.horseeggs.EntityWriter.EntityWriter;
 
 /**
@@ -20,6 +21,9 @@ import wacky.horseeggs.EntityWriter.EntityWriter;
 public class EntityWriterFactoryTest {
   @Mock
   AbstractHorse absHorse;
+  
+  @Mock
+  Logger logger;
 
   /**
    * 事前設定.
@@ -40,31 +44,31 @@ public class EntityWriterFactoryTest {
    */
   @Test
   public final void testNewEntityWriter() {
-    EntityWriter llamaEw = EntityWriterFactory.newEntityWriter(EntityType.LLAMA, absHorse);
+    EntityWriter llamaEw = EntityWriterFactory.newEntityWriter(EntityType.LLAMA, absHorse, logger);
     Assert.assertTrue(Objects.nonNull(llamaEw));
 
-    EntityWriter muleEw = EntityWriterFactory.newEntityWriter(EntityType.MULE, absHorse);
+    EntityWriter muleEw = EntityWriterFactory.newEntityWriter(EntityType.MULE, absHorse, logger);
     Assert.assertTrue(Objects.nonNull(muleEw));
 
-    EntityWriter donkeyEw = EntityWriterFactory.newEntityWriter(EntityType.DONKEY, absHorse);
+    EntityWriter donkeyEw = EntityWriterFactory.newEntityWriter(EntityType.DONKEY, absHorse, logger);
     Assert.assertTrue(Objects.nonNull(donkeyEw));
 
-    EntityWriter horseEw = EntityWriterFactory.newEntityWriter(EntityType.HORSE, absHorse);
+    EntityWriter horseEw = EntityWriterFactory.newEntityWriter(EntityType.HORSE, absHorse, logger);
     Assert.assertTrue(Objects.nonNull(horseEw));
 
     EntityWriter zombieHorseEw =
-        EntityWriterFactory.newEntityWriter(EntityType.ZOMBIE_HORSE, absHorse);
+        EntityWriterFactory.newEntityWriter(EntityType.ZOMBIE_HORSE, absHorse, logger);
     Assert.assertTrue(Objects.nonNull(zombieHorseEw));
 
     EntityWriter skeltonHorseEw =
-        EntityWriterFactory.newEntityWriter(EntityType.SKELETON_HORSE, absHorse);
+        EntityWriterFactory.newEntityWriter(EntityType.SKELETON_HORSE, absHorse, logger);
     Assert.assertTrue(Objects.nonNull(skeltonHorseEw));
 
     EntityWriter traderLlamaEw =
-        EntityWriterFactory.newEntityWriter(EntityType.TRADER_LLAMA, absHorse);
+        EntityWriterFactory.newEntityWriter(EntityType.TRADER_LLAMA, absHorse, logger);
     Assert.assertTrue(Objects.nonNull(traderLlamaEw));
 
-    EntityWriter otherEw = EntityWriterFactory.newEntityWriter(EntityType.BAT, absHorse);
+    EntityWriter otherEw = EntityWriterFactory.newEntityWriter(EntityType.BAT, absHorse, logger);
     Assert.assertTrue(Objects.isNull(otherEw));
   }
 
