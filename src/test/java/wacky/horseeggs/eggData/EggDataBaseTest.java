@@ -109,8 +109,8 @@ public class EggDataBaseTest {
     when(absHorse.getInventory()).thenReturn(horseInv);
     when(absHorse.getVariant()).thenReturn(Horse.Variant.HORSE);
     when(absHorse.getType()).thenReturn(EntityType.HORSE);
-    when(absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).thenReturn(attr);
-    when(absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH)).thenReturn(attr);
+    when(absHorse.getAttribute(Attribute.MOVEMENT_SPEED)).thenReturn(attr);
+    when(absHorse.getAttribute(Attribute.MAX_HEALTH)).thenReturn(attr);
     when(absHorse.getCustomName()).thenReturn("うまいウマ");
     when(absHorse.isTamed()).thenReturn(true);
     when(absHorse.getOwner()).thenReturn(animalTamer);

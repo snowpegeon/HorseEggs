@@ -179,7 +179,7 @@ public class EntityWriterTest {
       Mockito.doReturn(EntityType.HORSE).when(eggData).getEntityType();
 
       AttributeInstance attr = mock(AttributeInstance.class);
-      Mockito.doReturn(attr).when(absHorse).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+      Mockito.doReturn(attr).when(absHorse).getAttribute(Attribute.MOVEMENT_SPEED);
 
       Long uuidMost = Long.valueOf(horseEggDataMap.get(dataKeyUuidMost).toString());
       Long uuidLeast = Long.valueOf(horseEggDataMap.get(dataKeyUuidLeast).toString());
@@ -215,7 +215,7 @@ public class EntityWriterTest {
       Mockito.doReturn(EntityType.DONKEY).when(eggData).getEntityType();
 
       AttributeInstance attr = mock(AttributeInstance.class);
-      Mockito.doReturn(attr).when(absHorse).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+      Mockito.doReturn(attr).when(absHorse).getAttribute(Attribute.MOVEMENT_SPEED);
 
       Long uuidMost = Long.valueOf(donkeyEggDataMap.get(dataKeyUuidMost).toString());
       Long uuidLeast = Long.valueOf(donkeyEggDataMap.get(dataKeyUuidLeast).toString());
@@ -255,7 +255,7 @@ public class EntityWriterTest {
       Mockito.doReturn(EntityType.LLAMA).when(eggData).getEntityType();
 
       AttributeInstance attr = mock(AttributeInstance.class);
-      Mockito.doReturn(attr).when(absHorse).getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+      Mockito.doReturn(attr).when(absHorse).getAttribute(Attribute.MOVEMENT_SPEED);
 
       Long uuidMost = Long.valueOf(llamaEggDataMap.get(dataKeyUuidMost).toString());
       Long uuidLeast = Long.valueOf(llamaEggDataMap.get(dataKeyUuidLeast).toString());

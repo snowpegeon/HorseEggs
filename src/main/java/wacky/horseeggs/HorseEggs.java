@@ -35,9 +35,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import wacky.horseeggs.EventHandler.BlockDispenseEventHandler;
@@ -81,33 +83,18 @@ public class HorseEggs extends JavaPlugin implements Listener {
     this.log.debug(PREF_LOG_DEBUG + PREF_LOG_START + "HorseEggs.void:onEnable()");
 
     // レシピの登録
-    NamespacedKey namespacedKey = new NamespacedKey(this, "horseEggs");
-    this.log.trace(
-        PREF_LOG_TRACE + "NamespacedKey namespacedKey <- new NamespacedKey(this, \"horseEggs\")");
-    // ShapedRecipe storageSignRecipe = new ShapedRecipe(emptyHorseEgg(1));
-    // this.logger.trace(
-    // LOG_PREFIX_TRACE + "ShapedRecipe storageSignRecipe <- new ShapedRecipe(emptyHorseEgg(1))");
-    ShapedRecipe horseEggsRecipe = new ShapedRecipe(namespacedKey, emptyHorseEgg(1));
-    this.log.trace(PREF_LOG_TRACE
-        + "ShapedRecipe storageSignRecipe <- new ShapedRecipe(namespacedKey, emptyHorseEgg(1))");
-
-    final String shapeRow1 = " P ";
-    final String shapeRow2 = "PEP";
-    final String shapeRow3 = " P ";
-    horseEggsRecipe.shape(shapeRow1, shapeRow2, shapeRow3);
-    this.log.trace(PREF_LOG_TRACE + "storageSignRecipe.shape(" + shapeRow1 + "," + shapeRow2 + ","
-        + shapeRow3 + ")");
-
-    horseEggsRecipe.setIngredient('P', Material.ENDER_PEARL);
-    this.log.trace(PREF_LOG_TRACE + "storageSignRecipe.setIngredient('P', Material.ENDER_PEARL)");
-
-    horseEggsRecipe.setIngredient('E', Material.EGG);
-    this.log.trace(PREF_LOG_TRACE + "storageSignRecipe.setIngredient('E', Material.EGG)");
-
-    boolean wereAbleToAddRecipe = getServer().addRecipe(horseEggsRecipe);
-    this.log.trace(
-        PREF_LOG_TRACE + "boolean wereAbleToAddRecipe <- getServer().addRecipe(storageSignRecipe)");
-    this.log.trace(PREF_LOG_TRACE + "wereAbleToAddRecipe=" + wereAbleToAddRecipe);
+    final List<Material> eggMaterialList = List.of(Material.EGG, Material.BLUE_EGG, Material.BROWN_EGG);
+    for (Material eggMaterial : eggMaterialList) {
+      final String HORSE_EGGS = "horseEggs";
+      NamespacedKey namespacedKey = new NamespacedKey(this, HORSE_EGGS + eggMaterialList.indexOf(eggMaterial));
+      ShapedRecipe horseEggsRecipe = new ShapedRecipe(namespacedKey, emptyHorseEgg(1));
+      horseEggsRecipe.shape(new String[] {" P ","PEP"," P "});
+      horseEggsRecipe.setIngredient('P', Material.ENDER_PEARL);
+      horseEggsRecipe.setIngredient('E', eggMaterial);
+      horseEggsRecipe.setGroup(HORSE_EGGS);
+      horseEggsRecipe.setCategory(CraftingBookCategory.MISC);
+      this.getServer().addRecipe(horseEggsRecipe);
+    }
 
     // リスナーの登録
     // TODO ちゃんと個別にリスナーを登録したほうがいい

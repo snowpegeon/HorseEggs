@@ -17,6 +17,7 @@ import com.saicone.rtag.RtagItem;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import org.bukkit.Location;
@@ -155,10 +156,10 @@ public class PlayerInteractListener implements Listener {
     this.log.trace(PREF_LOG_TRACE + "player=" + player);
     // このイベント中のプレイヤーのイベントリ情報
     PlayerInventory inv = player.getInventory();
-    this.log.trace(PREF_LOG_TRACE + "inv=" + inv);
+//    this.log.trace(PREF_LOG_TRACE + "inv=" + inv);
     // このイベント中で「使用（右クリック）」されたエンティティ情報
     Entity entity = event.getRightClicked();
-    this.log.trace(PREF_LOG_TRACE + "entity=" + entity);
+//    this.log.trace(PREF_LOG_TRACE + "entity=" + entity);
     // このイベント中のプレイヤーのメインハンドのアイテムスタック
     ItemStack itemInHand = player.getInventory().getItemInMainHand();
     this.log.trace(PREF_LOG_TRACE + "itemInHand=" + itemInHand);
@@ -324,12 +325,11 @@ public class PlayerInteractListener implements Listener {
         // 馬系の何であるかを識別
         EntityType type = horse.getType();
         EggDataBase eggData = EggDataFactory.newEggData(type, horse);
-        eggData.setLoreList(
-            LoreWriterFactory.newLoreWriter(type, eggData).generateLore(eggData));
         if (Objects.isNull(eggData)) {
-          this.log.error("This EntityType is null.");
+          this.log.warn("This EntityType is null.");
           return;
         }
+        eggData.setLoreList(LoreWriterFactory.newLoreWriter(type, eggData).generateLore(eggData));
 
         this.log.trace(PREF_LOG_TRACE + "type=" + type);
         this.log.trace(PREF_LOG_TRACE + "eggData=" + eggData);
