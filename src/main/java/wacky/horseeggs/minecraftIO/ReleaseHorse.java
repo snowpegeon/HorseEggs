@@ -41,12 +41,37 @@ import wacky.horseeggs.eggData.factory.EggDataFactory;
  * 
  */
 public class ReleaseHorse {
-  /** ログのプレフィックス(TRACE). */
+  /**
+   * <p>
+   * ログのプレフィックス(TRACE). {@link String}
+   * </p>
+   */
   private static final String PREF_LOG_TRACE = "[TRACE] ";
-  /** ログのプレフィックス(DEBUG). */
+
+  /**
+   * <p>
+   * ログのプレフィックス(DEBUG). {@link String}
+   * </p>
+   */
   private static final String PREF_LOG_DEBUG = "[DEBUG] ";
-  /** . */
+  
+  /**
+   * <p>
+   * ログの開始プレフィックス. {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_START = "[START] ";
+
+  /**
+   * <p>
+   * ログの終了プレフィックス. {@link String}
+   * </p>
+   */
+  private static final String PREF_LOG_END = "[END] ";
+  
+  /** HorseEggsのキー. */
   private static final String HORSE_EGG_KEY = "HorseEgg";
+
   /** ロガー. */
   private Logger log;
 
@@ -59,15 +84,15 @@ public class ReleaseHorse {
    * 
    */
   public ReleaseHorse(ItemStack item, Location loc, Logger logger) {
-    this.log = logger;
-    this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.ReleaseHorse(ItemStack, Location, Logger):Start");
-    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]item=" + item.toString());
-    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]loc=" + loc.toString());
-    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]logger=" + logger.toString());
+//    this.log = logger;
+//    this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.ReleaseHorse(ItemStack, Location, Logger):Start");
+//    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]item=" + item.toString());
+//    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]loc=" + loc.toString());
+//    this.log.trace(PREF_LOG_TRACE + "[IN PARAM]logger=" + logger.toString());
 
-    this.log.trace(PREF_LOG_TRACE + "releseHorseEgg(item, loc)");
+//    this.log.trace(PREF_LOG_TRACE + "releseHorseEgg(item, loc)");
 //    boolean releseResult = releseHorseFromHorseEgg(item, loc);
-    this.log.trace(PREF_LOG_TRACE + "boolean releseResult <- releseHorseFromHorseEgg(item, loc)");
+//    this.log.trace(PREF_LOG_TRACE + "boolean releseResult <- releseHorseFromHorseEgg(item, loc)");
 //    this.log.trace(PREF_LOG_TRACE + "releseResult=" + releseResult);
 //    if (releseResult) {
 //      this.log.debug(PREF_LOG_DEBUG + "ReleaseHorse.ReleaseHorse(ItemStack, Location, Logger):End");
@@ -287,10 +312,9 @@ public class ReleaseHorse {
   }
 
   public static boolean releseHorseFromHorseEgg(ItemStack item, Location loc, Logger logger) {
-    logger
-        .debug(PREF_LOG_DEBUG + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location):Start");
-    logger.trace(PREF_LOG_TRACE + "[IN PARAM]item=" + item.toString());
-    logger.trace(PREF_LOG_TRACE + "[IN PARAM]loc=" + loc.toString());
+    logger.debug(PREF_LOG_DEBUG + PREF_LOG_START + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location)");
+    logger.debug(PREF_LOG_DEBUG + "[IN PARAM]item=" + item.toString());
+    logger.debug(PREF_LOG_DEBUG + "[IN PARAM]loc=" + loc.toString());
 
     // ItemStackは何らかの理由で変質することがあるので、コピーして利用
     ItemStack stack = item.clone();
@@ -298,19 +322,22 @@ public class ReleaseHorse {
     // データの読み取り処理
     logger.trace(PREF_LOG_TRACE + "RtagItem rtagItem <- new RtagItem(item)");
     RtagItem tagItem = new RtagItem(stack);
-    logger.trace(PREF_LOG_TRACE + tagItem.toString());
+    logger.trace(PREF_LOG_TRACE + "tagItem=" + tagItem.toString());
 
-    logger.trace(PREF_LOG_TRACE + "var horseEggKey <- rtagItem.get(HORSE_EGG_KEY)");
+    logger.trace(PREF_LOG_TRACE + "he <- rtagItem.get(HORSE_EGG_KEY)");
     HashMap<String, Object> he = tagItem.get(HORSE_EGG_KEY);
-    if (he != null) {
-      logger.trace(PREF_LOG_TRACE + he.toString());
+    if (Objects.nonNull(he)) {
+      logger.trace(PREF_LOG_TRACE + "he=" + he.toString());
+    } else {
+      logger.trace(PREF_LOG_TRACE + "he=null");
     }
-    logger.trace(PREF_LOG_TRACE + "[IN PARAM]he=" + he);
 
-    logger.trace(PREF_LOG_TRACE + "var eggData <- new EggDataFactory().newEggData(stack.getType(), he)");
+    logger.trace(PREF_LOG_TRACE + "EggDataBase eggData <- EggDataFactory.newEggData(stack.getType(), he)");
     EggDataBase eggData = EggDataFactory.newEggData(stack.getType(), he);
     if(Objects.isNull(eggData)){
       logger.error("This MaterialType is null.");
+      logger.debug(PREF_LOG_DEBUG + "[RETURN PARAM] false");
+      logger.debug(PREF_LOG_DEBUG + PREF_LOG_END + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location)");
       return false;
     }
 
@@ -318,15 +345,15 @@ public class ReleaseHorse {
     AbstractHorse horse = (AbstractHorse) loc.getWorld().spawnEntity(loc, eggData.getEntityType());
 
     // 馬情報の書き込み
-    EntityWriter eWriter = EntityWriterFactory.newEntityWriter(eggData.getEntityType(), horse);
+    EntityWriter eWriter = EntityWriterFactory.newEntityWriter(eggData.getEntityType(), horse, logger);
     eWriter.writeHorse(eggData);
-    logger.trace(PREF_LOG_TRACE + "[RETURN PARAM]true");
-    logger.debug(PREF_LOG_DEBUG + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location):End");
+    logger.debug(PREF_LOG_DEBUG + "[RETURN PARAM] true");
+    logger.debug(PREF_LOG_DEBUG + PREF_LOG_END + "ReleaseHorse.boolean:releseHorseEgg(ItemStack, Location)");
     return true;
   }
-  
+
   private boolean captureHorseToHorseEgg() {
-    
+
     return true;
   }
 }

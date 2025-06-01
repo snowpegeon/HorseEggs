@@ -67,8 +67,8 @@ public class SkeletonHorseEggDataTest {
     when(absHorse.getInventory()).thenReturn(absHorseInv);
     when(absHorse.getVariant()).thenReturn(Horse.Variant.SKELETON_HORSE);
     when(absHorse.getType()).thenReturn(EntityType.SKELETON_HORSE);
-    when(absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).thenReturn(attr);
-    when(absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH)).thenReturn(attr);
+    when(absHorse.getAttribute(Attribute.MOVEMENT_SPEED)).thenReturn(attr);
+    when(absHorse.getAttribute(Attribute.MAX_HEALTH)).thenReturn(attr);
     when(absHorse.getCustomName()).thenReturn("うまいホネ");
     when(absHorse.isTamed()).thenReturn(true);
     when(absHorse.getOwner()).thenReturn(animalTamer);
