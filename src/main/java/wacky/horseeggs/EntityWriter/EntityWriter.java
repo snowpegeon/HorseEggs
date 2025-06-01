@@ -32,7 +32,7 @@ public abstract class EntityWriter {
     this.absHorse.setCustomName(eggData.getName());
     this.absHorse.setMaxHealth(eggData.getMaxHealth());
     this.absHorse.setHealth(eggData.getHealth());
-    this.absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(eggData.getSpeed());
+    this.absHorse.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(eggData.getSpeed());
 
     this.absHorse.setJumpStrength(eggData.getJump());
 

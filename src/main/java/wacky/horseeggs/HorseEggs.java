@@ -239,6 +239,9 @@ public class HorseEggs extends JavaPlugin implements Listener {
     this.log.debug(PREF_LOG_DEBUG + PREF_LOG_START + "HorseEggs.boolean:isHorseEgg(ItemStack)");
     this.log.trace(PREF_LOG_TRACE + "[IN PARAM]item=" + item.toString());
 
+    if(item.getType().equals(Material.AIR)) {
+      return false;
+    }
     RtagItem itemTag = new RtagItem(item);
     this.log.trace(PREF_LOG_TRACE + "itemTag.hasTag(EggDataBase.EGG_NAME): " + itemTag.hasTag(EggDataBase.EGG_NAME));
     this.log.trace(PREF_LOG_TRACE + "EggDataFactory.isCaptureAbleEggMaterial(item.getType()): "

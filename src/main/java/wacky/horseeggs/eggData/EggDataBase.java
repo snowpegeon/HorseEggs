@@ -775,7 +775,7 @@ public abstract class EggDataBase {
    * @return {@link Double} 最大HP.
    */
   private Double getMaxHealth(AbstractHorse absHorse) {
-    AttributeInstance maxHealth = absHorse.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+    AttributeInstance maxHealth = absHorse.getAttribute(Attribute.MAX_HEALTH);
     Double health = null;
     if (Objects.nonNull(maxHealth)) {
       health = maxHealth.getValue();
@@ -843,7 +843,7 @@ public abstract class EggDataBase {
    */
   private Double getSpeed(AbstractHorse absHorse) {
     Double speed = null;
-    AttributeInstance speedInstance = absHorse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+    AttributeInstance speedInstance = absHorse.getAttribute(Attribute.MOVEMENT_SPEED);
     if (Objects.nonNull(speedInstance)) {
       speed = speedInstance.getBaseValue();
     }
