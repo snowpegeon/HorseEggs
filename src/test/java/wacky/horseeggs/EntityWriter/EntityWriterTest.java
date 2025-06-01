@@ -34,6 +34,7 @@ import org.mockito.MockSettings;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import com.github.teruteru128.logger.Logger;
 import wacky.horseeggs.EntityWriter.factory.EntityWriterFactory;
 import wacky.horseeggs.eggData.EggDataBase;
 
@@ -126,6 +127,9 @@ public class EntityWriterTest {
   @Mock
   AbstractHorse absHorse;
   
+  @Mock
+  Logger logger;
+  
   /**
    * @throws java.lang.Exception
    */
@@ -190,7 +194,7 @@ public class EntityWriterTest {
       AbstractHorseInventory absHorseInv = mock(AbstractHorseInventory.class);
       when(absHorse.getInventory()).thenReturn(absHorseInv);
 
-      EntityWriter horseEw = EntityWriterFactory.newEntityWriter(eggData.getEntityType(), absHorse);
+      EntityWriter horseEw = EntityWriterFactory.newEntityWriter(eggData.getEntityType(), absHorse, logger);
       Assert.assertTrue(horseEw.writeHorseBase(eggData));
 //      AbstractHorse horseAbsHorse = horseEw.getAbsHorse();
 //      Assert.assertTrue(Objects.nonNull(horseAbsHorse));
@@ -229,7 +233,7 @@ public class EntityWriterTest {
 
 
       EntityWriter donkeyEw =
-          EntityWriterFactory.newEntityWriter(eggData.getEntityType(), absHorse);
+          EntityWriterFactory.newEntityWriter(eggData.getEntityType(), absHorse, logger);
       Assert.assertTrue(donkeyEw.writeHorseBase(eggData));
       AbstractHorse donkeyAbsHorse = donkeyEw.getAbsHorse();
       Assert.assertTrue(Objects.nonNull(donkeyAbsHorse));
@@ -264,7 +268,7 @@ public class EntityWriterTest {
 
       when(server.getOfflinePlayer(id)).thenReturn(offlinePlayer);
 
-      EntityWriter llamaEw = EntityWriterFactory.newEntityWriter(eggData.getEntityType(), absHorse);
+      EntityWriter llamaEw = EntityWriterFactory.newEntityWriter(eggData.getEntityType(), absHorse, logger);
       Assert.assertTrue(llamaEw.writeHorseBase(eggData));
       
       AbstractHorse llamaAbsHorse = llamaEw.getAbsHorse();

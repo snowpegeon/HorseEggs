@@ -6,6 +6,7 @@ package wacky.horseeggs.EntityWriter.factory;
 
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.EntityType;
+import com.github.teruteru128.logger.Logger;
 import wacky.horseeggs.EntityWriter.DonkyEntityWriter;
 import wacky.horseeggs.EntityWriter.EntityWriter;
 import wacky.horseeggs.EntityWriter.HorseEntityWriter;
@@ -33,22 +34,22 @@ public class EntityWriterFactory {
    *
    * @param entityType {@link EntityType}
    */
-  public static EntityWriter newEntityWriter(EntityType entityType, AbstractHorse horse) {
+  public static EntityWriter newEntityWriter(EntityType entityType, AbstractHorse horse, Logger log) {
     switch (entityType) {
       case LLAMA:
-        return new LlamaEntityWriter(horse);
+        return new LlamaEntityWriter(horse, log);
       case MULE:
-        return new MuleEntityWriter(horse);
+        return new MuleEntityWriter(horse, log);
       case DONKEY:
-        return new DonkyEntityWriter(horse);
+        return new DonkyEntityWriter(horse, log);
       case HORSE:
-        return new HorseEntityWriter(horse);
+        return new HorseEntityWriter(horse, log);
       case ZOMBIE_HORSE:
-        return new ZombieHorseEntityWriter(horse);
+        return new ZombieHorseEntityWriter(horse, log);
       case SKELETON_HORSE:
-        return new SkeltonHorseEntityWriter(horse);
+        return new SkeltonHorseEntityWriter(horse, log);
       case TRADER_LLAMA:
-        return new TraderLlamaEntityWriter(horse);
+        return new TraderLlamaEntityWriter(horse, log);
       default:
         return null;
     }

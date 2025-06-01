@@ -239,7 +239,10 @@ public class HorseEggs extends JavaPlugin implements Listener {
     this.log.debug(PREF_LOG_DEBUG + PREF_LOG_START + "HorseEggs.boolean:isHorseEgg(ItemStack)");
     this.log.trace(PREF_LOG_TRACE + "[IN PARAM]item=" + item.toString());
 
-    if(item.getType().equals(Material.AIR)) {
+    // 何も持ってないときは処理を終わる
+    if (Material.AIR.equals(item.getType())) {
+      this.log.trace(PREF_LOG_TRACE + "[RETURN PARAM]false");
+      this.log.debug(PREF_LOG_DEBUG + PREF_LOG_END + "HorseEggs.boolean:isHorseEgg(ItemStack)");
       return false;
     }
     RtagItem itemTag = new RtagItem(item);
