@@ -158,7 +158,7 @@ public class PlayerInteractListener implements Listener {
     this.log.trace(PREF_LOG_TRACE + "inv=" + inv);
     // このイベント中で「使用（右クリック）」されたエンティティ情報
     Entity entity = event.getRightClicked();
-    this.log.trace(PREF_LOG_TRACE + "entity=" + entity);
+    // this.log.trace(PREF_LOG_TRACE + "entity=" + entity);
     // このイベント中のプレイヤーのメインハンドのアイテムスタック
     ItemStack itemInHand = player.getInventory().getItemInMainHand();
     this.log.trace(PREF_LOG_TRACE + "itemInHand=" + itemInHand);
