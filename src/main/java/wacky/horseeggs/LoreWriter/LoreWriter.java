@@ -27,7 +27,6 @@ public abstract class LoreWriter {
   /**
    * <p>
    * チェストのマテリアル名<br>
-   * {@link Material.CHEST}.
    * </p>
    */
   private static final String ITEM_CHEST = Material.CHEST.name();
@@ -35,7 +34,6 @@ public abstract class LoreWriter {
   /**
    * <p>
    * サドルのマテリアル名<br>
-   * {@link Material.SADDLE}.
    * </p>
    */
   private static final String ITEM_SADDLE = Material.SADDLE.name();
