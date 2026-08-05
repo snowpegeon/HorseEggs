@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.BooleanUtils;
@@ -31,6 +30,7 @@ import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.LlamaInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>
